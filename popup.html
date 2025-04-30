@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Video Speed Controller</title>
+    <style>
+        body {
+            width: 250px;
+            padding: 15px;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 8px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #3367d6;
+        }
+
+        .status {
+            margin-top: 10px;
+            font-style: italic;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Video Speed Controller</h2>
+        <div class="slider-container">
+            <label for="speed-slider">Playback Speed: </label>
+            <input type="range" id="speed-slider" min="0.25" max="3.0" step="0.25" value="1.0">
+            <div class="slider-value">1.0x</div>
+        </div>
+        <button id="reset-button">Reset to 1.0x</button>
+        <button id="apply-all-videos">Apply to All Videos</button>
+        <div class="status" id="status"></div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+
+</html>
