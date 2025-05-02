@@ -13,6 +13,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const rangesContent = document.getElementById("ranges-content")
   const newPointInput = document.getElementById("new-point-value")
   const setLastPointButton = document.getElementById("set-last-point")
+  const customSpeedInput = document.getElementById("custom-speed-input") // New
+  const setCustomSpeedButton = document.getElementById("set-custom-speed-button") // New
+
+  const MAX_SPEED = 4.0 // Define max speed constant
+  const MIN_SPEED = 0.1 // Define min speed constant
 
   let currentHost = ""
   let speedRanges = []
@@ -87,13 +92,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Reset to default ranges
   function resetToDefaultRanges() {
-    // Default ranges if none exist
+    // Default ranges: 0-5 min and 5+ min
     speedRanges = [
-      { point: 0, speed: 1.0 },
-      { point: 5, speed: 1.25 },
-      { point: 10, speed: 1.5 },
-      { point: -1, speed: 2.0 }, // -1 is infinity
+      { point: 0, speed: 1.0 }, // 0 to 5 minutes
+      { point: 5, speed: 1.5 }, // 5+ minutes (starts at 5)
+      { point: -1, speed: 1.5 }, // Infinity point, speed matches the last defined range
     ]
+    // Ensure the speed for the infinity point matches the last regular point's speed
+    if (speedRanges.length >= 2) {
+      speedRanges[speedRanges.length - 1].speed = speedRanges[speedRanges.length - 2].speed
+    }
     saveSpeedRanges()
   }
 
@@ -375,8 +383,9 @@ document.addEventListener("DOMContentLoaded", function () {
         // Format range text
         const rangeText = nextRange.point === -1 ? `${currentRange.point}+ minutes` : `${currentRange.point} - ${nextRange.point} minutes`
 
-        // Create delete button for this range (except first range)
-        const deleteButtonHtml = i > 0 && i < speedRanges.length - 2 ? `<button class="delete-range-btn" data-index="${i}">Remove</button>` : ""
+        // Create delete button for this range (except first range and the one before infinity)
+        // Use '×' symbol instead of text "Remove"
+        const deleteButtonHtml = i > 0 && i < speedRanges.length - 2 ? `<button class="delete-range-btn" data-index="${i}" title="Remove breakpoint">&times;</button>` : ""
 
         section.innerHTML = `
           <div class="range-section-header">
@@ -384,7 +393,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="slider-value">${currentRange.speed.toFixed(2)}x</div>
           </div>
           <input type="range" class="speed-range-slider" data-index="${i}" 
-                min="0.25" max="3.0" step="0.25" value="${currentRange.speed}">
+                min="0.25" max="${MAX_SPEED}" step="0.25" value="${currentRange.speed}"> <!-- Use MAX_SPEED -->
           ${deleteButtonHtml}
         `
 
@@ -395,6 +404,12 @@ document.addEventListener("DOMContentLoaded", function () {
         slider.addEventListener("input", function () {
           const speed = parseFloat(this.value)
           section.querySelector(".slider-value").textContent = speed.toFixed(2) + "x"
+          // Update the main slider if this is the active range (optional, maybe confusing)
+          // updateMainSliderIfActive(i, speed);
+        })
+        // Add change listener to save when dragging stops
+        slider.addEventListener("change", function () {
+          const speed = parseFloat(this.value)
           speedRanges[i].speed = speed
           saveSpeedRanges()
         })
@@ -476,6 +491,7 @@ document.addEventListener("DOMContentLoaded", function () {
   speedSlider.addEventListener("input", function () {
     const speed = parseFloat(this.value)
     sliderValue.textContent = speed.toFixed(2) + "x"
+    customSpeedInput.value = "" // Clear custom input when slider is used
   })
 
   speedSlider.addEventListener("change", function () {
@@ -483,10 +499,46 @@ document.addEventListener("DOMContentLoaded", function () {
     saveAndApplySpeed(speed)
   })
 
+  // Custom Speed Input Handler
+  setCustomSpeedButton.addEventListener("click", function () {
+    const customSpeed = parseFloat(customSpeedInput.value)
+    if (!isNaN(customSpeed) && customSpeed >= MIN_SPEED && customSpeed <= MAX_SPEED * 2) {
+      // Allow slightly higher custom speeds maybe?
+      // Clamp to reasonable limits if needed, or validate strictly
+      const clampedSpeed = Math.min(Math.max(customSpeed, MIN_SPEED), MAX_SPEED * 2) // Example clamp
+
+      // Update main slider and value display
+      speedSlider.value = clampedSpeed
+      sliderValue.textContent = clampedSpeed.toFixed(2) + "x"
+
+      // Save and apply
+      saveAndApplySpeed(clampedSpeed)
+      customSpeedInput.value = "" // Clear input after setting
+      statusElement.textContent = `Custom speed ${clampedSpeed.toFixed(2)}x set`
+      setTimeout(() => {
+        statusElement.textContent = ""
+      }, 2000)
+    } else {
+      statusElement.textContent = `Invalid speed. Enter between ${MIN_SPEED} and ${MAX_SPEED * 2}.`
+      setTimeout(() => {
+        statusElement.textContent = ""
+      }, 3000)
+    }
+  })
+
+  // Also allow setting custom speed by pressing Enter in the input field
+  customSpeedInput.addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault() // Prevent form submission if it were in a form
+      setCustomSpeedButton.click() // Trigger the button click handler
+    }
+  })
+
   // Reset button handler
   resetButton.addEventListener("click", function () {
     speedSlider.value = 1.0
     sliderValue.textContent = "1.0x"
+    customSpeedInput.value = "" // Clear custom input on reset
     saveAndApplySpeed(1.0)
   })
 
@@ -498,10 +550,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Save and apply speed function
   function saveAndApplySpeed(speed, applyToAll = false) {
+    // Ensure speed is within reasonable bounds before saving/applying
+    const validatedSpeed = Math.min(Math.max(speed, MIN_SPEED), MAX_SPEED * 2) // Clamp speed
+
     if (currentHost) {
       const data = {}
-      data[currentHost] = speed
+      data[currentHost] = validatedSpeed
       chrome.storage.sync.set(data, function () {
+        // Only show saved message if speed actually changed?
         statusElement.textContent = "Speed saved for " + currentHost
         setTimeout(() => {
           statusElement.textContent = ""
@@ -509,11 +565,23 @@ document.addEventListener("DOMContentLoaded", function () {
       })
 
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {
-          action: "setSpeed",
-          speed: speed,
-          applyToAll: applyToAll,
-        })
+        if (tabs[0] && tabs[0].id) {
+          // Check if tab exists
+          chrome.tabs
+            .sendMessage(tabs[0].id, {
+              action: "setSpeed",
+              speed: validatedSpeed,
+              applyToAll: applyToAll,
+            })
+            .catch((error) => {
+              // Add catch block for sendMessage
+              console.log("Could not send message to content script:", error)
+              // Optionally inform the user
+              // statusElement.textContent = "Error applying speed. Reload tab?";
+            })
+        } else {
+          console.log("Could not find active tab to send message.")
+        }
       })
     }
   }

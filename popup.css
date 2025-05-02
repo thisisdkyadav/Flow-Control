@@ -1,0 +1,679 @@
+:root {
+  /* Modern color palette - unchanged */
+  --primary-color: #4361ee;
+  --primary-dark: #3a0ca3;
+  --primary-gradient: linear-gradient(135deg, #4361ee, #3a0ca3);
+  --secondary-color: #f0f4ff;
+  --text-color: #0b132b;
+  --text-light: #5c6784;
+  --border-color: #d6e0ff;
+  --background-color: #ffffff;
+  --danger-color: #ef476f;
+  --neutral-light: #edf2fb;
+  --neutral-medium: #bbc6ed;
+  --neutral-dark: #7b89b2;
+  --button-secondary-bg: #6c757d;
+  --button-secondary-hover-bg: #5a6268;
+
+  /* Enhanced shadows */
+  --shadow-sm: 0 1px 3px rgba(67, 97, 238, 0.08);
+  --shadow-md: 0 4px 8px rgba(67, 97, 238, 0.15);
+  --shadow-lg: 0 8px 16px rgba(67, 97, 238, 0.18);
+  --shadow-hover: 0 6px 12px rgba(67, 97, 238, 0.25);
+  --shadow-glass: 0 6px 15px rgba(67, 97, 238, 0.12);
+
+  /* Border radius - slightly reduced */
+  --border-radius-sm: 0.25rem;
+  --border-radius-md: 0.4rem;
+  --border-radius-lg: 0.6rem;
+  --border-radius-full: 9999px;
+
+  /* Transitions - unchanged */
+  --transition-fast: 0.15s ease-out;
+  --transition-normal: 0.25s ease-out;
+  --transition-slow: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+body {
+  width: 350px; /* Fixed width to prevent layout shifts */
+  padding: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-size: 13px;
+  line-height: 1.5;
+  background-image: radial-gradient(circle at top right, #f0f4ff, transparent 70%);
+  animation: fadeIn 0.5s ease-out;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* Ensure all elements use border-box */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* More compact tab styling */
+.tab-container {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 12px;
+  position: relative;
+  width: 100%;
+}
+
+.tab {
+  padding: 8px 12px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: 13px;
+  font-weight: 500;
+  position: relative;
+  color: var(--text-light);
+  transition: color var(--transition-normal);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  flex: 1;
+  text-align: center;
+}
+
+.tab:hover {
+  color: var(--primary-color);
+}
+
+.tab.active {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Glowing tab indicator */
+.tab.active::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--primary-gradient);
+  border-radius: 2px 2px 0 0;
+  box-shadow: 0 0 6px rgba(67, 97, 238, 0.5);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.tab-content {
+  display: none;
+  padding: 0;
+  animation: fadeIn 0.4s ease-out, slideUp 0.3s ease-out;
+  width: 100%;
+}
+
+/* Smoother animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(6px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(67, 97, 238, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(67, 97, 238, 0);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Compact glass effect containers */
+.section-box,
+.slider-container {
+  background: linear-gradient(135deg, var(--secondary-color), rgba(255, 255, 255, 0.9));
+  border-radius: var(--border-radius-lg);
+  padding: 12px;
+  border: 1px solid rgba(214, 224, 255, 0.7);
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-glass);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Remove size-changing hover effects */
+.section-box:hover,
+.slider-container:hover,
+.manual-point-input:hover,
+.custom-speed-input-container:hover,
+.toggle-container:hover {
+  /* Remove transform that causes position shifting */
+  transform: none;
+  /* Keep subtle shadow enhancement for hover feedback */
+  box-shadow: var(--shadow-md);
+}
+
+/* Smaller decorative accent */
+.slider-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, transparent, rgba(67, 97, 238, 0.1));
+  border-top-right-radius: var(--border-radius-lg);
+  z-index: 0;
+}
+
+.range-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Smaller badge-style value display */
+.slider-value {
+  font-weight: 600;
+  color: var(--primary-dark);
+  background: linear-gradient(135deg, #ffffff, #f0f4ff);
+  padding: 4px 10px;
+  border-radius: var(--border-radius-full);
+  font-size: 13px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Slider value hover without scaling */
+.slider-value:hover {
+  transform: none;
+  box-shadow: var(--shadow-md);
+  background: linear-gradient(135deg, #f5f8ff, #e8eeff);
+}
+
+/* Compact slider styling */
+input[type="range"] {
+  width: 100%;
+  height: 8px;
+  border-radius: var(--border-radius-full);
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(to right, var(--neutral-light), var(--neutral-medium), var(--neutral-light));
+  cursor: pointer;
+  outline: none;
+  transition: background var(--transition-normal);
+  border: 1px solid var(--border-color);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+  margin: 8px 0;
+}
+
+/* Smaller futuristic slider thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  cursor: pointer;
+  border: 2px solid var(--background-color);
+  box-shadow: var(--shadow-md), 0 0 0 3px rgba(67, 97, 238, 0.1);
+  transition: all var(--transition-normal);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  background: linear-gradient(135deg, #3a56ef, #2e0ca3);
+  transform: scale(1.1);
+  box-shadow: var(--shadow-hover), 0 0 0 3px rgba(67, 97, 238, 0.2);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.15);
+  animation: pulse 1s infinite;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  cursor: pointer;
+  border: 2px solid var(--background-color);
+  box-shadow: var(--shadow-md), 0 0 0 3px rgba(67, 97, 238, 0.1);
+  transition: all var(--transition-normal);
+}
+
+/* Compact button styling */
+button {
+  padding: 8px 12px;
+  background: var(--primary-gradient);
+  color: var(--background-color);
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Button hover without position change */
+button:hover {
+  transform: none;
+  box-shadow: var(--shadow-md);
+  background: linear-gradient(135deg, #3a56ef, #2e0ca3); /* Slightly darker gradient */
+}
+
+button:active {
+  transform: none;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+/* Ripple effect on button click */
+button::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1) translate(-50%, -50%);
+  transform-origin: 50% 50%;
+}
+
+button:focus:not(:active)::after {
+  animation: ripple 0.7s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(25);
+    opacity: 0;
+  }
+}
+
+button:disabled {
+  background: linear-gradient(135deg, var(--neutral-medium), var(--neutral-dark));
+  opacity: 0.7;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+#reset-button,
+#apply-all-videos {
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* Compact input containers */
+.manual-point-input,
+.custom-speed-input-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  background: linear-gradient(135deg, var(--secondary-color), rgba(255, 255, 255, 0.9));
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-glass);
+  transition: all var(--transition-normal);
+  width: 100%;
+}
+
+.manual-point-input:hover,
+.custom-speed-input-container:hover {
+  transform: none;
+  box-shadow: var(--shadow-md);
+}
+
+.manual-point-input {
+  margin-top: 12px;
+}
+
+.custom-speed-input-container {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* Smaller number inputs */
+input[type="number"] {
+  width: 70px;
+  padding: 6px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  font-size: 13px;
+  text-align: center;
+  flex-grow: 1;
+  transition: all var(--transition-normal);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  background-color: var(--background-color);
+}
+
+input[type="number"]:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+}
+
+/* Compact toggle switch */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, var(--secondary-color), rgba(255, 255, 255, 0.95));
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-glass);
+  transition: all var(--transition-normal);
+  width: 100%;
+}
+
+.toggle-label {
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 13px;
+  margin-right: 8px;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 22px;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--neutral-medium);
+  transition: 0.3s ease;
+  border-radius: 22px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s ease;
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+}
+
+input:checked + .toggle-slider {
+  background: var(--primary-gradient);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15), 0 0 6px rgba(67, 97, 238, 0.3);
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(22px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Compact timeline styling */
+.range-series {
+  position: relative;
+  margin: 30px 10px 25px 10px;
+  padding-top: 14px;
+  height: 6px;
+  background: linear-gradient(to right, var(--neutral-light), var(--neutral-medium), var(--neutral-light));
+  position: relative;
+  border-radius: 3px;
+  border: 1px solid var(--border-color);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Smaller range points */
+.range-point {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: var(--background-color);
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  top: -5px;
+  transform: translateX(-50%);
+  cursor: grab;
+  z-index: 2;
+  box-shadow: var(--shadow-md), 0 0 0 3px rgba(67, 97, 238, 0.1);
+  transition: all var(--transition-normal);
+}
+
+/* Range point hover effect without movement */
+.range-point:hover {
+  transform: translateX(-50%); /* Keep original position but cancel the default transform */
+  border-color: var(--primary-dark);
+  box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.3);
+}
+
+.range-point:active {
+  cursor: grabbing;
+  transform: translateX(-50%); /* Maintain position when active */
+}
+
+.range-point-label {
+  position: absolute;
+  top: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: var(--text-light);
+  background: var(--background-color);
+  padding: 3px 7px;
+  border-radius: var(--border-radius-sm);
+  white-space: nowrap;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-normal);
+}
+
+/* Range point labels without movement on hover */
+.range-point:hover .range-point-label {
+  transform: translateX(-50%);
+  background: var(--secondary-color);
+}
+
+/* Range point dragging style */
+.range-point.dragging {
+  z-index: 10;
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.4);
+}
+
+/* Compact action buttons */
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  gap: 10px;
+}
+
+/* Compact status message */
+.status {
+  margin-top: 10px;
+  font-size: 11px;
+  text-align: center;
+  color: var(--text-light);
+  min-height: 1.4em;
+  transition: all var(--transition-normal);
+  padding: 4px 8px;
+  border-radius: var(--border-radius-full);
+}
+
+/* Improved compact ranges-container */
+.ranges-container {
+  max-height: 150px; /* Reduced from 180px */
+  overflow-y: auto;
+  margin: 10px 0;
+  padding: 6px 4px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Horizontal range section layout */
+.range-section {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #ffffff, #f8faff);
+  border-radius: var(--border-radius-md);
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--primary-color);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+/* Range text */
+.range-section-header {
+  display: flex;
+  align-items: center;
+  min-width: 90px;
+  margin-right: 8px;
+  font-size: 11px;
+  color: var(--text-light);
+}
+
+/* Speed slider takes available space */
+.range-section .speed-range-slider {
+  flex: 1;
+  margin: 0 8px;
+  height: 6px; /* Thinner slider */
+}
+
+/* Speed value badge */
+.range-section .slider-value {
+  margin: 0 6px 0 0;
+  padding: 2px 8px;
+  min-width: 45px;
+  text-align: center;
+  font-size: 11px;
+}
+
+/* Delete button positioning */
+.delete-range-btn {
+  background-color: transparent;
+  color: var(--neutral-dark);
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  font-size: 16px;
+  line-height: 1;
+  text-align: center;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto;
+  box-shadow: none;
+}
+
+.delete-range-btn:hover {
+  background-color: var(--danger-color);
+  color: white;
+  box-shadow: 0 0 6px rgba(239, 71, 111, 0.3);
+}
+
+/* Special styling for infinity section */
+.range-section.infinity-section {
+  border-left: 3px solid;
+  border-image: linear-gradient(to bottom, var(--primary-color), var(--primary-dark)) 1;
+  background-image: linear-gradient(135deg, var(--secondary-color), #f8faff);
+}
+
+/* Last range section in container */
+.range-section:last-child {
+  margin-bottom: 0;
+}
+
+/* Hover for range section without position change */
+.range-section:hover {
+  transform: none;
+  box-shadow: var(--shadow-md);
+  background: linear-gradient(135deg, #ffffff, #f0f4ff);
+}
+
+/* Scrollbar styling for ranges container */
+.ranges-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ranges-container::-webkit-scrollbar-track {
+  background: var(--neutral-light);
+  border-radius: 3px;
+}
+
+.ranges-container::-webkit-scrollbar-thumb {
+  background: var(--neutral-medium);
+  border-radius: 3px;
+}
+
+.ranges-container::-webkit-scrollbar-thumb:hover {
+  background: var(--neutral-dark);
+}
