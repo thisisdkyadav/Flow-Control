@@ -203,6 +203,16 @@
                 <p>Get started with Flow Control in a few simple steps</p>
             </div>
 
+            <div class="browser-selector">
+                <p>Select your browser:</p>
+                <button class="browser-select-btn active" data-browser="chrome">Chrome</button>
+                <button class="browser-select-btn" data-browser="edge">Edge</button>
+                <button class="browser-select-btn" data-browser="brave">Brave</button>
+                <button class="browser-select-btn" data-browser="opera">Opera</button>
+                <button class="browser-select-btn" data-browser="vivaldi">Vivaldi</button>
+                <button class="browser-select-btn" data-browser="firefox">Firefox</button>
+            </div>
+
             <div class="steps">
                 <div class="step">
                     <div class="step-number">1</div>
@@ -217,18 +227,21 @@
                 <div class="step">
                     <div class="step-number">2</div>
                     <div class="step-content">
-                        <h3>Enable Developer Mode</h3>
-                        <p>Open Chrome and go to <code>chrome://extensions/</code>, then enable "Developer mode" in the
-                            top-right corner.</p>
+                        <h3 id="dev-mode-step-title">Enable Developer Mode</h3>
+                        <p id="dev-mode-instructions">Open your browser and go to <code
+                                id="extension-url">chrome://extensions/</code>, then enable "Developer mode" using the
+                            toggle switch (usually in the top-right corner).</p>
                     </div>
                 </div>
 
                 <div class="step">
                     <div class="step-number">3</div>
                     <div class="step-content">
-                        <h3>Load Extension</h3>
-                        <p>Click "Load unpacked" and select the <strong><code>extension</code></strong> folder located
-                            inside the project directory you downloaded/cloned.</p>
+                        <h3 id="load-extension-step-title">Load Extension</h3>
+                        <p id="load-unpacked-instructions">Click "Load unpacked" and select the
+                            <strong><code>extension</code></strong> folder located
+                            inside the project directory you downloaded/cloned.
+                        </p>
                     </div>
                 </div>
 
@@ -376,6 +389,89 @@
                 faqItem.classList.toggle('active');
             });
         });
+
+        // Installation instructions based on browser
+        const browserInstructions = {
+            chrome: {
+                url: 'chrome://extensions/',
+                devModeTitle: 'Enable Developer Mode',
+                devModeText: 'Open Chrome and go to <code id="extension-url">chrome://extensions/</code>, then enable "Developer mode" using the toggle switch (usually in the top-right corner).',
+                loadTitle: 'Load Extension',
+                loadText: 'Click "Load unpacked" and select the <strong><code>extension</code></strong> folder located inside the project directory you downloaded/cloned.'
+            },
+            edge: {
+                url: 'edge://extensions/',
+                devModeTitle: 'Enable Developer Mode',
+                devModeText: 'Open Edge and go to <code id="extension-url">edge://extensions/</code>, then enable "Developer mode" using the toggle switch (usually in the bottom-left corner).',
+                loadTitle: 'Load Extension',
+                loadText: 'Click "Load unpacked" and select the <strong><code>extension</code></strong> folder located inside the project directory you downloaded/cloned.'
+            },
+            brave: {
+                url: 'brave://extensions/',
+                devModeTitle: 'Enable Developer Mode',
+                devModeText: 'Open Brave and go to <code id="extension-url">brave://extensions/</code>, then enable "Developer mode" using the toggle switch (usually in the top-right corner).',
+                loadTitle: 'Load Extension',
+                loadText: 'Click "Load unpacked" and select the <strong><code>extension</code></strong> folder located inside the project directory you downloaded/cloned.'
+            },
+            opera: {
+                url: 'opera://extensions',
+                devModeTitle: 'Enable Developer Mode',
+                devModeText: 'Open Opera and go to <code id="extension-url">opera://extensions</code>, then enable "Developer mode" using the toggle switch (usually in the top-right corner).',
+                loadTitle: 'Load Extension',
+                loadText: 'Click "Load unpacked" and select the <strong><code>extension</code></strong> folder located inside the project directory you downloaded/cloned.'
+            },
+            vivaldi: {
+                url: 'vivaldi://extensions/',
+                devModeTitle: 'Enable Developer Mode',
+                devModeText: 'Open Vivaldi and go to <code id="extension-url">vivaldi://extensions/</code>, then enable "Developer mode" using the toggle switch (usually in the top-right corner).',
+                loadTitle: 'Load Extension',
+                loadText: 'Click "Load unpacked" and select the <strong><code>extension</code></strong> folder located inside the project directory you downloaded/cloned.'
+            },
+            firefox: {
+                url: 'about:debugging#/runtime/this-firefox',
+                devModeTitle: 'Access Debugging',
+                devModeText: 'Open Firefox and go to <code id="extension-url">about:debugging#/runtime/this-firefox</code>. No "Developer mode" toggle is needed here.',
+                loadTitle: 'Load Temporary Add-on',
+                loadText: 'Click "Load Temporary Add-on..." and select the <strong><code>manifest.json</code></strong> file located inside the <strong><code>extension</code></strong> folder.'
+            }
+        };
+
+        const browserSelector = document.querySelector('.browser-selector');
+        const extensionUrlElement = document.getElementById('extension-url');
+        const devModeTitleElement = document.getElementById('dev-mode-step-title');
+        const devModeInstructionsElement = document.getElementById('dev-mode-instructions');
+        const loadExtensionTitleElement = document.getElementById('load-extension-step-title');
+        const loadUnpackedInstructionsElement = document.getElementById('load-unpacked-instructions');
+
+        browserSelector.addEventListener('click', (event) => {
+            if (event.target.classList.contains('browser-select-btn')) {
+                const selectedBrowser = event.target.dataset.browser;
+
+                // Update button styles
+                browserSelector.querySelectorAll('.browser-select-btn').forEach(btn => btn.classList.remove('active'));
+                event.target.classList.add('active');
+
+                // Update instructions
+                const instructions = browserInstructions[selectedBrowser];
+                if (instructions) {
+                    devModeTitleElement.textContent = instructions.devModeTitle;
+                    devModeInstructionsElement.innerHTML = instructions.devModeText; // Use innerHTML to render the <code> tag
+                    loadExtensionTitleElement.textContent = instructions.loadTitle;
+                    loadUnpackedInstructionsElement.innerHTML = instructions.loadText; // Use innerHTML for <strong> tags
+                }
+            }
+        });
+
+        // Initialize with default (Chrome)
+        function initializeInstructions() {
+            const defaultInstructions = browserInstructions.chrome;
+            devModeTitleElement.textContent = defaultInstructions.devModeTitle;
+            devModeInstructionsElement.innerHTML = defaultInstructions.devModeText;
+            loadExtensionTitleElement.textContent = defaultInstructions.loadTitle;
+            loadUnpackedInstructionsElement.innerHTML = defaultInstructions.loadText;
+        }
+        initializeInstructions(); // Call on page load
+
     </script>
 </body>
 

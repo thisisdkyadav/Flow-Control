@@ -526,6 +526,48 @@ header .container {
   background-color: var(--background-color);
 }
 
+/* NEW: Browser Selector Styles */
+.browser-selector {
+  max-width: 800px;
+  margin: 0 auto var(--space-lg);
+  padding: var(--space-md);
+  background-color: var(--neutral-light);
+  border-radius: var(--border-radius-md);
+  text-align: center;
+}
+
+.browser-selector p {
+  margin-bottom: var(--space-sm);
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.browser-selector .browser-select-btn {
+  background-color: white;
+  color: var(--text-light);
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  margin: 4px;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-size: 0.9rem;
+}
+
+.browser-selector .browser-select-btn:hover {
+  background-color: var(--secondary-color);
+  border-color: var(--neutral-medium);
+  color: var(--primary-dark);
+}
+
+.browser-selector .browser-select-btn.active {
+  background: var(--primary-gradient);
+  color: white;
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-sm);
+}
+/* END NEW */
+
 .steps {
   max-width: 800px;
   margin: 0 auto;
