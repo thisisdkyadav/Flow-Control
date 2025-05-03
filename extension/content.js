@@ -3,7 +3,7 @@ let currentSpeed = 1.0
 let isYouTube = window.location.hostname.includes("youtube.com")
 let speedRanges = []
 let rangeBasedEnabled = false
-let debugMode = true // Set to false to disable console logs
+let debugMode = false // Set to false to disable console logs
 let lastAppliedSpeeds = {} // Track last applied speeds to avoid unnecessary changes
 
 // Simple debug logger
