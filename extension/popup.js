@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const addRangeButton = document.getElementById("add-range-button")
   const resetRangesButton = document.getElementById("reset-ranges-button")
   const rangesContainer = document.getElementById("ranges-container")
-  const rangeToggle = document.getElementById("range-toggle")
   const rangeTimeline = document.getElementById("range-timeline")
   const rangesContent = document.getElementById("ranges-content")
   const newPointInput = document.getElementById("new-point-value")
@@ -18,54 +17,124 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const MAX_SPEED = 4.0 // Define max speed constant
   const MIN_SPEED = 0.1 // Define min speed constant
+  const debugMode = false // Set to true to enable debug logs
+
+  // Simple debug logger
+  function log(message, ...args) {
+    if (debugMode) {
+      console.log(`[SpeedController Popup] ${message}`, ...args)
+    }
+  }
 
   let currentHost = ""
   let speedRanges = []
-  let rangeBasedEnabled = false
+  let activeTab = "simple" // Default active tab
+  let isEnabled = true // Added for the new saveAndApplySpeed function
 
-  // Tab handling
+  // Tab handling with saved state
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
-      tabs.forEach((t) => t.classList.remove("active"))
-      tab.classList.add("active")
-
-      document.querySelectorAll(".tab-content").forEach((content) => {
-        content.classList.remove("active")
-      })
-      document.getElementById(`${tab.dataset.tab}-tab`).classList.add("active")
+      const newTab = tab.dataset.tab
+      setActiveTab(newTab)
+      saveActiveTabState(newTab)
     })
   })
 
-  // Toggle handler for range-based speed
-  rangeToggle.addEventListener("change", function () {
-    rangeBasedEnabled = this.checked
+  // Set active tab and update UI
+  function setActiveTab(tabName) {
+    // Update tab buttons
+    tabs.forEach((t) => {
+      t.classList.toggle("active", t.dataset.tab === tabName)
+    })
 
-    // Save the toggle state
+    // Update tab content visibility
+    document.querySelectorAll(".tab-content").forEach((content) => {
+      content.classList.toggle("active", content.id === `${tabName}-tab`)
+    })
+
+    // Handle extension enabled state based on active tab
+    const isEnabled = tabName !== "off"
+
+    // Update local variable to match
+    this.isEnabled = isEnabled
+
+    // Save the enabled state
     const data = {}
-    data[`${currentHost}_range_enabled`] = rangeBasedEnabled
+    data[`${currentHost}_enabled`] = isEnabled
     chrome.storage.sync.set(data)
 
-    // Update UI state
-    updateRangesContentVisibility()
+    // Notify content script of the enabled state
+    notifyContentScriptEnabled(isEnabled)
 
-    // Notify content script of the toggle state
-    notifyContentScript()
-  })
+    // If switching between simple and ranges, update the mode in content script
+    if (isEnabled && (tabName === "simple" || tabName === "ranges")) {
+      notifyContentScript()
+    }
 
-  // Update ranges content visibility based on toggle state
-  function updateRangesContentVisibility() {
-    rangesContent.style.opacity = rangeBasedEnabled ? "1" : "0.5"
-    rangesContent.style.pointerEvents = rangeBasedEnabled ? "auto" : "none"
+    activeTab = tabName
+  }
+
+  // Save active tab state
+  function saveActiveTabState(tabName) {
+    const data = {}
+    data[`${currentHost}_active_tab`] = tabName
+    chrome.storage.sync.set(data, function () {
+      // Optional: Show status message
+      statusElement.textContent = `${tabName === "off" ? "Extension disabled" : tabName === "simple" ? "Simple Speed mode active" : "Range-Based Speed mode active"}`
+      setTimeout(() => {
+        statusElement.textContent = ""
+      }, 2000)
+    })
+  }
+
+  // Load active tab state
+  function loadActiveTabState() {
+    chrome.storage.sync.get([`${currentHost}_active_tab`, `${currentHost}_enabled`], function (result) {
+      // First check if we have a stored tab state
+      let savedTab = result[`${currentHost}_active_tab`]
+
+      // If no saved tab but we have enabled state, use it to determine tab
+      if (!savedTab && typeof result[`${currentHost}_enabled`] === "boolean") {
+        savedTab = result[`${currentHost}_enabled`] ? "simple" : "off"
+      }
+
+      // Default to "simple" if nothing is saved
+      if (!savedTab) {
+        savedTab = "simple"
+      }
+
+      // Set the active tab
+      setActiveTab(savedTab)
+    })
+  }
+
+  // Notify content script of the enabled state
+  function notifyContentScriptEnabled(isEnabled) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      if (tabs && tabs[0] && tabs[0].id) {
+        chrome.tabs
+          .sendMessage(tabs[0].id, {
+            action: "setEnabled",
+            enabled: isEnabled,
+          })
+          .catch((error) => {
+            console.log("Error sending enabled state to content script:", error)
+          })
+      }
+    })
+  }
+
+  // Update ranges content visibility
+  function updateRangesContentVisibility(isVisible) {
+    if (rangesContent) {
+      rangesContent.style.opacity = isVisible ? "1" : "0.5"
+      rangesContent.style.pointerEvents = isVisible ? "auto" : "none"
+    }
   }
 
   // Initialize speed ranges from storage
   function loadSpeedRanges() {
-    chrome.storage.sync.get([`${currentHost}_ranges`, `${currentHost}_range_enabled`], function (result) {
-      // Load toggle state
-      rangeBasedEnabled = result[`${currentHost}_range_enabled`] || false
-      rangeToggle.checked = rangeBasedEnabled
-      updateRangesContentVisibility()
-
+    chrome.storage.sync.get([`${currentHost}_ranges`], function (result) {
       // Load ranges
       if (result[`${currentHost}_ranges`] && Array.isArray(result[`${currentHost}_ranges`]) && result[`${currentHost}_ranges`].length > 0) {
         speedRanges = result[`${currentHost}_ranges`]
@@ -139,7 +208,7 @@ document.addEventListener("DOMContentLoaded", function () {
         chrome.tabs
           .sendMessage(tabs[0].id, {
             action: "updateRangeConfig",
-            enabled: rangeBasedEnabled,
+            enabled: activeTab === "ranges",
             ranges: speedRanges,
           })
           .catch((error) => {
@@ -261,19 +330,6 @@ document.addEventListener("DOMContentLoaded", function () {
       label.className = "range-point-label"
       label.textContent = `${range.point}m`
       point.appendChild(label)
-
-      // Add delete button for points other than the first (0) and last (infinity)
-      // if (range.point !== 0 && index !== 0 && range.point !== -1) {
-      //   const deleteButton = document.createElement("div")
-      //   deleteButton.className = "delete-point"
-      //   deleteButton.innerHTML = "x"
-      //   deleteButton.title = "Remove this breakpoint"
-      //   deleteButton.addEventListener("click", function (event) {
-      //     event.stopPropagation() // Prevent triggering drag
-      //     removeBreakpoint(index)
-      //   })
-      //   point.appendChild(deleteButton)
-      // }
 
       rangeTimeline.appendChild(point)
 
@@ -404,9 +460,8 @@ document.addEventListener("DOMContentLoaded", function () {
         slider.addEventListener("input", function () {
           const speed = parseFloat(this.value)
           section.querySelector(".slider-value").textContent = speed.toFixed(2) + "x"
-          // Update the main slider if this is the active range (optional, maybe confusing)
-          // updateMainSliderIfActive(i, speed);
         })
+
         // Add change listener to save when dragging stops
         slider.addEventListener("change", function () {
           const speed = parseFloat(this.value)
@@ -484,6 +539,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Load range settings
       loadSpeedRanges()
+
+      // Load and set active tab
+      loadActiveTabState()
     }
   })
 
@@ -550,6 +608,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Save and apply speed function
   function saveAndApplySpeed(speed, applyToAll = false) {
+    // If extension is off, don't apply
+    if (activeTab === "off" || !isEnabled) {
+      log("Extension is disabled, not saving or applying speed")
+      return
+    }
+
+    // If ranges tab is active, don't apply simple speed
+    if (activeTab === "ranges") {
+      statusElement.textContent = "Simple speed ignored in Ranges mode"
+      setTimeout(() => {
+        statusElement.textContent = ""
+      }, 2000)
+      return
+    }
+
     // Ensure speed is within reasonable bounds before saving/applying
     const validatedSpeed = Math.min(Math.max(speed, MIN_SPEED), MAX_SPEED * 2) // Clamp speed
 
@@ -572,12 +645,11 @@ document.addEventListener("DOMContentLoaded", function () {
               action: "setSpeed",
               speed: validatedSpeed,
               applyToAll: applyToAll,
+              mode: activeTab, // Send the current active tab/mode
             })
             .catch((error) => {
               // Add catch block for sendMessage
               console.log("Could not send message to content script:", error)
-              // Optionally inform the user
-              // statusElement.textContent = "Error applying speed. Reload tab?";
             })
         } else {
           console.log("Could not find active tab to send message.")

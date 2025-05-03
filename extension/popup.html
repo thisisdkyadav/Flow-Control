@@ -9,8 +9,16 @@
 <body>
     <div class="container">
         <div class="tab-container">
+            <button class="tab" data-tab="off">Off</button>
             <button class="tab active" data-tab="simple">Simple Speed</button>
             <button class="tab" data-tab="ranges">Speed Ranges</button>
+        </div>
+
+        <div id="off-tab" class="tab-content">
+            <div class="off-message">
+                <p>Speed Controller is currently disabled.</p>
+                <p>Select "Simple" or "Ranges" tab to enable and configure speed settings.</p>
+            </div>
         </div>
 
         <div id="simple-tab" class="tab-content active">
@@ -33,14 +41,6 @@
         </div>
 
         <div id="ranges-tab" class="tab-content">
-            <div class="toggle-container">
-                <span class="toggle-label">Enable Range-Based Speed</span>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="range-toggle">
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-
             <div id="ranges-content">
                 <div class="range-series">
                     <div class="range-timeline" id="range-timeline">

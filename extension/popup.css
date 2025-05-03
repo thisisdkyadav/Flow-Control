@@ -677,3 +677,35 @@ input:checked + .toggle-slider:before {
 .ranges-container::-webkit-scrollbar-thumb:hover {
   background: var(--neutral-dark);
 }
+
+/* Add styles for the Off tab */
+.off-message {
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(135deg, var(--secondary-color), rgba(255, 255, 255, 0.9));
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-glass);
+  margin: 10px 0;
+}
+
+.off-message p {
+  margin: 10px 0;
+  color: var(--text-light);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.off-message p:first-child {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* Ensure tab widths are equal */
+.tab-container {
+  display: flex;
+}
+
+.tab-container .tab {
+  flex: 1;
+}

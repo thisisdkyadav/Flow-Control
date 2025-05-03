@@ -5,6 +5,7 @@ let speedRanges = []
 let rangeBasedEnabled = false
 let debugMode = false // Set to false to disable console logs
 let lastAppliedSpeeds = {} // Track last applied speeds to avoid unnecessary changes
+let extensionEnabled = true // Add a flag to track enabled state
 
 // Simple debug logger
 function log(message, ...args) {
@@ -18,29 +19,57 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   try {
     log("Message received:", request)
 
-    if (request.action === "setSpeed") {
-      currentSpeed = request.speed
-      log("Setting fixed speed to:", currentSpeed)
-
-      // Apply the speed to the current/active video or all videos
-      if (request.applyToAll) {
-        applySpeedToAllVideos(currentSpeed)
+    if (request.action === "setEnabled") {
+      extensionEnabled = request.enabled
+      log("Extension enabled state set to:", extensionEnabled)
+      if (!extensionEnabled) {
+        // If disabling, reset all video speeds to 1.0x
+        resetAllVideoSpeeds()
       } else {
-        applySpeedToActiveVideo(currentSpeed)
+        // If enabling, re-apply speeds based on the current mode (simple/ranges)
+        // The popup should send an updateRangeConfig or setSpeed message shortly after enabling
+        // but we can apply based on stored state as a fallback.
+        applySpeedToAllVideos()
+      }
+      sendResponse({ success: true })
+    } else if (request.action === "setSpeed") {
+      if (!extensionEnabled) {
+        log("Extension disabled, ignoring setSpeed")
+        sendResponse({ success: false, reason: "Extension disabled" })
+        return true // Indicate async response
+      }
+
+      // Only update speed if we're in simple mode (not ranges mode)
+      if (!rangeBasedEnabled) {
+        currentSpeed = request.speed
+        log("Setting fixed speed to:", currentSpeed)
+
+        // Apply the speed to the current/active video or all videos
+        if (request.applyToAll) {
+          applySpeedToAllVideos(currentSpeed)
+        } else {
+          applySpeedToActiveVideo(currentSpeed)
+        }
+      } else {
+        log("Ignoring simple speed in range-based mode")
       }
 
       sendResponse({ success: true })
     } else if (request.action === "updateRangeConfig") {
-      // Validate range configuration
+      // Set rangeBasedEnabled based on whether the Ranges tab is active
+      rangeBasedEnabled = request.enabled
+
+      // Validate range configuration if provided
       if (request.ranges && Array.isArray(request.ranges)) {
         speedRanges = request.ranges
       }
 
-      rangeBasedEnabled = !!request.enabled
-      log("Updated range configuration:", { enabled: rangeBasedEnabled, ranges: speedRanges })
+      log("Updated speed mode:", { rangeBasedEnabled, ranges: speedRanges })
 
-      // Apply the appropriate speed based on current settings
-      applySpeedToAllVideos()
+      // Apply the appropriate speed based on current settings only if extension is enabled
+      if (extensionEnabled) {
+        applySpeedToAllVideos()
+      }
       sendResponse({ success: true })
     } else if (request.action === "resetToDefaults") {
       // Reset to default ranges
@@ -58,8 +87,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
       log("Reset to default ranges:", speedRanges)
 
-      // Apply the speeds based on the default ranges
-      applySpeedToAllVideos()
+      // Apply the speeds based on the default ranges only if extension is enabled
+      if (extensionEnabled) {
+        applySpeedToAllVideos()
+      }
       sendResponse({ success: true })
     }
   } catch (error) {
@@ -69,9 +100,32 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   return true
 })
 
+// Function to reset all video speeds to 1.0x
+function resetAllVideoSpeeds() {
+  const videos = document.querySelectorAll("video")
+  log("Resetting speed for", videos.length, "videos to 1.0x")
+  videos.forEach((video, index) => {
+    try {
+      if (video.playbackRate !== 1.0) {
+        video.playbackRate = 1.0
+        log(`Video ${index}: speed reset to 1.0x`)
+      }
+      // Clear last applied speed tracking when disabled
+      const videoId = video.src || video.currentSrc || `video_${index}`
+      delete lastAppliedSpeeds[videoId]
+    } catch (e) {
+      log(`Error resetting speed for video ${index}:`, e)
+    }
+  })
+}
+
 // Get appropriate speed based on video duration
 function getSpeedForDuration(durationMinutes) {
-  // Return the fixed speed if range-based speed is disabled
+  // If extension is disabled, always return 1.0
+  if (!extensionEnabled) {
+    return 1.0
+  }
+  // Return the fixed speed if range-based speed is disabled (i.e., simple tab is active)
   if (!rangeBasedEnabled || !speedRanges || speedRanges.length === 0) {
     log("Using fixed speed:", currentSpeed)
     return currentSpeed
@@ -198,6 +252,13 @@ function getVideoDurationMinutes(video) {
 
 // Apply speed to all videos on the page
 function applySpeedToAllVideos(forcedSpeed = null) {
+  // If extension is disabled, do nothing
+  if (!extensionEnabled) {
+    log("Extension is disabled, skipping applySpeedToAllVideos")
+    resetAllVideoSpeeds() // Ensure all videos are reset to 1.0x when disabled
+    return
+  }
+
   const videos = document.querySelectorAll("video")
   log("Applying speed to", videos.length, "videos. Forced speed:", forcedSpeed, "Range-based enabled:", rangeBasedEnabled)
 
@@ -238,6 +299,7 @@ function applySpeedToAllVideos(forcedSpeed = null) {
 
           // Listen for duration changes (important for dynamically loaded videos)
           video.addEventListener("durationchange", function () {
+            if (!extensionEnabled) return // Don't act if disabled
             if (this.duration && this.duration !== Infinity && !isNaN(this.duration)) {
               const newDurationMinutes = this.duration / 60
               log(`Video duration changed: ${newDurationMinutes.toFixed(2)}min`)
@@ -261,18 +323,33 @@ function applySpeedToAllVideos(forcedSpeed = null) {
 
           // Listen for rate changes to maintain our chosen speed
           video.addEventListener("ratechange", function (event) {
+            if (!extensionEnabled) return // Don't act if disabled
             const videoId = this.src || this.currentSrc || `video_${index}`
             const expectedSpeed = lastAppliedSpeeds[videoId]
 
             // Only override if we know what speed this should be and it's different
+            // Also check if the change was initiated by the extension itself (avoid loops)
             if (expectedSpeed !== undefined && this.playbackRate !== expectedSpeed) {
-              log(`Correcting playback rate back to ${expectedSpeed}x from ${this.playbackRate}x`)
-              this.playbackRate = expectedSpeed
+              // Check if the rate change event is trusted (user action) vs programmatic
+              // This check might not be perfectly reliable across all browsers/sites
+              if (event.isTrusted) {
+                log(`User changed speed to ${this.playbackRate}x. Extension control paused for this video temporarily?`)
+                // Decide if you want to override user changes or let them persist.
+                // For now, let's override to maintain control.
+                log(`Correcting playback rate back to ${expectedSpeed}x from ${this.playbackRate}x`)
+                this.playbackRate = expectedSpeed
+              } else {
+                // If the change wasn't trusted, it might be the extension itself or another script.
+                // Re-assert the expected speed.
+                log(`Programmatic rate change detected. Ensuring speed is ${expectedSpeed}x.`)
+                this.playbackRate = expectedSpeed
+              }
             }
           })
 
           // Also handle the loadeddata event which often means the video is fully loaded
           video.addEventListener("loadeddata", function () {
+            if (!extensionEnabled) return // Don't act if disabled
             const videoId = this.src || this.currentSrc || `video_${index}`
             log("Video loaded data event, duration:", this.duration / 60)
 
@@ -303,6 +380,13 @@ function applySpeedToAllVideos(forcedSpeed = null) {
 
 // Apply speed to the active/focused video
 function applySpeedToActiveVideo(forcedSpeed = null) {
+  // If extension is disabled, do nothing
+  if (!extensionEnabled) {
+    log("Extension is disabled, skipping applySpeedToActiveVideo")
+    resetAllVideoSpeeds() // Ensure all videos are reset to 1.0x when disabled
+    return
+  }
+
   // First try to find a video that's currently playing
   const videos = document.querySelectorAll("video")
   let activeVideo = null
@@ -346,6 +430,7 @@ function applySpeedToActiveVideo(forcedSpeed = null) {
 
       // Same event listeners as in applySpeedToAllVideos function
       activeVideo.addEventListener("durationchange", function () {
+        if (!extensionEnabled) return // Don't act if disabled
         if (this.duration && this.duration !== Infinity && !isNaN(this.duration)) {
           const newDurationMinutes = this.duration / 60
           log(`Active video duration changed: ${newDurationMinutes.toFixed(2)}min`)
@@ -364,6 +449,7 @@ function applySpeedToActiveVideo(forcedSpeed = null) {
       })
 
       activeVideo.addEventListener("ratechange", function (event) {
+        if (!extensionEnabled) return // Don't act if disabled
         let targetSpeed
         if (forcedSpeed !== null) {
           targetSpeed = forcedSpeed
@@ -374,12 +460,16 @@ function applySpeedToActiveVideo(forcedSpeed = null) {
         }
 
         if (this.playbackRate !== targetSpeed) {
+          if (event.isTrusted) {
+            log(`User changed speed on active video to ${this.playbackRate}x. Overriding.`)
+          }
           log(`Correcting active video playback rate to ${targetSpeed}x`)
           this.playbackRate = targetSpeed
         }
       })
 
       activeVideo.addEventListener("loadeddata", function () {
+        if (!extensionEnabled) return // Don't act if disabled
         let targetSpeed
         if (forcedSpeed !== null) {
           targetSpeed = forcedSpeed
@@ -403,6 +493,7 @@ function setupVideoPlayListener() {
   document.addEventListener(
     "play",
     function (e) {
+      if (!extensionEnabled) return // Don't act if disabled
       if (e.target.tagName === "VIDEO") {
         log("Video play event detected")
 
@@ -418,7 +509,10 @@ function setupVideoPlayListener() {
         }
 
         log(`Setting speed ${speed}x on playing video (duration: ${durationMinutes.toFixed(2)}min)`)
-        e.target.playbackRate = speed
+        // Only set if different to avoid unnecessary ratechange events
+        if (e.target.playbackRate !== speed) {
+          e.target.playbackRate = speed
+        }
       }
     },
     true
@@ -429,6 +523,7 @@ function setupVideoPlayListener() {
 function setupVideoObserver() {
   // Watch for added video elements
   const observer = new MutationObserver(function (mutations) {
+    if (!extensionEnabled) return // Don't observe if disabled
     // Check if we should scan for videos
     let shouldCheckForVideos = false
 
@@ -461,6 +556,7 @@ function setupVideoObserver() {
   log(`Setting periodic video check every ${checkInterval}ms`)
 
   setInterval(() => {
+    if (!extensionEnabled) return // Don't run check if disabled
     // Only log every 5th check to reduce console spam
     const shouldLog = Math.random() < 0.2
     if (shouldLog) log("Periodic video check")
@@ -507,9 +603,26 @@ function init() {
     const hostname = window.location.hostname
     log("Initializing Speed Controller on", hostname)
 
-    // Load both simple speed and ranges with toggle state
-    chrome.storage.sync.get([hostname, `${hostname}_ranges`, `${hostname}_range_enabled`], function (result) {
+    // Load initial enabled state, simple speed, and ranges
+    chrome.storage.sync.get([hostname, `${hostname}_ranges`, `${hostname}_enabled`, `${hostname}_active_tab`], function (result) {
       try {
+        // Determine initial enabled state
+        // Priority: explicit enabled flag > active tab being 'off' > default true
+        if (typeof result[`${hostname}_enabled`] === "boolean") {
+          extensionEnabled = result[`${hostname}_enabled`]
+        } else if (result[`${hostname}_active_tab`] === "off") {
+          extensionEnabled = false
+        } else {
+          extensionEnabled = true // Default to enabled
+        }
+        log("Initial extension enabled state:", extensionEnabled)
+
+        // If extension is disabled, ensure all videos are set to normal speed
+        if (!extensionEnabled) {
+          resetAllVideoSpeeds()
+          return // Exit early
+        }
+
         // Set current speed from simple speed setting
         if (result[hostname] && !isNaN(parseFloat(result[hostname]))) {
           currentSpeed = parseFloat(result[hostname])
@@ -533,15 +646,20 @@ function init() {
           ]
         }
 
-        // Set toggle state
-        rangeBasedEnabled = !!result[`${hostname}_range_enabled`]
-        log("Range-based speed control enabled:", rangeBasedEnabled)
+        // Set rangeBasedEnabled based on the active tab state
+        rangeBasedEnabled = result[`${hostname}_active_tab`] === "ranges"
+        log("Range-based speed control active:", rangeBasedEnabled)
 
-        // Apply speed to all existing videos
-        log("Initial application of speeds to videos")
-        applySpeedToAllVideos()
+        // Apply speed to all existing videos only if enabled
+        if (extensionEnabled) {
+          log("Initial application of speeds to videos")
+          applySpeedToAllVideos()
+        } else {
+          log("Extension initially disabled, resetting speeds.")
+          resetAllVideoSpeeds()
+        }
 
-        // Setup observers
+        // Setup observers and listeners
         setupVideoObserver()
         setupVideoPlayListener()
 
