@@ -3,39 +3,52 @@
 
 <head>
     <title>Video Speed Controller</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="popup.css">
 </head>
 
 <body>
     <div class="container">
         <div class="tab-container">
-            <button class="tab" data-tab="off">Off</button>
-            <button class="tab active" data-tab="simple">Simple Speed</button>
-            <button class="tab" data-tab="ranges">Speed Ranges</button>
+            <button class="tab" data-tab="off">
+                <span>Off</span>
+            </button>
+            <button class="tab active" data-tab="simple">
+                <span>Simple</span>
+            </button>
+            <button class="tab" data-tab="ranges">
+                <span>Ranges</span>
+            </button>
         </div>
 
         <div id="off-tab" class="tab-content">
             <div class="off-message">
-                <p>Speed Controller is currently disabled.</p>
-                <p>Select "Simple" or "Ranges" tab to enable and configure speed settings.</p>
+                <p>Speed Controller is disabled</p>
+                <p>Select a mode to enable and configure speed settings</p>
             </div>
         </div>
 
         <div id="simple-tab" class="tab-content active">
             <div class="slider-container">
                 <div class="range-header">
-                    <label for="speed-slider">Playback Speed:</label>
+                    <label for="speed-slider">Playback Speed</label>
                     <div class="slider-value">1.0x</div>
                 </div>
                 <input type="range" id="speed-slider" min="0.25" max="4.0" step="0.25" value="1.0">
             </div>
+
             <div class="custom-speed-input-container">
-                <label for="custom-speed-input">Custom:</label>
-                <input type="number" id="custom-speed-input" min="0.1" step="0.1" placeholder="e.g., 2.3">
-                <button id="set-custom-speed-button">Set</button>
+                <label for="custom-speed-input">Custom</label>
+                <div class="input-group">
+                    <input type="number" id="custom-speed-input" min="0.1" step="0.1" placeholder="e.g., 2.3">
+                    <button id="set-custom-speed-button">Set</button>
+                </div>
             </div>
-            <button id="reset-button">Reset to 1.0x</button>
-            <button id="apply-all-videos">Apply to All Videos</button>
+
+            <button id="reset-button">Reset to default</button>
+            <button id="apply-all-videos">Apply to all videos</button>
         </div>
 
         <div id="ranges-tab" class="tab-content">
@@ -50,15 +63,17 @@
                     <!-- Range sections will be added dynamically -->
                 </div>
 
-                <div class="manual-point-input" id="last-point-input">
-                    <label for="new-point-value">Last breakpoint (minutes):</label>
-                    <input type="number" id="new-point-value" min="1" step="1" placeholder="15">
-                    <button id="set-last-point">Set</button>
+                <div class="manual-point-input">
+                    <label for="new-point-value">Last breakpoint</label>
+                    <div class="input-group">
+                        <input type="number" id="new-point-value" min="1" step="1" placeholder="min">
+                        <button id="set-last-point">Set</button>
+                    </div>
                 </div>
 
                 <div class="action-buttons">
-                    <button class="add-range-btn" id="add-range-button">Add Breakpoint</button>
-                    <button class="reset-ranges-btn" id="reset-ranges-button">Reset to Default</button>
+                    <button class="add-range-btn" id="add-range-button">Add breakpoint</button>
+                    <button class="reset-ranges-btn" id="reset-ranges-button">Reset</button>
                 </div>
             </div>
         </div>

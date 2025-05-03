@@ -369,10 +369,10 @@ document.addEventListener("DOMContentLoaded", function () {
           <div class="range-section-header">
             <span>${rangeText}</span>
             <div class="slider-value">${currentRange.speed.toFixed(2)}x</div>
+            ${deleteButtonHtml}
           </div>
           <input type="range" class="speed-range-slider" data-index="${i}"
                 min="0.25" max="${MAX_SPEED}" step="0.25" value="${currentRange.speed}">
-          ${deleteButtonHtml}
         `
 
         rangesContainer.appendChild(section)
