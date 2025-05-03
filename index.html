@@ -28,10 +28,24 @@
                 <li><a href="#installation">Installation</a></li>
                 <li><a href="#faq">FAQ</a></li>
             </ul>
-            <a href="https://github.com/thisisdkyadav/Flow-Control" class="button button-outlined">
+            <a href="https://github.com/thisisdkyadav/Flow-Control" class="button button-outlined desktop-only">
                 <i class="fab fa-github"></i> View on GitHub
             </a>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
         </nav>
+        <div class="mobile-menu">
+            <ul>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#installation">Installation</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="https://github.com/thisisdkyadav/Flow-Control">
+                        <i class="fab fa-github"></i> View on GitHub
+                    </a></li>
+            </ul>
+        </div>
     </header>
 
     <section class="hero">
@@ -210,23 +224,27 @@
                 <p>Get started with Flow Control in a few simple steps</p>
             </div>
 
-            <div class="browser-selector">
-                <p>Select your browser:</p>
-                <button class="browser-select-btn active" data-browser="chrome">
-                    <i class="fab fa-chrome"></i> Chrome
-                </button>
-                <button class="browser-select-btn" data-browser="edge">
-                    <i class="fab fa-edge"></i> Edge
-                </button>
-                <button class="browser-select-btn" data-browser="brave">
-                    <i class="fab fa-chrome"></i> Brave
-                </button>
-                <button class="browser-select-btn" data-browser="opera">
-                    <i class="fab fa-opera"></i> Opera
-                </button>
-                <button class="browser-select-btn" data-browser="firefox">
-                    <i class="fab fa-firefox"></i> Firefox
-                </button>
+            <div class="browser-selector-container">
+                <div class="browser-selector">
+                    <p>Select your browser:</p>
+                    <div class="browser-buttons-container">
+                        <button class="browser-select-btn active" data-browser="chrome">
+                            <i class="fab fa-chrome"></i> Chrome
+                        </button>
+                        <button class="browser-select-btn" data-browser="edge">
+                            <i class="fab fa-edge"></i> Edge
+                        </button>
+                        <button class="browser-select-btn" data-browser="brave">
+                            <i class="fab fa-chrome"></i> Brave
+                        </button>
+                        <button class="browser-select-btn" data-browser="opera">
+                            <i class="fab fa-opera"></i> Opera
+                        </button>
+                        <button class="browser-select-btn" data-browser="firefox">
+                            <i class="fab fa-firefox"></i> Firefox
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <div class="steps">
@@ -498,6 +516,84 @@
                     behavior: 'smooth'
                 });
             });
+        });
+
+        // Mobile menu toggle functionality - Fixed implementation
+        const menuToggle = document.querySelector('.mobile-menu-toggle');
+        const mobileMenu = document.querySelector('.mobile-menu');
+
+        menuToggle.addEventListener('click', () => {
+            // Toggle mobile menu
+            mobileMenu.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+
+            // Ensure menu is visible after toggle
+            if (mobileMenu.classList.contains('active')) {
+                // Force repaint to ensure transitions work correctly
+                mobileMenu.style.display = 'block';
+                setTimeout(() => {
+                    mobileMenu.style.opacity = '1';
+                }, 10);
+            } else {
+                mobileMenu.style.opacity = '0';
+                // Wait for fade out before hiding
+                setTimeout(() => {
+                    if (!mobileMenu.classList.contains('active')) {
+                        mobileMenu.style.display = 'none';
+                    }
+                }, 300);
+            }
+        });
+
+        // Close mobile menu when clicking on links - Improved implementation
+        document.querySelectorAll('.mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                menuToggle.classList.remove('active');
+                document.body.classList.remove('menu-open');
+
+                // Fade out menu
+                mobileMenu.style.opacity = '0';
+                setTimeout(() => {
+                    mobileMenu.style.display = 'none';
+                }, 300);
+            });
+        });
+
+        // Responsive browser selector handling for mobile
+        function adjustBrowserSelector() {
+            const container = document.querySelector('.browser-buttons-container');
+            if (window.innerWidth < 600) {
+                container.classList.add('mobile-view');
+            } else {
+                container.classList.remove('mobile-view');
+            }
+        }
+
+        // Call on load and resize
+        window.addEventListener('load', adjustBrowserSelector);
+        window.addEventListener('resize', adjustBrowserSelector);
+
+        // Disable AOS animations on mobile for better performance
+        function handleAOSOnMobile() {
+            if (window.innerWidth < 768) {
+                AOS.init({ disable: true });
+            } else {
+                AOS.init({
+                    duration: 800,
+                    easing: 'ease-in-out',
+                    once: true
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            handleAOSOnMobile();
+        });
+
+        window.addEventListener('resize', function () {
+            handleAOSOnMobile();
         });
 
     </script>
