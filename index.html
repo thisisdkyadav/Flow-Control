@@ -530,8 +530,8 @@
 
             // Ensure menu is visible after toggle
             if (mobileMenu.classList.contains('active')) {
-                // Force repaint to ensure transitions work correctly
-                mobileMenu.style.display = 'block';
+                // Show menu with flex display
+                mobileMenu.style.display = 'flex';
                 setTimeout(() => {
                     mobileMenu.style.opacity = '1';
                 }, 10);

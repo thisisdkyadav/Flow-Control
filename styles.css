@@ -239,6 +239,8 @@ header .container {
   color: var(--text-color);
   font-weight: 500;
   position: relative;
+  padding-bottom: 5px; /* Add padding to create space for the underline */
+  display: inline-block; /* Ensure the element has dimensions */
 }
 
 .nav-links a:hover {
@@ -248,16 +250,18 @@ header .container {
 .nav-links a:after {
   content: "";
   position: absolute;
-  bottom: -5px;
+  bottom: 0;
   left: 0;
   width: 0;
   height: 2px;
   background: var(--primary-gradient);
-  transition: var(--transition-normal);
+  transition: width 0.3s ease; /* Explicitly transition only the width property */
+  opacity: 0; /* Start invisible */
 }
 
 .nav-links a:hover:after {
   width: 100%;
+  opacity: 1; /* Fade in on hover */
 }
 
 /* Hero Section */
@@ -1010,28 +1014,28 @@ footer {
 }
 
 .mobile-menu {
-  display: none; /* Start hidden */
+  display: none; /* Start hidden - keep this only */
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  height: fit-content;
+  height: 100vh; /* Use viewport height instead of fit-content */
   background-color: rgba(255, 255, 255, 0.98);
   z-index: 1000;
-  padding: 60px 20px 40px; /* Reduced top padding */
-  opacity: 0; /* Start with 0 opacity */
+  padding: 60px 20px 40px;
+  opacity: 0;
   transition: opacity 0.3s ease-in-out;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* Center content vertically */
+  /* Removed conflicting display:flex declaration */
 }
 
 .mobile-menu.active {
-  display: block;
-  opacity: 1; /* Show with full opacity when active */
-  transform: none; /* Remove transform that might cause issues */
+  display: flex; /* Only show as flex when active */
+  flex-direction: column;
+  justify-content: center;
+  opacity: 1;
+  transform: none;
 }
 
 .mobile-menu ul {
