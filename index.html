@@ -11,6 +11,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 </head>
 
 <body>
@@ -33,8 +35,13 @@
     </header>
 
     <section class="hero">
+        <div class="floating-shapes">
+            <div class="shape shape1"></div>
+            <div class="shape shape2"></div>
+            <div class="shape shape3"></div>
+        </div>
         <div class="container">
-            <div class="hero-content">
+            <div class="hero-content" data-aos="fade-right" data-aos-delay="100">
                 <h1>Control Video Speed <span class="gradient-text">Your Way</span></h1>
                 <p>A powerful Chrome extension that remembers your speed preferences for each website and adjusts
                     playback speed automatically based on video length.</p>
@@ -43,7 +50,7 @@
                     <a href="#demo" class="button button-secondary">See Demo</a>
                 </div>
             </div>
-            <div class="hero-image">
+            <div class="hero-image" data-aos="fade-left" data-aos-delay="300">
                 <img src="images/hero-mockup.png" alt="Flow Control Extension Interface">
                 <div class="feature-badge">
                     <i class="fas fa-bolt"></i>
@@ -205,16 +212,25 @@
 
             <div class="browser-selector">
                 <p>Select your browser:</p>
-                <button class="browser-select-btn active" data-browser="chrome">Chrome</button>
-                <button class="browser-select-btn" data-browser="edge">Edge</button>
-                <button class="browser-select-btn" data-browser="brave">Brave</button>
-                <button class="browser-select-btn" data-browser="opera">Opera</button>
-                <button class="browser-select-btn" data-browser="vivaldi">Vivaldi</button>
-                <button class="browser-select-btn" data-browser="firefox">Firefox</button>
+                <button class="browser-select-btn active" data-browser="chrome">
+                    <i class="fab fa-chrome"></i> Chrome
+                </button>
+                <button class="browser-select-btn" data-browser="edge">
+                    <i class="fab fa-edge"></i> Edge
+                </button>
+                <button class="browser-select-btn" data-browser="brave">
+                    <i class="fab fa-chrome"></i> Brave
+                </button>
+                <button class="browser-select-btn" data-browser="opera">
+                    <i class="fab fa-opera"></i> Opera
+                </button>
+                <button class="browser-select-btn" data-browser="firefox">
+                    <i class="fab fa-firefox"></i> Firefox
+                </button>
             </div>
 
             <div class="steps">
-                <div class="step">
+                <div class="step" data-aos="fade-up" data-aos-delay="100">
                     <div class="step-number">1</div>
                     <div class="step-content">
                         <h3>Download</h3>
@@ -224,7 +240,7 @@
                     </div>
                 </div>
 
-                <div class="step">
+                <div class="step" data-aos="fade-up" data-aos-delay="100">
                     <div class="step-number">2</div>
                     <div class="step-content">
                         <h3 id="dev-mode-step-title">Enable Developer Mode</h3>
@@ -234,7 +250,7 @@
                     </div>
                 </div>
 
-                <div class="step">
+                <div class="step" data-aos="fade-up" data-aos-delay="100">
                     <div class="step-number">3</div>
                     <div class="step-content">
                         <h3 id="load-extension-step-title">Load Extension</h3>
@@ -245,7 +261,7 @@
                     </div>
                 </div>
 
-                <div class="step">
+                <div class="step" data-aos="fade-up" data-aos-delay="100">
                     <div class="step-number">4</div>
                     <div class="step-content">
                         <h3>Start Using</h3>
@@ -420,13 +436,6 @@
                 loadTitle: 'Load Extension',
                 loadText: 'Click "Load unpacked" and select the <strong><code>extension</code></strong> folder located inside the project directory you downloaded/cloned.'
             },
-            vivaldi: {
-                url: 'vivaldi://extensions/',
-                devModeTitle: 'Enable Developer Mode',
-                devModeText: 'Open Vivaldi and go to <code id="extension-url">vivaldi://extensions/</code>, then enable "Developer mode" using the toggle switch (usually in the top-right corner).',
-                loadTitle: 'Load Extension',
-                loadText: 'Click "Load unpacked" and select the <strong><code>extension</code></strong> folder located inside the project directory you downloaded/cloned.'
-            },
             firefox: {
                 url: 'about:debugging#/runtime/this-firefox',
                 devModeTitle: 'Access Debugging',
@@ -471,6 +480,25 @@
             loadUnpackedInstructionsElement.innerHTML = defaultInstructions.loadText;
         }
         initializeInstructions(); // Call on page load
+
+        // Initialize AOS (Animate On Scroll)
+        document.addEventListener('DOMContentLoaded', function () {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true
+            });
+        });
+
+        // Enable smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
 
     </script>
 </body>

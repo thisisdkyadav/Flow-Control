@@ -138,6 +138,32 @@ ul {
   transition: var(--transition-normal);
   font-size: 1rem;
   gap: 8px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+}
+
+.button:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: -1;
+  transform: scale(0);
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-radius: 50%;
+}
+
+.button:hover:after {
+  transform: scale(2.5);
+}
+
+.button:active {
+  transform: scale(0.95);
 }
 
 .button-primary {
@@ -240,12 +266,91 @@ header .container {
   background-color: var(--background-color);
   background-image: radial-gradient(circle at top right, var(--secondary-color), transparent 70%);
   overflow: hidden;
+  position: relative;
+  z-index: 0; /* Add explicit z-index */
+}
+
+.hero:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 80%, rgba(67, 97, 238, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(58, 12, 163, 0.1) 0%, transparent 50%);
+  z-index: 1; /* Increase z-index */
+}
+
+.floating-shapes {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2; /* Increase z-index to appear above the background gradient */
+  overflow: hidden;
+  top: 0;
+  left: 0;
+}
+
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  opacity: 0.25; /* Increase opacity from 0.1 to 0.25 */
+  filter: blur(15px);
+  animation: float-around 15s linear infinite;
+  box-shadow: 0 0 30px rgba(67, 97, 238, 0.3); /* Add glow effect */
+}
+
+.shape1 {
+  width: 180px;
+  height: 180px;
+  top: 10%;
+  left: 10%;
+  animation-duration: 25s;
+}
+
+.shape2 {
+  width: 100px;
+  height: 100px;
+  top: 60%;
+  right: 10%;
+  animation-duration: 20s;
+  animation-delay: 2s;
+}
+
+.shape3 {
+  width: 80px;
+  height: 80px;
+  top: 30%;
+  right: 30%;
+  animation-duration: 30s;
+  animation-delay: 1s;
+}
+
+@keyframes float-around {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(100px, 50px) rotate(90deg);
+  }
+  50% {
+    transform: translate(50px, 100px) rotate(180deg);
+  }
+  75% {
+    transform: translate(-50px, 50px) rotate(270deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(360deg);
+  }
 }
 
 .hero .container {
   display: flex;
   align-items: center;
   gap: var(--space-xl);
+  position: relative;
+  z-index: 10; /* Ensure content is above the shapes */
 }
 
 .hero-content {
@@ -552,35 +657,61 @@ header .container {
   cursor: pointer;
   transition: var(--transition-fast);
   font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: var(--border-radius-md);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .browser-selector .browser-select-btn:hover {
   background-color: var(--secondary-color);
   border-color: var(--neutral-medium);
   color: var(--primary-dark);
+  transform: translateY(-2px);
 }
 
 .browser-selector .browser-select-btn.active {
   background: var(--primary-gradient);
   color: white;
   border-color: var(--primary-color);
-  box-shadow: var(--shadow-sm);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(67, 97, 238, 0.25);
 }
 /* END NEW */
 
 .steps {
   max-width: 800px;
   margin: 0 auto;
+  position: relative;
+}
+
+.steps:before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  bottom: 20px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--primary-color) 0%, var(--primary-dark) 100%);
+  z-index: 0;
 }
 
 .step {
   display: flex;
   margin-bottom: var(--space-lg);
   align-items: flex-start;
+  position: relative;
+  z-index: 1;
 }
 
 .step:last-child {
   margin-bottom: 0;
+}
+
+.step:hover .step-number {
+  transform: scale(1.2) rotate(10deg);
 }
 
 .step-number {
@@ -595,6 +726,7 @@ header .container {
   justify-content: center;
   margin-right: var(--space-md);
   flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.68, -0.6, 0.32, 1.6);
 }
 
 .step-content h3 {
@@ -629,6 +761,17 @@ header .container {
   margin-bottom: var(--space-md);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.faq-item:hover {
+  transform: translateX(5px);
+  box-shadow: var(--shadow-md);
+}
+
+.faq-item.active {
+  box-shadow: var(--shadow-md);
+  border-left: 3px solid var(--primary-color);
 }
 
 .faq-question {
@@ -651,14 +794,14 @@ header .container {
 
 .faq-question i {
   color: var(--primary-color);
-  transition: var(--transition-normal);
+  transition: transform 0.5s cubic-bezier(0.68, -0.6, 0.32, 1.6);
 }
 
 .faq-answer {
   padding: 0 var(--space-md);
   max-height: 0;
   overflow: hidden;
-  transition: var(--transition-normal);
+  transition: all 0.5s cubic-bezier(0.68, -0.6, 0.32, 1.6);
 }
 
 .faq-item.active .faq-answer {
@@ -671,7 +814,8 @@ header .container {
 }
 
 .faq-item.active .faq-question i {
-  transform: rotate(180deg);
+  transform: rotate(180deg) scale(1.2);
+  color: var(--primary-dark);
 }
 
 /* CTA Section */
@@ -680,6 +824,36 @@ header .container {
   background: var(--primary-gradient);
   color: white;
   text-align: center;
+  background-attachment: fixed;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+  z-index: 0;
+  animation: pulse 4s infinite;
+}
+
+.cta .container {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 .cta h2 {
