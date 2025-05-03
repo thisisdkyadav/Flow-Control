@@ -2,10 +2,9 @@
   "manifest_version": 3,
   "name": "Flow Control",
   "version": "1.0.1.0",
-  "description": "FlowControl is a power-user Chrome extension for precise video speed control. Adjust playback speed on any HTML5 video with ease, using customizable shortcuts and a clean interface.",
+  "description": "Control video speed on any site. Remembers per-site speed and sets defaults by video length for smarter playback.",
   "permissions": ["storage", "activeTab", "scripting"],
   "host_permissions": ["<all_urls>"],
-  "update_url": "https://thisisdkyadav.github.io/Flow-Control/web/update.xml",
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
