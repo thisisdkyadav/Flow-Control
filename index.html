@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flow Control - Smart Video Speed Controller</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="Flow Control Logo">
+                <span>Flow Control</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#installation">Installation</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+            <a href="https://github.com/thisisdkyadav/Flow-Control" class="button button-outlined">
+                <i class="fab fa-github"></i> View on GitHub
+            </a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Control Video Speed <span class="gradient-text">Your Way</span></h1>
+                <p>A powerful Chrome extension that remembers your speed preferences for each website and adjusts
+                    playback speed automatically based on video length.</p>
+                <div class="hero-buttons">
+                    <a href="#installation" class="button button-primary">Get Started</a>
+                    <a href="#demo" class="button button-secondary">See Demo</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="images/hero-mockup.png" alt="Flow Control Extension Interface">
+                <div class="feature-badge">
+                    <i class="fas fa-bolt"></i>
+                    <span>Smart Speed</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Powerful Features</h2>
+                <p>Everything you need to control video playback on any website</p>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <h3>Precise Speed Control</h3>
+                    <p>Adjust playback from 0.25x to 4.0x with custom speeds for fine-tuning your viewing experience.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-memory"></i>
+                    </div>
+                    <h3>Per-Site Memory</h3>
+                    <p>Your preferred speed settings are remembered for each website you visit.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Smart Speed Ranges</h3>
+                    <p>Set different speeds based on video duration - play shorter videos slower and longer videos
+                        faster.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <h3>Auto-Apply</h3>
+                    <p>Settings automatically apply to new videos, even after page reloads or navigation.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-universal-access"></i>
+                    </div>
+                    <h3>Works Everywhere</h3>
+                    <p>Compatible with YouTube, Netflix, educational platforms, and virtually any site with HTML5 video.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <h3>Intuitive Interface</h3>
+                    <p>Modern, clean UI with simple controls and visual breakpoint editor for speed ranges.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="demo" class="demo">
+        <div class="container">
+            <div class="section-header">
+                <h2>See Flow Control in Action</h2>
+                <p>Simple, intuitive UI makes it easy to control video playback speeds</p>
+            </div>
+
+            <div class="demo-showcase">
+                <div class="tab-container">
+                    <button class="tab active" data-tab="simple">Simple Speed</button>
+                    <button class="tab" data-tab="ranges">Speed Ranges</button>
+                </div>
+
+                <div class="tab-content active" id="simple-tab">
+                    <div class="tab-screenshot">
+                        <img src="images/simple-mode.png" alt="Simple Speed Mode">
+                        <div class="screenshot-caption">
+                            <h3>Simple Speed Mode</h3>
+                            <p>Quickly set a fixed playback speed for all videos on the current site.</p>
+                        </div>
+                    </div>
+                    <div class="feature-list">
+                        <ul>
+                            <li><i class="fas fa-check"></i> Intuitive slider control from 0.25x to 4.0x</li>
+                            <li><i class="fas fa-check"></i> Enter custom speeds for precise control</li>
+                            <li><i class="fas fa-check"></i> One-click reset to normal speed (1.0x)</li>
+                            <li><i class="fas fa-check"></i> Apply to active video or all videos on page</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="ranges-tab">
+                    <div class="tab-screenshot">
+                        <img src="images/ranges-mode.png" alt="Speed Ranges Mode">
+                        <div class="screenshot-caption">
+                            <h3>Speed Ranges Mode</h3>
+                            <p>Automatically adjust playback speed based on video length.</p>
+                        </div>
+                    </div>
+                    <div class="feature-list">
+                        <ul>
+                            <li><i class="fas fa-check"></i> Set different speeds for videos of different lengths</li>
+                            <li><i class="fas fa-check"></i> Visual timeline with draggable breakpoints</li>
+                            <li><i class="fas fa-check"></i> Perfect for educational content and lectures</li>
+                            <li><i class="fas fa-check"></i> One-click to reset to default ranges</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="use-case">
+        <div class="container">
+            <div class="section-header">
+                <h2>Perfect For</h2>
+                <p>Flow Control helps you maximize your time and learning</p>
+            </div>
+
+            <div class="use-case-cards">
+                <div class="use-case-card">
+                    <img src="images/students.jpg" alt="Students">
+                    <h3>Students</h3>
+                    <p>Speed up lectures and slow down complex explanations. Different speeds for different courses.</p>
+                </div>
+
+                <div class="use-case-card">
+                    <img src="images/professionals.jpg" alt="Professionals">
+                    <h3>Professionals</h3>
+                    <p>Get through training videos and webinars faster without missing important details.</p>
+                </div>
+
+                <div class="use-case-card">
+                    <img src="images/content-creators.jpg" alt="Content Creators">
+                    <h3>Content Creators</h3>
+                    <p>Review your own content at different speeds to catch editing issues or pacing problems.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="installation" class="installation">
+        <div class="container">
+            <div class="section-header">
+                <h2>How to Install</h2>
+                <p>Get started with Flow Control in a few simple steps</p>
+            </div>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Download</h3>
+                        <p>Download the extension files (e.g., as a ZIP) from <a
+                                href="https://github.com/thisisdkyadav/Flow-Control">GitHub</a> or clone the
+                            repository. If downloaded as a ZIP, unzip it.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Enable Developer Mode</h3>
+                        <p>Open Chrome and go to <code>chrome://extensions/</code>, then enable "Developer mode" in the
+                            top-right corner.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Load Extension</h3>
+                        <p>Click "Load unpacked" and select the <strong><code>extension</code></strong> folder located
+                            inside the project directory you downloaded/cloned.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Start Using</h3>
+                        <p>Click the Flow Control icon in your browser toolbar to start controlling video speeds on any
+                            site.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="faq">
+        <div class="container">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+                <p>Get answers to common questions about Flow Control</p>
+            </div>
+
+            <div class="faq-items">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Which websites does Flow Control work with?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Flow Control works with any website that uses HTML5 video players, including YouTube,
+                            Netflix, Vimeo, educational platforms like Coursera and Udemy, and most video-hosting
+                            websites.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Does it affect audio quality?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Flow Control uses the browser's built-in speed adjustment which preserves audio pitch even at
+                            higher speeds. This means voices won't sound distorted even at 2x speed.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What happens if a website already has speed controls?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Flow Control works alongside native speed controls. If you use both, whichever was applied
+                            last will take effect. For consistency, we recommend using only one method to control
+                            playback speed.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How do speed ranges work?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Speed ranges let you set different playback speeds based on video length. For example, you
+                            might want to play short videos at 1.25x speed, medium-length videos at 1.5x, and long
+                            videos at 2x. Flow Control automatically detects video duration and applies the appropriate
+                            speed.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Take Control?</h2>
+            <p>Install Flow Control today and experience videos at your perfect pace.</p>
+            <a href="https://github.com/thisisdkyadav/Flow-Control" class="button button-primary">
+                <i class="fab fa-github"></i> Download on GitHub
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="images/logo.png" alt="Flow Control Logo">
+                    <span>Flow Control</span>
+                </div>
+                <p>A smart video speed controller for Chrome</p>
+            </div>
+
+            <div class="footer-links">
+                <div class="link-group">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://github.com/thisisdkyadav/Flow-Control">GitHub Repository</a></li>
+                        <li><a href="https://github.com/thisisdkyadav/Flow-Control/issues">Report Issues</a></li>
+                        <li><a href="https://github.com/thisisdkyadav/Flow-Control/blob/main/LICENSE">License</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="link-group">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="mailto:thisisdkyadav@gmail.com">Email Developer</a></li>
+                        <li><a href="https://github.com/thisisdkyadav">GitHub Profile</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2025 Flow Control. Released under the MIT License.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple tab functionality for the demo section
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                // Add active class to clicked tab
+                tab.classList.add('active');
+
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                // Show the corresponding content
+                document.getElementById(tab.dataset.tab + '-tab').classList.add('active');
+            });
+        });
+
+        // FAQ accordion functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const faqItem = question.parentElement;
+                faqItem.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+
+</html>
