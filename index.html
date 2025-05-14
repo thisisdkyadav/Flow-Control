@@ -7,7 +7,7 @@
     <title>Flow Control - Smart Video Speed Controller</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="images/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -29,10 +29,10 @@
                 <li><a href="#faq">FAQ</a></li>
             </ul>
             <a href="https://github.com/thisisdkyadav/Flow-Control" class="button button-outlined desktop-only">
-                <i class="fab fa-github"></i> View on GitHub
+                <i class="bi bi-github"></i> View on GitHub
             </a>
             <button class="mobile-menu-toggle" aria-label="Toggle menu">
-                <i class="fas fa-bars"></i>
+                <i class="bi bi-list"></i>
             </button>
         </nav>
         <div class="mobile-menu">
@@ -42,7 +42,7 @@
                 <li><a href="#installation">Installation</a></li>
                 <li><a href="#faq">FAQ</a></li>
                 <li><a href="https://github.com/thisisdkyadav/Flow-Control">
-                        <i class="fab fa-github"></i> View on GitHub
+                        <i class="bi bi-github"></i> View on GitHub
                     </a></li>
             </ul>
         </div>
@@ -57,8 +57,8 @@
         <div class="container">
             <div class="hero-content" data-aos="fade-right" data-aos-delay="100">
                 <h1>Control Video Speed <span class="gradient-text">Your Way</span></h1>
-                <p>A powerful Chrome extension that remembers your speed preferences for each website and adjusts
-                    playback speed automatically based on video length.</p>
+                <p>A powerful browser extension with a sleek new interface that remembers your speed preferences for
+                    each website and adjusts playback speed automatically based on video length.</p>
                 <div class="hero-buttons">
                     <a href="#installation" class="button button-primary">Get Started</a>
                     <a href="#demo" class="button button-secondary">See Demo</a>
@@ -67,8 +67,8 @@
             <div class="hero-image" data-aos="fade-left" data-aos-delay="300">
                 <img src="images/hero-mockup.png" alt="Flow Control Extension Interface">
                 <div class="feature-badge">
-                    <i class="fas fa-bolt"></i>
-                    <span>Smart Speed</span>
+                    <i class="bi bi-lightning-charge-fill"></i>
+                    <span>New UI</span>
                 </div>
             </div>
         </div>
@@ -78,13 +78,13 @@
         <div class="container">
             <div class="section-header">
                 <h2>Powerful Features</h2>
-                <p>Everything you need to control video playback on any website</p>
+                <p>Everything you need to control video playback on any website, now with a brand new interface</p>
             </div>
 
             <div class="feature-grid">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-tachometer-alt"></i>
+                        <i class="bi bi-speedometer2"></i>
                     </div>
                     <h3>Precise Speed Control</h3>
                     <p>Adjust playback from 0.25x to 4.0x with custom speeds for fine-tuning your viewing experience.
@@ -93,7 +93,7 @@
 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-memory"></i>
+                        <i class="bi bi-cpu"></i>
                     </div>
                     <h3>Per-Site Memory</h3>
                     <p>Your preferred speed settings are remembered for each website you visit.</p>
@@ -101,7 +101,7 @@
 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-clock"></i>
+                        <i class="bi bi-clock-history"></i>
                     </div>
                     <h3>Smart Speed Ranges</h3>
                     <p>Set different speeds based on video duration - play shorter videos slower and longer videos
@@ -110,7 +110,7 @@
 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-magic"></i>
+                        <i class="bi bi-magic"></i>
                     </div>
                     <h3>Auto-Apply</h3>
                     <p>Settings automatically apply to new videos, even after page reloads or navigation.</p>
@@ -118,7 +118,7 @@
 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-universal-access"></i>
+                        <i class="bi bi-globe"></i>
                     </div>
                     <h3>Works Everywhere</h3>
                     <p>Compatible with YouTube, Netflix, educational platforms, and virtually any site with HTML5 video.
@@ -127,9 +127,9 @@
 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-sliders-h"></i>
+                        <i class="bi bi-sliders"></i>
                     </div>
-                    <h3>Intuitive Interface</h3>
+                    <h3>New Intuitive Interface</h3>
                     <p>Modern, clean UI with simple controls and visual breakpoint editor for speed ranges.</p>
                 </div>
             </div>
@@ -140,13 +140,20 @@
         <div class="container">
             <div class="section-header">
                 <h2>See Flow Control in Action</h2>
-                <p>Simple, intuitive UI makes it easy to control video playback speeds</p>
+                <p>Brand new UI makes it even easier to control video playback speeds</p>
             </div>
 
             <div class="demo-showcase">
                 <div class="tab-container">
-                    <button class="tab active" data-tab="simple">Simple Speed</button>
-                    <button class="tab" data-tab="ranges">Speed Ranges</button>
+                    <button class="tab active" data-tab="simple">
+                        <i class="bi bi-speedometer"></i> Simple Speed
+                    </button>
+                    <button class="tab" data-tab="ranges">
+                        <i class="bi bi-graph-up"></i> Speed Ranges
+                    </button>
+                    <button class="tab" data-tab="off">
+                        <i class="bi bi-pause-circle"></i> Off Mode
+                    </button>
                 </div>
 
                 <div class="tab-content active" id="simple-tab">
@@ -154,15 +161,17 @@
                         <img src="images/simple-mode.png" alt="Simple Speed Mode">
                         <div class="screenshot-caption">
                             <h3>Simple Speed Mode</h3>
-                            <p>Quickly set a fixed playback speed for all videos on the current site.</p>
+                            <p>Quickly set a fixed playback speed for all videos on the current site with our redesigned
+                                interface.</p>
                         </div>
                     </div>
                     <div class="feature-list">
                         <ul>
-                            <li><i class="fas fa-check"></i> Intuitive slider control from 0.25x to 4.0x</li>
-                            <li><i class="fas fa-check"></i> Enter custom speeds for precise control</li>
-                            <li><i class="fas fa-check"></i> One-click reset to normal speed (1.0x)</li>
-                            <li><i class="fas fa-check"></i> Apply to active video or all videos on page</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Enhanced slider control from 0.25x to 4.0x</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Enter custom speeds for precise control</li>
+                            <li><i class="bi bi-check-circle-fill"></i> One-click reset to normal speed (1.0x)</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Beautiful new interface with visual feedback
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -172,50 +181,42 @@
                         <img src="images/ranges-mode.png" alt="Speed Ranges Mode">
                         <div class="screenshot-caption">
                             <h3>Speed Ranges Mode</h3>
-                            <p>Automatically adjust playback speed based on video length.</p>
+                            <p>Automatically adjust playback speed based on video length with our redesigned UI.</p>
                         </div>
                     </div>
                     <div class="feature-list">
                         <ul>
-                            <li><i class="fas fa-check"></i> Set different speeds for videos of different lengths</li>
-                            <li><i class="fas fa-check"></i> Visual timeline with draggable breakpoints</li>
-                            <li><i class="fas fa-check"></i> Perfect for educational content and lectures</li>
-                            <li><i class="fas fa-check"></i> One-click to reset to default ranges</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Set different speeds for videos of different
+                                lengths</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Redesigned visual timeline with draggable
+                                breakpoints</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Perfect for educational content and lectures
+                            </li>
+                            <li><i class="bi bi-check-circle-fill"></i> New UI makes it easier to visualize and adjust
+                                speed ranges</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="off-tab">
+                    <div class="tab-screenshot">
+                        <div class="off-message">
+                            <i class="bi bi-pause-circle status-icon"></i>
+                            <p>Flow Control can be disabled with a single click</p>
+                            <p>The new interface allows for quick toggling between modes</p>
+                        </div>
+                    </div>
+                    <div class="feature-list">
+                        <ul>
+                            <li><i class="bi bi-check-circle-fill"></i> Easy to turn off when not needed</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Toggle between modes with a single click</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Retains your settings when you re-enable</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- <section class="use-case">
-        <div class="container">
-            <div class="section-header">
-                <h2>Perfect For</h2>
-                <p>Flow Control helps you maximize your time and learning</p>
-            </div>
-
-            <div class="use-case-cards">
-                <div class="use-case-card">
-                    <img src="images/students.jpg" alt="Students">
-                    <h3>Students</h3>
-                    <p>Speed up lectures and slow down complex explanations. Different speeds for different courses.</p>
-                </div>
-
-                <div class="use-case-card">
-                    <img src="images/professionals.jpg" alt="Professionals">
-                    <h3>Professionals</h3>
-                    <p>Get through training videos and webinars faster without missing important details.</p>
-                </div>
-
-                <div class="use-case-card">
-                    <img src="images/content-creators.jpg" alt="Content Creators">
-                    <h3>Content Creators</h3>
-                    <p>Review your own content at different speeds to catch editing issues or pacing problems.</p>
-                </div>
-            </div>
-        </div>
-    </section> -->
 
     <section id="installation" class="installation">
         <div class="container">
