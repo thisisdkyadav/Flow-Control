@@ -16,6 +16,18 @@
 </head>
 
 <body>
+    <!-- Add page-wide animated background -->
+    <div class="bg-animation">
+        <div class="bubble bubble1"></div>
+        <div class="bubble bubble2"></div>
+        <div class="bubble bubble3"></div>
+        <div class="bubble bubble4"></div>
+        <div class="bubble bubble5"></div>
+        <div class="bubble bubble6"></div>
+        <div class="light-beam light-beam1"></div>
+        <div class="light-beam light-beam2"></div>
+    </div>
+
     <header>
         <nav class="container">
             <div class="logo">
@@ -159,13 +171,11 @@
                 <div class="tab-content active" id="simple-tab">
                     <div class="tab-screenshot">
                         <img src="images/simple-mode.png" alt="Simple Speed Mode">
-                        <div class="screenshot-caption">
-                            <h3>Simple Speed Mode</h3>
-                            <p>Quickly set a fixed playback speed for all videos on the current site with our redesigned
-                                interface.</p>
-                        </div>
                     </div>
                     <div class="feature-list">
+                        <h3 class="feature-title">Simple Speed Mode</h3>
+                        <p class="feature-description">Quickly set a fixed playback speed for all videos on the current
+                            site with our redesigned interface.</p>
                         <ul>
                             <li><i class="bi bi-check-circle-fill"></i> Enhanced slider control from 0.25x to 4.0x</li>
                             <li><i class="bi bi-check-circle-fill"></i> Enter custom speeds for precise control</li>
@@ -179,12 +189,11 @@
                 <div class="tab-content" id="ranges-tab">
                     <div class="tab-screenshot">
                         <img src="images/ranges-mode.png" alt="Speed Ranges Mode">
-                        <div class="screenshot-caption">
-                            <h3>Speed Ranges Mode</h3>
-                            <p>Automatically adjust playback speed based on video length with our redesigned UI.</p>
-                        </div>
                     </div>
                     <div class="feature-list">
+                        <h3 class="feature-title">Speed Ranges Mode</h3>
+                        <p class="feature-description">Automatically adjust playback speed based on video length with
+                            our redesigned UI.</p>
                         <ul>
                             <li><i class="bi bi-check-circle-fill"></i> Set different speeds for videos of different
                                 lengths</li>
@@ -207,6 +216,9 @@
                         </div>
                     </div>
                     <div class="feature-list">
+                        <h3 class="feature-title">Off Mode</h3>
+                        <p class="feature-description">Easily turn off the extension when you don't need it without
+                            losing your settings.</p>
                         <ul>
                             <li><i class="bi bi-check-circle-fill"></i> Easy to turn off when not needed</li>
                             <li><i class="bi bi-check-circle-fill"></i> Toggle between modes with a single click</li>
@@ -233,7 +245,7 @@
                             <i class="fab fa-chrome"></i> Chrome
                         </button>
                         <button class="browser-select-btn" data-browser="edge">
-                            <i class="fab fa-edge"></i> Edge
+                            <i class="fab fa-edge"></i> Edge <span class="direct-install-badge">Direct Install</span>
                         </button>
                         <button class="browser-select-btn" data-browser="brave">
                             <i class="fab fa-chrome"></i> Brave
@@ -245,6 +257,26 @@
                             <i class="fab fa-firefox"></i> Firefox
                         </button>
                     </div>
+                </div>
+            </div>
+
+            <!-- Add Edge notice for other browsers -->
+            <div id="edge-notice" class="edge-notice" style="display: none;">
+                <i class="fab fa-edge"></i>
+                <span>Edge users: <a href="#" id="switch-to-edge">Switch to Edge</a> for direct installation from the
+                    Microsoft Store.</span>
+            </div>
+
+            <!-- Add Edge Store Option -->
+            <div id="edge-store-option" class="edge-store-option" style="display: none;">
+                <div class="store-banner">
+                    <i class="fab fa-microsoft"></i>
+                    <h3>Install directly from Microsoft Edge Add-ons Store</h3>
+                    <a href="https://microsoftedge.microsoft.com/addons/detail/flow-control/beddgcklojomegoeahaalhdminpmlfao"
+                        class="button button-primary" target="_blank">
+                        <i class="fab fa-edge"></i> Get from Edge Add-ons
+                    </a>
+                    <p>Or follow the manual installation steps below:</p>
                 </div>
             </div>
 
@@ -412,8 +444,33 @@
                 document.querySelectorAll('.tab-content').forEach(content => {
                     content.classList.remove('active');
                 });
-                // Show the corresponding content
-                document.getElementById(tab.dataset.tab + '-tab').classList.add('active');
+
+                // Get the corresponding content
+                const targetContent = document.getElementById(tab.dataset.tab + '-tab');
+
+                // Add active class to show the content
+                targetContent.classList.add('active');
+
+                // Highlight the feature title and description with a brief animation
+                const featureTitle = targetContent.querySelector('.feature-title');
+                const featureDesc = targetContent.querySelector('.feature-description');
+
+                if (featureTitle) {
+                    featureTitle.style.color = 'var(--primary-color)';
+                    setTimeout(() => {
+                        featureTitle.style.color = '';
+                    }, 1500);
+                }
+
+                if (featureDesc) {
+                    featureDesc.style.borderLeftColor = 'var(--primary-color)';
+                    featureDesc.style.color = 'var(--text-color)';
+
+                    setTimeout(() => {
+                        featureDesc.style.borderLeftColor = '';
+                        featureDesc.style.color = '';
+                    }, 1500);
+                }
             });
         });
 
@@ -487,6 +544,17 @@
                     loadExtensionTitleElement.textContent = instructions.loadTitle;
                     loadUnpackedInstructionsElement.innerHTML = instructions.loadText; // Use innerHTML for <strong> tags
                 }
+
+                // Show/hide Edge store option
+                const edgeStoreOption = document.getElementById('edge-store-option');
+                const edgeNotice = document.getElementById('edge-notice');
+                if (selectedBrowser === 'edge') {
+                    edgeStoreOption.style.display = 'block';
+                    edgeNotice.style.display = 'none';
+                } else {
+                    edgeStoreOption.style.display = 'none';
+                    edgeNotice.style.display = 'flex';
+                }
             }
         });
 
@@ -507,6 +575,74 @@
                 easing: 'ease-in-out',
                 once: true
             });
+
+            // Parallax scroll effect for background elements
+            window.addEventListener('scroll', function () {
+                const scrollY = window.scrollY;
+
+                // Subtle parallax for background bubbles
+                document.querySelectorAll('.bubble').forEach((bubble, index) => {
+                    const speed = 0.03 + (index * 0.01);
+                    bubble.style.transform = `translateY(${scrollY * speed}px)`;
+                });
+
+                // Parallax for light beams
+                document.querySelectorAll('.light-beam').forEach((beam, index) => {
+                    const speed = 0.07 + (index * 0.03);
+                    beam.style.transform = `translateY(${scrollY * speed}px) rotate(-45deg)`;
+                });
+
+                // Subtle rotation for feature icons on scroll
+                if (scrollY > 300) {
+                    document.querySelectorAll('.feature-icon').forEach((icon, index) => {
+                        const rotateAmount = (scrollY - 300) * 0.01 * (index % 2 === 0 ? 1 : -1);
+                        const limitedRotation = Math.min(Math.abs(rotateAmount), 15) * (rotateAmount < 0 ? -1 : 1);
+                        icon.style.transform = `rotate(${limitedRotation}deg)`;
+                    });
+                }
+            });
+
+            // Enhance page transitions with subtle animations
+            const sections = document.querySelectorAll('section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('section-visible');
+
+                        // Add subtle animations to section backgrounds
+                        if (entry.target.classList.contains('features') ||
+                            entry.target.classList.contains('demo') ||
+                            entry.target.classList.contains('installation') ||
+                            entry.target.classList.contains('faq')) {
+                            entry.target.querySelector('.container').style.opacity = '1';
+                            entry.target.querySelector('.container').style.transform = 'translateY(0)';
+                        }
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            sections.forEach(section => {
+                observer.observe(section);
+
+                // Add initial state for animation
+                if (section.classList.contains('features') ||
+                    section.classList.contains('demo') ||
+                    section.classList.contains('installation') ||
+                    section.classList.contains('faq')) {
+                    section.querySelector('.container').style.opacity = '0';
+                    section.querySelector('.container').style.transform = 'translateY(20px)';
+                    section.querySelector('.container').style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                }
+            });
+
+            // Set the initial feature title color to match tab switching behavior
+            const activeTab = document.querySelector('.tab-content.active');
+            if (activeTab) {
+                const featureTitle = activeTab.querySelector('.feature-title');
+                if (featureTitle) {
+                    featureTitle.style.color = 'var(--primary-color)';
+                }
+            }
         });
 
         // Enable smooth scrolling for anchor links
@@ -595,6 +731,22 @@
 
         window.addEventListener('resize', function () {
             handleAOSOnMobile();
+        });
+
+        // Add Edge Notice Functionality
+        document.getElementById('switch-to-edge').addEventListener('click', function (e) {
+            e.preventDefault();
+            // Find and click the Edge button
+            const edgeButton = document.querySelector('.browser-select-btn[data-browser="edge"]');
+            if (edgeButton) {
+                edgeButton.click();
+            }
+        });
+
+        // Initialize the Edge notice (hide on first load since Chrome is default)
+        document.addEventListener('DOMContentLoaded', function () {
+            // Edge notice should be hidden initially since Chrome is the default
+            document.getElementById('edge-notice').style.display = 'none';
         });
 
     </script>
