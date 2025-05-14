@@ -91,9 +91,12 @@ document.addEventListener("DOMContentLoaded", function () {
           .sendMessage(tabs[0].id, {
             action: "setEnabled",
             enabled: isEnabled,
+            mode: activeTab,
+            speed: activeTab === "simple" ? parseFloat(speedSlider.value) : undefined,
+            ranges: activeTab === "ranges" ? speedRanges : undefined,
           })
           .catch((error) => {
-            console.log("Error sending enabled state to content script:", error)
+            console.error("Failed to send enabled state:", error)
           })
       }
     })
@@ -501,12 +504,7 @@ document.addEventListener("DOMContentLoaded", function () {
     saveAndApplySpeed(1.0)
   })
 
-  applyAllButton.addEventListener("click", function () {
-    const speed = parseFloat(speedSlider.value)
-    saveAndApplySpeed(speed, true)
-  })
-
-  function saveAndApplySpeed(speed, applyToAll = false) {
+  function saveAndApplySpeed(speed) {
     if (activeTab === "off" || !isEnabled) {
       return
     }
@@ -537,14 +535,12 @@ document.addEventListener("DOMContentLoaded", function () {
             .sendMessage(tabs[0].id, {
               action: "setSpeed",
               speed: validatedSpeed,
-              applyToAll: applyToAll,
+              applyToAll: true,
               mode: activeTab,
             })
             .catch((error) => {
-              console.log("Could not send message to content script:", error)
+              console.error("Failed to send speed update:", error)
             })
-        } else {
-          console.log("Could not find active tab to send message.")
         }
       })
     }

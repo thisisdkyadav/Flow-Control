@@ -8,7 +8,9 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
         target: { tabId: tabId },
         files: ["content.js"],
       })
-      .catch((error) => {})
+      .catch((error) => {
+        console.error("Failed to inject content script:", error)
+      })
   }
 })
 
@@ -18,3 +20,5 @@ chrome.runtime.onInstalled.addListener(function (details) {
   } else if (details.reason === "update") {
   }
 })
+
+// Background script for the Speed Controller extension

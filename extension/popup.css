@@ -374,11 +374,6 @@ button::after {
   border: 1px solid var(--border-color);
 }
 
-#apply-all-videos {
-  width: 100%;
-  margin-top: 6px;
-}
-
 .ranges-container {
   max-height: 200px;
   overflow-y: auto;
@@ -602,4 +597,15 @@ button::after {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.shortcut-hint {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 11px;
+  margin-top: 12px;
+  padding: 8px;
+  background: var(--primary-surface);
+  border-radius: var(--border-radius-md);
+  opacity: 0.8;
 }

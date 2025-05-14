@@ -4,6 +4,54 @@ let speedRanges = []
 let rangeBasedEnabled = false
 let lastAppliedSpeeds = {}
 let extensionEnabled = true
+const SPEED_INCREMENT = 0.25
+const MIN_SPEED = 0.25
+const MAX_SPEED = 4.0
+
+// Add speed indicator styles
+const styleSheet = document.createElement("style")
+styleSheet.textContent = `
+  .speed-indicator {
+    position: fixed;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 2147483647;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  }
+  .speed-indicator.visible {
+    opacity: 1;
+  }
+`
+document.head.appendChild(styleSheet)
+
+// Create speed indicator element
+let speedIndicator = document.createElement("div")
+speedIndicator.className = "speed-indicator"
+document.body.appendChild(speedIndicator)
+
+let indicatorTimeout = null
+
+function showSpeedIndicator(speed) {
+  speedIndicator.textContent = speed.toFixed(2) + "×"
+  speedIndicator.classList.add("visible")
+
+  if (indicatorTimeout) {
+    clearTimeout(indicatorTimeout)
+  }
+
+  indicatorTimeout = setTimeout(() => {
+    speedIndicator.classList.remove("visible")
+  }, 1000)
+}
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   try {
@@ -12,7 +60,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       if (!extensionEnabled) {
         resetAllVideoSpeeds()
       } else {
-        applySpeedToAllVideos()
+        if (request.mode === "ranges" && request.ranges) {
+          rangeBasedEnabled = true
+          speedRanges = request.ranges
+          applySpeedToAllVideos()
+        } else if (request.mode === "simple" && request.speed) {
+          rangeBasedEnabled = false
+          currentSpeed = request.speed
+          applySpeedToAllVideos(currentSpeed)
+        } else {
+          applySpeedToAllVideos()
+        }
       }
       sendResponse({ success: true })
     } else if (request.action === "setSpeed") {
@@ -23,13 +81,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
       if (!rangeBasedEnabled) {
         currentSpeed = request.speed
-
-        if (request.applyToAll) {
-          applySpeedToAllVideos(currentSpeed)
-        } else {
-          applySpeedToActiveVideo(currentSpeed)
-        }
-      } else {
+        applySpeedToAllVideos(currentSpeed)
       }
 
       sendResponse({ success: true })
@@ -76,7 +128,9 @@ function resetAllVideoSpeeds() {
       }
       const videoId = video.src || video.currentSrc || `video_${index}`
       delete lastAppliedSpeeds[videoId]
-    } catch (e) {}
+    } catch (e) {
+      console.error("Error resetting video speed:", e)
+    }
   })
 }
 
@@ -262,97 +316,6 @@ function applySpeedToAllVideos(forcedSpeed = null) {
         }
       } catch (e) {}
     })
-  } else {
-  }
-}
-
-function applySpeedToActiveVideo(forcedSpeed = null) {
-  if (!extensionEnabled) {
-    resetAllVideoSpeeds()
-    return
-  }
-
-  const videos = document.querySelectorAll("video")
-  let activeVideo = null
-
-  for (let i = 0; i < videos.length; i++) {
-    if (!videos[i].paused) {
-      activeVideo = videos[i]
-      break
-    }
-  }
-
-  if (!activeVideo && videos.length > 0) {
-    applySpeedToAllVideos(forcedSpeed)
-    return
-  }
-
-  if (activeVideo) {
-    const durationMinutes = getVideoDurationMinutes(activeVideo)
-
-    let speed
-    if (forcedSpeed !== null) {
-      speed = forcedSpeed
-    } else if (rangeBasedEnabled && speedRanges.length > 0 && durationMinutes > 0) {
-      speed = getSpeedForDuration(durationMinutes)
-    } else {
-      speed = currentSpeed
-    }
-
-    activeVideo.playbackRate = speed
-
-    if (!activeVideo.hasAttribute("data-speed-controlled")) {
-      activeVideo.setAttribute("data-speed-controlled", "true")
-
-      activeVideo.addEventListener("durationchange", function () {
-        if (!extensionEnabled) return
-        if (this.duration && this.duration !== Infinity && !isNaN(this.duration)) {
-          const newDurationMinutes = this.duration / 60
-
-          if (!forcedSpeed && rangeBasedEnabled && speedRanges.length > 0) {
-            const newSpeed = getSpeedForDuration(newDurationMinutes)
-            if (this.playbackRate !== newSpeed) {
-              this.playbackRate = newSpeed
-            }
-          } else if (!forcedSpeed) {
-            this.playbackRate = currentSpeed
-          }
-        }
-      })
-
-      activeVideo.addEventListener("ratechange", function (event) {
-        if (!extensionEnabled) return
-        let targetSpeed
-        if (forcedSpeed !== null) {
-          targetSpeed = forcedSpeed
-        } else if (rangeBasedEnabled && speedRanges.length > 0) {
-          targetSpeed = getSpeedForDuration(getVideoDurationMinutes(this))
-        } else {
-          targetSpeed = currentSpeed
-        }
-
-        if (this.playbackRate !== targetSpeed) {
-          if (event.isTrusted) {
-          }
-          this.playbackRate = targetSpeed
-        }
-      })
-
-      activeVideo.addEventListener("loadeddata", function () {
-        if (!extensionEnabled) return
-        let targetSpeed
-        if (forcedSpeed !== null) {
-          targetSpeed = forcedSpeed
-        } else if (rangeBasedEnabled && speedRanges.length > 0) {
-          targetSpeed = getSpeedForDuration(this.duration / 60)
-        } else {
-          targetSpeed = currentSpeed
-        }
-
-        this.playbackRate = targetSpeed
-      })
-    }
-  } else {
   }
 }
 
@@ -405,12 +368,8 @@ function setupVideoObserver() {
   observer.observe(document.body, { childList: true, subtree: true })
 
   const checkInterval = isYouTube ? 1000 : 3000
-
   setInterval(() => {
     if (!extensionEnabled) return
-    const shouldLog = Math.random() < 0.2
-    if (shouldLog) {
-    }
     applySpeedToAllVideos()
   }, checkInterval)
 }
@@ -432,7 +391,6 @@ function setupYouTubeNavObserver() {
   const titleElement = document.querySelector("title")
   if (titleElement) {
     urlObserver.observe(titleElement, { subtree: true, characterData: true, childList: true })
-  } else {
   }
 }
 
@@ -457,7 +415,6 @@ function init() {
 
         if (result[hostname] && !isNaN(parseFloat(result[hostname]))) {
           currentSpeed = parseFloat(result[hostname])
-        } else {
         }
 
         if (result[`${hostname}_ranges`] && Array.isArray(result[`${hostname}_ranges`]) && result[`${hostname}_ranges`].length > 0) {
@@ -481,13 +438,57 @@ function init() {
 
         setupVideoObserver()
         setupVideoPlayListener()
-
-        if (isYouTube) {
-          setupYouTubeNavObserver()
-        }
-      } catch (error) {}
+        setupYouTubeNavObserver()
+      } catch (error) {
+        console.error("Error in storage callback:", error)
+      }
     })
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error in init:", error)
+  }
 }
+
+// Add keyboard shortcut handler
+document.addEventListener("keydown", function (e) {
+  // Check if user is typing in an input field
+  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.isContentEditable) {
+    return
+  }
+
+  if (!extensionEnabled) {
+    return
+  }
+
+  if (e.key === "[" || e.key === "]") {
+    e.preventDefault()
+
+    // Switch to simple mode if in ranges mode
+    if (rangeBasedEnabled) {
+      rangeBasedEnabled = false
+      const hostname = window.location.hostname
+      chrome.storage.sync.set({
+        [`${hostname}_active_tab`]: "simple",
+      })
+    }
+
+    // Calculate new speed
+    let newSpeed = currentSpeed
+    if (e.key === "]") {
+      newSpeed = Math.min(MAX_SPEED, currentSpeed + SPEED_INCREMENT)
+    } else if (e.key === "[") {
+      newSpeed = Math.max(MIN_SPEED, currentSpeed - SPEED_INCREMENT)
+    }
+
+    if (newSpeed !== currentSpeed) {
+      currentSpeed = newSpeed
+      const hostname = window.location.hostname
+      chrome.storage.sync.set({
+        [hostname]: currentSpeed,
+      })
+      applySpeedToAllVideos(currentSpeed)
+      showSpeedIndicator(newSpeed) // Show the speed indicator
+    }
+  }
+})
 
 init()
