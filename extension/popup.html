@@ -7,24 +7,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
 </head>
 
 <body>
     <div class="container">
+        <div class="extension-header">
+            <div class="logo-container">
+                <img src="icons/icon48.png" alt="Speed Controller" class="logo">
+                <h1>Speed Controller</h1>
+            </div>
+        </div>
+
         <div class="tab-container">
             <button class="tab" data-tab="off">
+                <i class="bi bi-pause-circle"></i>
                 <span>Off</span>
             </button>
             <button class="tab active" data-tab="simple">
+                <i class="bi bi-speedometer"></i>
                 <span>Simple</span>
             </button>
             <button class="tab" data-tab="ranges">
+                <i class="bi bi-graph-up"></i>
                 <span>Ranges</span>
             </button>
         </div>
 
         <div id="off-tab" class="tab-content">
             <div class="off-message">
+                <i class="bi bi-pause-circle status-icon"></i>
                 <p>Speed Controller is disabled</p>
                 <p>Select a mode to enable and configure speed settings</p>
             </div>
@@ -33,23 +46,29 @@
         <div id="simple-tab" class="tab-content active">
             <div class="slider-container">
                 <div class="range-header">
-                    <label for="speed-slider">Playback Speed</label>
+                    <label for="speed-slider"><i class="bi bi-speedometer2"></i> Playback Speed</label>
                     <div class="slider-value">1.0x</div>
                 </div>
                 <input type="range" id="speed-slider" min="0.25" max="4.0" step="0.25" value="1.0">
+                <div class="slider-markers">
+                    <span>0.25x</span>
+                    <span>1x</span>
+                    <span>2x</span>
+                    <span>4x</span>
+                </div>
             </div>
 
             <div class="custom-speed-input-container">
-                <label for="custom-speed-input">Custom</label>
+                <label for="custom-speed-input"><i class="bi bi-sliders"></i> Custom Speed</label>
                 <div class="input-group">
                     <input type="number" id="custom-speed-input" min="0.1" step="0.1" placeholder="e.g., 2.3">
                     <button id="set-custom-speed-button">Set</button>
                 </div>
             </div>
 
-            <button id="reset-button">Reset to default</button>
+            <button id="reset-button"><i class="bi bi-arrow-counterclockwise"></i> Reset to default</button>
             <div class="shortcut-hint">
-                Keyboard shortcuts: [ ] to decrease/increase speed
+                <i class="bi bi-keyboard"></i> Shortcuts: <kbd>[</kbd> <kbd>]</kbd> to decrease/increase speed
             </div>
         </div>
 
@@ -66,7 +85,7 @@
                 </div>
 
                 <div class="manual-point-input">
-                    <label for="new-point-value">Last breakpoint</label>
+                    <label for="new-point-value"><i class="bi bi-bookmark"></i> Last breakpoint</label>
                     <div class="input-group">
                         <input type="number" id="new-point-value" min="1" step="1" placeholder="min">
                         <button id="set-last-point">Set</button>
@@ -74,8 +93,10 @@
                 </div>
 
                 <div class="action-buttons">
-                    <button class="add-range-btn" id="add-range-button">Add breakpoint</button>
-                    <button class="reset-ranges-btn" id="reset-ranges-button">Reset</button>
+                    <button class="add-range-btn" id="add-range-button"><i class="bi bi-plus-lg"></i> Add
+                        breakpoint</button>
+                    <button class="reset-ranges-btn" id="reset-ranges-button"><i
+                            class="bi bi-arrow-counterclockwise"></i> Reset</button>
                 </div>
             </div>
         </div>

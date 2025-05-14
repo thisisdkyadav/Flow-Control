@@ -23,6 +23,16 @@ document.addEventListener("DOMContentLoaded", function () {
   let activeTab = "simple"
   let isEnabled = true
 
+  // Function to show status messages with animation
+  function showStatus(message, duration = 2000) {
+    statusElement.textContent = message
+    statusElement.style.opacity = "1"
+
+    setTimeout(() => {
+      statusElement.style.opacity = "0"
+    }, duration)
+  }
+
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
       const newTab = tab.dataset.tab
@@ -61,10 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const data = {}
     data[`${currentHost}_active_tab`] = tabName
     chrome.storage.sync.set(data, function () {
-      statusElement.textContent = `${tabName === "off" ? "Extension disabled" : tabName === "simple" ? "Simple Speed mode active" : "Range-Based Speed mode active"}`
-      setTimeout(() => {
-        statusElement.textContent = ""
-      }, 2000)
+      showStatus(`${tabName === "off" ? "Extension disabled" : tabName === "simple" ? "Simple Speed mode active" : "Range-Based Speed mode active"}`)
     })
   }
 
@@ -157,11 +164,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const data = {}
     data[`${currentHost}_ranges`] = speedRanges
     chrome.storage.sync.set(data, function () {
-      statusElement.textContent = "Range settings saved"
-      setTimeout(() => {
-        statusElement.textContent = ""
-      }, 2000)
-
+      showStatus("Range settings saved")
       notifyContentScript()
     })
   }
@@ -193,10 +196,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then((response) => {
               if (response && response.success) {
                 loadSpeedRanges()
-                statusElement.textContent = "Reset to default ranges"
-                setTimeout(() => {
-                  statusElement.textContent = ""
-                }, 2000)
+                showStatus("Reset to default ranges")
               }
             })
             .catch((error) => {
@@ -208,7 +208,7 @@ document.addEventListener("DOMContentLoaded", function () {
       })
     } catch (error) {
       console.error("Error in reset handler:", error)
-      statusElement.textContent = "Error resetting ranges"
+      showStatus("Error resetting ranges", 3000)
     }
   })
 
@@ -217,20 +217,20 @@ document.addEventListener("DOMContentLoaded", function () {
       const newPointValue = parseFloat(newPointInput.value)
 
       if (isNaN(newPointValue) || newPointValue <= 0) {
-        statusElement.textContent = "Please enter a valid number greater than 0"
+        showStatus("Please enter a valid number greater than 0", 3000)
         return
       }
 
       const infinityIndex = speedRanges.findIndex((r) => r.point === -1)
       if (infinityIndex <= 0) {
-        statusElement.textContent = "Error: Invalid range structure"
+        showStatus("Error: Invalid range structure", 3000)
         return
       }
 
       const lastRegularIndex = infinityIndex - 1
 
       if (lastRegularIndex > 0 && newPointValue <= speedRanges[lastRegularIndex - 1].point) {
-        statusElement.textContent = `Value must be greater than ${speedRanges[lastRegularIndex - 1].point}`
+        showStatus(`Value must be greater than ${speedRanges[lastRegularIndex - 1].point}`, 3000)
         return
       }
 
@@ -241,13 +241,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       newPointInput.value = ""
 
-      statusElement.textContent = "Last breakpoint updated"
-      setTimeout(() => {
-        statusElement.textContent = ""
-      }, 2000)
+      showStatus("Last breakpoint updated")
     } catch (error) {
       console.error("Error setting last point:", error)
-      statusElement.textContent = "Error updating breakpoint"
+      showStatus("Error updating breakpoint", 3000)
     }
   })
 
@@ -296,13 +293,10 @@ document.addEventListener("DOMContentLoaded", function () {
       saveSpeedRanges()
       renderRanges()
 
-      statusElement.textContent = "Breakpoint removed"
-      setTimeout(() => {
-        statusElement.textContent = ""
-      }, 2000)
+      showStatus("Breakpoint removed")
     } catch (error) {
       console.error("Error removing breakpoint:", error)
-      statusElement.textContent = "Error removing breakpoint"
+      showStatus("Error removing breakpoint", 3000)
     }
   }
 
@@ -408,7 +402,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     } catch (error) {
       console.error("Error rendering ranges:", error)
-      statusElement.textContent = "Error rendering ranges. Try reloading."
+      showStatus("Error rendering ranges. Try reloading.", 3000)
     }
   }
 
@@ -417,7 +411,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const infinityIndex = speedRanges.findIndex((r) => r.point === -1)
 
       if (infinityIndex === -1 || infinityIndex === 0) {
-        statusElement.textContent = "Cannot add breakpoint"
+        showStatus("Cannot add breakpoint", 3000)
         return
       }
 
@@ -434,7 +428,7 @@ document.addEventListener("DOMContentLoaded", function () {
       renderRanges()
     } catch (error) {
       console.error("Error adding breakpoint:", error)
-      statusElement.textContent = "Error adding breakpoint"
+      showStatus("Error adding breakpoint", 3000)
     }
   })
 
@@ -478,15 +472,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
       saveAndApplySpeed(clampedSpeed)
       customSpeedInput.value = ""
-      statusElement.textContent = `Custom speed ${clampedSpeed.toFixed(2)}x set`
-      setTimeout(() => {
-        statusElement.textContent = ""
-      }, 2000)
+      showStatus(`Custom speed ${clampedSpeed.toFixed(2)}x set`)
     } else {
-      statusElement.textContent = `Invalid speed. Enter between ${MIN_SPEED} and ${MAX_SPEED * 2}.`
-      setTimeout(() => {
-        statusElement.textContent = ""
-      }, 3000)
+      showStatus(`Invalid speed. Enter between ${MIN_SPEED} and ${MAX_SPEED * 2}.`, 3000)
     }
   })
 
@@ -510,10 +498,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (activeTab === "ranges") {
-      statusElement.textContent = "Simple speed ignored in Ranges mode"
-      setTimeout(() => {
-        statusElement.textContent = ""
-      }, 2000)
+      showStatus("Simple speed ignored in Ranges mode")
       return
     }
 
@@ -523,10 +508,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const data = {}
       data[currentHost] = validatedSpeed
       chrome.storage.sync.set(data, function () {
-        statusElement.textContent = "Speed saved for " + currentHost
-        setTimeout(() => {
-          statusElement.textContent = ""
-        }, 2000)
+        showStatus("Speed saved for " + currentHost)
       })
 
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -540,6 +522,7 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch((error) => {
               console.error("Failed to send speed update:", error)
+              showStatus("Failed to update speed", 3000)
             })
         }
       })
