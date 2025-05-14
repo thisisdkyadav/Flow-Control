@@ -68,6 +68,7 @@ body {
   color: var(--text-color);
   font-size: 14px;
   line-height: 1.5;
+  min-height: 420px;
 }
 
 /* Chrome's outer panel - make it transparent */
@@ -90,7 +91,7 @@ div[class^="panel-"] {
   flex-direction: column;
   gap: 18px;
   width: 360px;
-  min-height: 280px;
+  min-height: 420px;
   position: relative;
   z-index: 1;
   padding: 20px;
@@ -136,7 +137,7 @@ div[class^="panel-"] {
   background: var(--neutral-light);
   padding: 4px;
   border-radius: var(--border-radius-lg);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   box-shadow: var(--shadow-inset-sm);
   position: sticky;
   top: 0;
@@ -208,20 +209,25 @@ div[class^="panel-"] {
 }
 
 .tab-content {
+  min-height: 340px;
+  max-height: 340px;
+  position: relative;
   display: none;
   animation: fadeIn 0.3s ease-out;
+  overflow: hidden;
 }
 
 .tab-content.active {
-  display: block;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Enhanced slider container */
 .slider-container {
   background: var(--neutral-light);
-  padding: 18px;
+  padding: 16px;
   border-radius: var(--border-radius-lg);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   position: relative;
   box-shadow: var(--shadow-inset-sm);
   transition: all var(--transition-normal);
@@ -309,14 +315,14 @@ input[type="range"]::-webkit-slider-thumb:hover {
 /* Custom speed input with improved design */
 .custom-speed-input-container {
   background: var(--neutral-light);
-  padding: 16px;
+  padding: 14px;
   border-radius: var(--border-radius-lg);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   position: relative;
   box-shadow: var(--shadow-inset-sm);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .custom-speed-input-container label {
@@ -359,14 +365,14 @@ button {
   background: var(--primary-gradient);
   border: none;
   color: white;
-  padding: 10px 16px;
+  padding: 8px;
   border-radius: var(--border-radius-md);
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-normal);
   position: relative;
   overflow: hidden;
-  font-size: 13px;
+  font-size: 12px;
   box-shadow: var(--shadow-md);
   text-transform: none;
   letter-spacing: 0.02em;
@@ -403,7 +409,7 @@ button:hover::after {
   color: var(--text-light);
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 #reset-button:hover {
@@ -413,13 +419,13 @@ button:hover::after {
 
 /* Enhanced ranges container */
 .ranges-container {
-  max-height: 200px;
+  max-height: 160px;
   overflow-y: auto;
   background: var(--neutral-light);
   border-radius: var(--border-radius-lg);
   padding: 4px;
   box-shadow: var(--shadow-inset-sm);
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   scrollbar-width: thin;
   scrollbar-color: var(--neutral-medium) var(--neutral-light);
 }
@@ -442,8 +448,8 @@ button:hover::after {
 .range-section {
   background: #ffffff;
   border-radius: var(--border-radius-md);
-  padding: 12px;
-  margin-bottom: 8px;
+  padding: 8px;
+  margin-bottom: 5px;
   box-shadow: var(--shadow-sm);
   position: relative;
   transition: all var(--transition-normal);
@@ -470,7 +476,7 @@ button:hover::after {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 /* Delete range button with modern styling */
@@ -523,40 +529,32 @@ button:hover::after {
   color: var(--primary-color);
 }
 
-/* Status message */
+/* Modified status message - hidden by default */
 .status {
-  font-size: 12px;
-  text-align: center;
-  color: var(--text-light);
-  padding: 8px;
-  border-radius: var(--border-radius-lg);
-  background: var(--primary-surface);
-  margin-top: auto;
-  opacity: 0;
-  transition: opacity var(--transition-normal);
+  display: none;
 }
 
-/* Range series container */
+/* Range series container - with padding to prevent overflow */
 .range-series {
   position: relative;
-  padding: 16px 0;
-  margin-bottom: 16px;
+  padding: 10px 4px;
+  margin-bottom: 12px;
 }
 
-/* Range timeline with improved design */
+/* Fix range timeline to stay within container */
 .range-timeline {
   height: 6px;
   background: linear-gradient(to right, var(--primary-light), var(--primary-dark));
   border-radius: var(--border-radius-full);
   position: relative;
-  margin: 32px 0;
+  margin: 18px 4px;
   box-shadow: var(--shadow-sm);
 }
 
-/* Range point with enhanced styling */
+/* Modified range point positioning to prevent overflow */
 .range-point {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   background: #ffffff;
   border: 2px solid var(--primary-color);
   border-radius: 50%;
@@ -583,14 +581,14 @@ button:hover::after {
 
 .range-point-label {
   position: absolute;
-  top: -30px;
+  top: -26px;
   left: 50%;
   transform: translateX(-50%);
   background: var(--primary-color);
   color: white;
-  padding: 4px 8px;
+  padding: 3px 6px;
   border-radius: var(--border-radius-sm);
-  font-size: 11px;
+  font-size: 10px;
   white-space: nowrap;
   pointer-events: none;
   opacity: 0.9;
@@ -616,14 +614,14 @@ button:hover::after {
 /* Manual point input styling */
 .manual-point-input {
   background: var(--neutral-light);
-  padding: 16px;
+  padding: 12px;
   border-radius: var(--border-radius-lg);
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   position: relative;
   box-shadow: var(--shadow-inset-sm);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .manual-point-input label {
@@ -639,12 +637,14 @@ button:hover::after {
 /* Action buttons container */
 .action-buttons {
   display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 6px;
+  margin-bottom: 8px;
 }
 
 .action-buttons button {
   flex: 1;
+  padding: 8px;
+  font-size: 12px;
 }
 
 /* Enhanced fade-in animation */
@@ -664,11 +664,11 @@ button:hover::after {
   font-size: 12px;
   color: var(--text-light);
   text-align: center;
-  padding: 12px;
+  padding: 10px;
   background: var(--primary-surface);
   border-radius: var(--border-radius-lg);
   border: 1px dashed var(--primary-light);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -686,7 +686,7 @@ button:hover::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .logo-container {
@@ -781,4 +781,18 @@ label i {
   color: var(--primary-color);
   margin-right: 4px;
   font-size: 1em;
+}
+
+/* Ensure ranges content fits without scrolling */
+#ranges-content {
+  display: flex;
+  flex-direction: column;
+  max-height: 340px;
+  height: 100%;
+}
+
+/* Remove any extra spacing at bottom of tab content */
+#simple-tab,
+#ranges-tab {
+  padding-bottom: 0;
 }

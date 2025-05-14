@@ -25,12 +25,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Function to show status messages with animation
   function showStatus(message, duration = 2000) {
-    statusElement.textContent = message
-    statusElement.style.opacity = "1"
-
-    setTimeout(() => {
-      statusElement.style.opacity = "0"
-    }, duration)
+    // Status messages are disabled, so this function does nothing now
+    console.log("Status: " + message) // Log to console instead
   }
 
   tabs.forEach((tab) => {
@@ -70,9 +66,8 @@ document.addEventListener("DOMContentLoaded", function () {
   function saveActiveTabState(tabName) {
     const data = {}
     data[`${currentHost}_active_tab`] = tabName
-    chrome.storage.sync.set(data, function () {
-      showStatus(`${tabName === "off" ? "Extension disabled" : tabName === "simple" ? "Simple Speed mode active" : "Range-Based Speed mode active"}`)
-    })
+    chrome.storage.sync.set(data)
+    // No need to show status message
   }
 
   function loadActiveTabState() {
