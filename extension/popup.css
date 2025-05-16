@@ -733,16 +733,16 @@ button:hover::after {
 .slider-markers span {
   font-size: 11px;
   color: var(--text-light);
-  transform: translateX(-50%);
+  /* transform: translateX(-50%); */
 }
 
 .slider-markers span:first-child {
-  transform: translateX(0);
+  transform: translateX(-50%);
 }
 
-.slider-markers span:last-child {
+/* .slider-markers span:last-child {
   transform: translateX(-100%);
-}
+} */
 
 /* Icons in tabs and buttons */
 .tab i,
