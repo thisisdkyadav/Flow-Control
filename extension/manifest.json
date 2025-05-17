@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Flow Control",
-  "version": "1.0.1.3",
+  "version": "1.0.1.4",
   "description": "Control video speed on any site. Remembers per-site speed and sets defaults by video length for smarter playback.",
   "permissions": ["storage", "activeTab", "scripting"],
   "host_permissions": ["<all_urls>"],

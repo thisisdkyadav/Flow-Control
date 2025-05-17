@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const setLastPointButton = document.getElementById("set-last-point")
   const customSpeedInput = document.getElementById("custom-speed-input")
   const setCustomSpeedButton = document.getElementById("set-custom-speed-button")
+  const holdingSpeedInput = document.getElementById("holding-speed-input")
+  const setHoldingSpeedButton = document.getElementById("set-holding-speed-button")
 
   const MAX_SPEED = 4.0
   const MIN_SPEED = 0.1
@@ -38,18 +40,26 @@ document.addEventListener("DOMContentLoaded", function () {
   })
 
   function setActiveTab(tabName) {
+    // Remove active class from all tabs
     tabs.forEach((t) => {
-      t.classList.toggle("active", t.dataset.tab === tabName)
+      t.classList.remove("active")
+      if (t.dataset.tab === tabName) {
+        t.classList.add("active")
+      }
     })
 
+    // Hide all tab contents and show the selected one
     document.querySelectorAll(".tab-content").forEach((content) => {
-      content.classList.toggle("active", content.id === `${tabName}-tab`)
+      content.classList.remove("active")
+      if (content.id === `${tabName}-tab`) {
+        content.classList.add("active")
+      }
     })
 
     const isEnabled = tabName !== "off"
-
     this.isEnabled = isEnabled
 
+    // Update storage and notify content script
     const data = {}
     data[`${currentHost}_enabled`] = isEnabled
     chrome.storage.sync.set(data)
@@ -61,6 +71,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     activeTab = tabName
+
+    // If ranges tab is selected, ensure ranges are rendered
+    if (tabName === "ranges") {
+      loadSpeedRanges()
+    }
   }
 
   function saveActiveTabState(tabName) {
@@ -341,6 +356,11 @@ document.addEventListener("DOMContentLoaded", function () {
     try {
       renderTimeline()
 
+      if (!rangesContainer) {
+        console.error("Ranges container not found")
+        return
+      }
+
       rangesContainer.innerHTML = ""
 
       for (let i = 0; i < speedRanges.length - 1; i++) {
@@ -370,16 +390,18 @@ document.addEventListener("DOMContentLoaded", function () {
         rangesContainer.appendChild(section)
 
         const slider = section.querySelector(".speed-range-slider")
-        slider.addEventListener("input", function () {
-          const speed = parseFloat(this.value)
-          section.querySelector(".slider-value").textContent = speed.toFixed(2) + "x"
-        })
+        if (slider) {
+          slider.addEventListener("input", function () {
+            const speed = parseFloat(this.value)
+            section.querySelector(".slider-value").textContent = speed.toFixed(2) + "x"
+          })
 
-        slider.addEventListener("change", function () {
-          const speed = parseFloat(this.value)
-          speedRanges[i].speed = speed
-          saveSpeedRanges()
-        })
+          slider.addEventListener("change", function () {
+            const speed = parseFloat(this.value)
+            speedRanges[i].speed = speed
+            saveSpeedRanges()
+          })
+        }
 
         const deleteButton = section.querySelector(".delete-range-btn")
         if (deleteButton) {
@@ -391,7 +413,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const lastRegularIndex = speedRanges.findIndex((r) => r.point === -1) - 1
-      if (lastRegularIndex >= 0) {
+      if (lastRegularIndex >= 0 && newPointInput) {
         const lastPoint = speedRanges[lastRegularIndex].point
         newPointInput.placeholder = (lastPoint + 5).toString()
       }
@@ -427,34 +449,66 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   })
 
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    if (tabs[0] && tabs[0].url) {
-      const url = new URL(tabs[0].url)
-      currentHost = url.hostname
+  function loadHoldingSpeed() {
+    if (!currentHost) return
 
-      chrome.storage.sync.get([currentHost], function (result) {
-        if (result[currentHost]) {
-          const savedSpeed = result[currentHost]
-          speedSlider.value = savedSpeed
-          sliderValue.textContent = savedSpeed + "x"
+    chrome.storage.sync.get([`${currentHost}_holding_speed`], function (result) {
+      if (result[`${currentHost}_holding_speed`]) {
+        const savedSpeed = parseFloat(result[`${currentHost}_holding_speed`])
+        if (!isNaN(savedSpeed)) {
+          holdingSpeedInput.value = savedSpeed.toFixed(2)
         }
+      }
+    })
+  }
+
+  function init() {
+    console.log("currentHost", currentHost)
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      if (tabs[0]?.url) {
+        currentHost = new URL(tabs[0].url).hostname
+
+        loadCurrentSpeed()
+        loadSpeedRanges()
+        loadActiveTabState()
+        loadHoldingSpeed()
+      }
+    })
+  }
+
+  setHoldingSpeedButton.addEventListener("click", function () {
+    if (!currentHost) return
+
+    const holdingSpeed = parseFloat(holdingSpeedInput.value)
+    if (!isNaN(holdingSpeed) && holdingSpeed >= MIN_SPEED && holdingSpeed <= MAX_SPEED * 2) {
+      const clampedSpeed = Math.min(Math.max(holdingSpeed, MIN_SPEED), MAX_SPEED * 2)
+
+      chrome.storage.sync.set({
+        [`${currentHost}_holding_speed`]: clampedSpeed,
       })
 
-      loadSpeedRanges()
-
-      loadActiveTabState()
+      holdingSpeedInput.value = clampedSpeed.toFixed(2)
+      showStatus(`Holding speed set to ${clampedSpeed.toFixed(2)}x`)
+    } else {
+      showStatus(`Invalid speed. Enter between ${MIN_SPEED} and ${MAX_SPEED * 2}.`, 3000)
     }
   })
 
-  speedSlider.addEventListener("input", function () {
-    const speed = parseFloat(this.value)
-    sliderValue.textContent = speed.toFixed(2) + "x"
-    customSpeedInput.value = ""
+  holdingSpeedInput.addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault()
+      setHoldingSpeedButton.click()
+    }
   })
 
-  speedSlider.addEventListener("change", function () {
+  init()
+
+  speedSlider.addEventListener("input", function () {
     const speed = parseFloat(this.value)
-    saveAndApplySpeed(speed)
+    if (!isNaN(speed)) {
+      sliderValue.textContent = speed.toFixed(2) + "x"
+      saveAndApplySpeed(speed)
+    }
   })
 
   setCustomSpeedButton.addEventListener("click", function () {
@@ -488,7 +542,7 @@ document.addEventListener("DOMContentLoaded", function () {
   })
 
   function saveAndApplySpeed(speed) {
-    if (activeTab === "off" || !isEnabled) {
+    if (!currentHost || activeTab === "off" || !isEnabled) {
       return
     }
 
@@ -499,28 +553,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const validatedSpeed = Math.min(Math.max(speed, MIN_SPEED), MAX_SPEED * 2)
 
-    if (currentHost) {
-      const data = {}
-      data[currentHost] = validatedSpeed
-      chrome.storage.sync.set(data, function () {
-        showStatus("Speed saved for " + currentHost)
-      })
+    // Update UI first
+    speedSlider.value = validatedSpeed
+    sliderValue.textContent = validatedSpeed.toFixed(2) + "x"
 
-      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        if (tabs[0] && tabs[0].id) {
-          chrome.tabs
-            .sendMessage(tabs[0].id, {
-              action: "setSpeed",
-              speed: validatedSpeed,
-              applyToAll: true,
-              mode: activeTab,
-            })
-            .catch((error) => {
-              console.error("Failed to send speed update:", error)
-              showStatus("Failed to update speed", 3000)
-            })
+    // Save to storage
+    const data = {}
+    data[currentHost] = validatedSpeed
+    chrome.storage.sync.set(data)
+
+    // Send message to content script
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      if (tabs[0] && tabs[0].id) {
+        chrome.tabs
+          .sendMessage(tabs[0].id, {
+            action: "setSpeed",
+            speed: validatedSpeed,
+          })
+          .catch((error) => {
+            console.error("Failed to send speed update:", error)
+          })
+      }
+    })
+  }
+
+  function loadCurrentSpeed() {
+    if (!currentHost) return
+    chrome.storage.sync.get([currentHost], function (result) {
+      if (result[currentHost]) {
+        const savedSpeed = parseFloat(result[currentHost])
+        if (!isNaN(savedSpeed)) {
+          speedSlider.value = savedSpeed
+          sliderValue.textContent = savedSpeed.toFixed(2) + "x"
         }
-      })
-    }
+      }
+    })
   }
 })

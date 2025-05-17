@@ -67,6 +67,17 @@
                 </div>
             </div>
 
+            <div class="custom-speed-input-container">
+                <label for="holding-speed-input"><i class="bi bi-hand-index-thumb"></i> Holding Speed</label>
+                <div class="input-group">
+                    <input type="number" id="holding-speed-input" min="0.1" step="0.1" placeholder="e.g., 2.0">
+                    <button id="set-holding-speed-button">Set</button>
+                </div>
+                <div class="shortcut-hint holding-hint">
+                    <i class="bi bi-info-circle"></i> Hold <kbd>'</kbd> to temporarily apply this speed
+                </div>
+            </div>
+
             <button id="reset-button"><i class="bi bi-arrow-counterclockwise"></i> Reset to default</button>
             <div class="shortcut-hint">
                 <i class="bi bi-keyboard"></i> Shortcuts: <kbd>[</kbd> <kbd>]</kbd> to decrease/increase speed
