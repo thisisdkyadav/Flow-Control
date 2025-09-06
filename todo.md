@@ -1,0 +1,3 @@
+- [ ] User can set increment gap in shortcut settings
+- [ ] Preset speed shortcuts
+- [ ] Show shortcut details on top
