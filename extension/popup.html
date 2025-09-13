@@ -16,7 +16,22 @@
         <div class="extension-header">
             <div class="logo-container">
                 <img src="icons/icon48.png" alt="Speed Controller" class="logo">
-                <h1>Speed Controller</h1>
+                <h1>Flow Control</h1>
+            </div>
+            <button class="help-button" id="help-button" title="Help & Instructions">
+                <i class="bi bi-question-circle"></i>
+            </button>
+        </div>
+
+        <!-- Shortcuts Bar - Always Visible -->
+        <div class="shortcuts-bar">
+            <div class="shortcut-item">
+                <kbd>[</kbd> <kbd>]</kbd>
+                <span>Speed</span>
+            </div>
+            <div class="shortcut-item">
+                <kbd>'</kbd>
+                <span>Hold</span>
             </div>
         </div>
 
@@ -38,8 +53,8 @@
         <div id="off-tab" class="tab-content">
             <div class="off-message">
                 <i class="bi bi-pause-circle status-icon"></i>
-                <p>Speed Controller is disabled</p>
-                <p>Select a mode to enable and configure speed settings</p>
+                <p>Extension is turned off</p>
+                <p>Videos will play at normal speed. Switch to Simple or Ranges mode to control speed.</p>
             </div>
         </div>
 
@@ -60,28 +75,32 @@
             </div>
 
             <div class="custom-speed-input-container">
-                <label for="custom-speed-input"><i class="bi bi-sliders"></i> Custom Speed</label>
-                <div class="input-group">
-                    <input type="number" id="custom-speed-input" min="0.1" step="0.1" placeholder="e.g., 2.3">
-                    <button id="set-custom-speed-button">Set</button>
+                <div class="speed-input-row">
+                    <label for="custom-speed-input">
+                        <i class="bi bi-sliders"></i> 
+                        <span>Custom Speed</span>
+                    </label>
+                    <div class="input-group-inline">
+                        <input type="number" id="custom-speed-input" min="0.1" step="0.1" placeholder="2.3">
+                        <button id="set-custom-speed-button">Set</button>
+                    </div>
                 </div>
             </div>
 
             <div class="custom-speed-input-container">
-                <label for="holding-speed-input"><i class="bi bi-hand-index-thumb"></i> Holding Speed</label>
-                <div class="input-group">
-                    <input type="number" id="holding-speed-input" min="0.1" step="0.1" placeholder="e.g., 2.0">
-                    <button id="set-holding-speed-button">Set</button>
-                </div>
-                <div class="shortcut-hint holding-hint">
-                    <i class="bi bi-info-circle"></i> Hold <kbd>'</kbd> to temporarily apply this speed
+                <div class="speed-input-row">
+                    <label for="holding-speed-input">
+                        <i class="bi bi-hand-index-thumb"></i> 
+                        <span>Holding Speed</span>
+                    </label>
+                    <div class="input-group-inline">
+                        <input type="number" id="holding-speed-input" min="0.1" step="0.1" placeholder="2.0">
+                        <button id="set-holding-speed-button">Set</button>
+                    </div>
                 </div>
             </div>
 
             <button id="reset-button"><i class="bi bi-arrow-counterclockwise"></i> Reset to default</button>
-            <div class="shortcut-hint">
-                <i class="bi bi-keyboard"></i> Shortcuts: <kbd>[</kbd> <kbd>]</kbd> to decrease/increase speed
-            </div>
         </div>
 
         <div id="ranges-tab" class="tab-content">
@@ -97,9 +116,9 @@
                 </div>
 
                 <div class="manual-point-input">
-                    <label for="new-point-value"><i class="bi bi-bookmark"></i> Last breakpoint</label>
+                    <label for="new-point-value"><i class="bi bi-clock"></i> Final breakpoint (minutes)</label>
                     <div class="input-group">
-                        <input type="number" id="new-point-value" min="1" step="1" placeholder="min">
+                        <input type="number" id="new-point-value" min="1" step="1" placeholder="e.g., 20">
                         <button id="set-last-point">Set</button>
                     </div>
                 </div>
@@ -109,6 +128,62 @@
                         breakpoint</button>
                     <button class="reset-ranges-btn" id="reset-ranges-button"><i
                             class="bi bi-arrow-counterclockwise"></i> Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Modal Overlay -->
+        <div id="help-overlay" class="help-overlay">
+            <div class="help-modal">
+                <div class="help-header">
+                    <h2>How to Use Flow Control</h2>
+                    <button class="close-help" id="close-help">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+                <div class="help-modal-content">
+                    <div class="help-section">
+                        <h3><i class="bi bi-speedometer2"></i> Simple Mode</h3>
+                        <p>Set a single speed for all videos on the current site.</p>
+                        <ul>
+                            <li>Use slider or input to set speed</li>
+                            <li>Speed remembered per website</li>
+                            <li>Works on all video players</li>
+                        </ul>
+                    </div>
+
+                    <div class="help-section">
+                        <h3><i class="bi bi-graph-up"></i> Ranges Mode</h3>
+                        <p>Set different speeds based on video duration.</p>
+                        <ul>
+                            <li>Perfect for different content types</li>
+                            <li>Short videos → faster speeds</li>
+                            <li>Long videos → comfortable speeds</li>
+                        </ul>
+                    </div>
+
+                    <div class="help-section">
+                        <h3><i class="bi bi-keyboard"></i> Shortcuts</h3>
+                        <div class="shortcuts-list">
+                            <div class="shortcut-item-help">
+                                <div class="keys"><kbd>[</kbd> <kbd>]</kbd></div>
+                                <div class="desc">Decrease/increase speed</div>
+                            </div>
+                            <div class="shortcut-item-help">
+                                <div class="keys"><kbd>'</kbd></div>
+                                <div class="desc">Hold for temporary speed</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="help-section">
+                        <h3><i class="bi bi-lightbulb"></i> Tips</h3>
+                        <ul>
+                            <li>Settings save automatically</li>
+                            <li>Each website has separate settings</li>
+                            <li>Use "Off" to disable completely</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

@@ -16,6 +16,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const setCustomSpeedButton = document.getElementById("set-custom-speed-button")
   const holdingSpeedInput = document.getElementById("holding-speed-input")
   const setHoldingSpeedButton = document.getElementById("set-holding-speed-button")
+  const helpButton = document.getElementById("help-button")
+  const helpOverlay = document.getElementById("help-overlay")
+  const closeHelpButton = document.getElementById("close-help")
 
   const MAX_SPEED = 4.0
   const MIN_SPEED = 0.1
@@ -37,6 +40,21 @@ document.addEventListener("DOMContentLoaded", function () {
       setActiveTab(newTab)
       saveActiveTabState(newTab)
     })
+  })
+
+  // Help modal event listeners
+  helpButton.addEventListener("click", () => {
+    helpOverlay.classList.add("active")
+  })
+
+  closeHelpButton.addEventListener("click", () => {
+    helpOverlay.classList.remove("active")
+  })
+
+  helpOverlay.addEventListener("click", (e) => {
+    if (e.target === helpOverlay) {
+      helpOverlay.classList.remove("active")
+    }
   })
 
   function setActiveTab(tabName) {
