@@ -118,7 +118,7 @@ div[class^="panel-"] {
 }
 
 /* Subtle bottom shadow */
-.container::after {
+/* .container::after {
   content: "";
   position: absolute;
   bottom: 0;
@@ -129,7 +129,7 @@ div[class^="panel-"] {
   z-index: 0;
   pointer-events: none;
   border-radius: 0 0 var(--border-radius-popup) var(--border-radius-popup);
-}
+} */
 
 /* Tab container with enhanced design */
 .tab-container {
@@ -325,13 +325,12 @@ div[class^="panel-"] {
 /* Vertical Timeline Container */
 .vertical-timeline-container {
   position: relative;
-  min-height: 400px;
-  max-height: 600px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  /* min-height: 500px; */
+  /* max-height: none; */
+  overflow: visible;
   background: var(--neutral-light);
   border-radius: var(--border-radius-lg);
-  padding: 30px 20px;
+  padding: 40px 20px;
   box-shadow: var(--shadow-inset-sm);
 }
 
@@ -349,10 +348,7 @@ div[class^="panel-"] {
   transform: translateX(-50%);
   top: 0;
   width: 4px;
-  background: linear-gradient(to bottom, 
-    var(--primary-color) 0%, 
-    var(--primary-color) 70%, 
-    transparent 100%);
+  background: linear-gradient(to bottom, var(--primary-color) 0%, var(--primary-color) 70%, transparent 100%);
   border-radius: var(--border-radius-full);
   box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
 }
@@ -361,10 +357,31 @@ div[class^="panel-"] {
 .timeline-segment {
   position: absolute;
   width: 100%;
-  height: 100px;
+  height: 120px;
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+}
+
+/* Speed Segments (positioned between breakpoints) */
+.speed-segment {
+  position: absolute;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+}
+
+.speed-segment::before {
+  content: "";
+  position: absolute;
+  left: calc(50% - 1px);
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.1));
+  z-index: 0;
 }
 
 /* Breakpoint Dots */
@@ -373,10 +390,10 @@ div[class^="panel-"] {
   left: 50%;
   transform: translate(-50%, -50%);
   top: 50%;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   background: white;
-  border: 3px solid var(--primary-color);
+  border: 2px solid var(--primary-color);
   border-radius: 50%;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -436,39 +453,48 @@ div[class^="panel-"] {
 /* Floating Time Controls */
 .time-control {
   position: absolute;
-  left: 10px;
+  left: 15px;
   top: 50%;
   transform: translateY(-50%);
   background: white;
-  border: 2px solid var(--primary-color);
-  border-radius: var(--border-radius-md);
-  padding: 8px 12px;
-  box-shadow: var(--shadow-md);
+  border: 1px solid var(--primary-color);
+  border-radius: var(--border-radius-sm);
+  padding: 4px 8px;
+  box-shadow: var(--shadow-sm);
   transition: all var(--transition-fast);
   z-index: 2;
-  min-width: 80px;
+  min-width: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
 }
 
 .time-control:hover {
   border-color: var(--primary-dark);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 .time-control input {
-  width: 50px;
-  padding: 4px 6px;
+  width: 35px;
+  padding: 2px 4px;
   border: 1px solid var(--border-color);
   background: white;
-  font-size: 14px;
+  font-size: 12px;
   text-align: center;
   color: var(--text-color);
-  font-weight: 700;
-  border-radius: 4px;
+  font-weight: 600;
+  border-radius: 3px;
   outline: none;
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.time-control input::-webkit-outer-spin-button,
+.time-control input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .time-control input:focus {
@@ -477,59 +503,68 @@ div[class^="panel-"] {
 }
 
 .time-control .label {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-light);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* Floating Speed Controls */
 .speed-control {
   position: absolute;
-  right: 10px;
+  right: 15px;
   top: 50%;
   transform: translateY(-50%);
   background: white;
-  border: 2px solid var(--primary-color);
-  border-radius: var(--border-radius-md);
-  padding: 8px 12px;
-  box-shadow: var(--shadow-md);
+  border: 1px solid var(--success-color);
+  border-radius: var(--border-radius-sm);
+  padding: 4px 8px;
+  box-shadow: var(--shadow-sm);
   transition: all var(--transition-fast);
-  z-index: 2;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  min-width: 80px;
+  gap: 3px;
+  min-width: 60px;
 }
 
 .speed-control:hover {
-  border-color: var(--primary-dark);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  border-color: #059669;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
   transform: translateY(-50%) scale(1.02);
 }
 
 .speed-control input {
-  width: 50px;
-  padding: 4px 6px;
+  width: 35px;
+  padding: 2px 4px;
   border: 1px solid var(--border-color);
   background: white;
-  font-size: 14px;
+  font-size: 12px;
   text-align: center;
   color: var(--text-color);
-  font-weight: 700;
-  border-radius: 4px;
+  font-weight: 600;
+  border-radius: 3px;
   outline: none;
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.speed-control input::-webkit-outer-spin-button,
+.speed-control input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .speed-control input:focus {
-  border-color: var(--primary-color);
-  background: var(--primary-surface);
+  border-color: var(--success-color);
+  background: rgba(16, 185, 129, 0.05);
 }
 
 .speed-control .label {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-light);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* Range Labels */
@@ -537,19 +572,20 @@ div[class^="panel-"] {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: -25px;
-  font-size: 11px;
+  bottom: -18px;
+  font-size: 9px;
   color: var(--text-light);
-  font-weight: 600;
-  background: white;
-  padding: 4px 12px;
-  border-radius: var(--border-radius-md);
-  border: 1px solid var(--border-color);
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2px 6px;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid rgba(226, 232, 240, 0.8);
   z-index: 1;
-  max-width: 140px;
+  max-width: 160px;
   text-align: center;
   white-space: nowrap;
-  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .range-label.infinity {
@@ -599,25 +635,12 @@ div[class^="panel-"] {
 }
 
 @keyframes fadeInfinite {
-  0% { opacity: 0.3; }
-  100% { opacity: 0.8; }
-}
-
-/* Infinity Fade Effect */
-.infinity-fade {
-  position: absolute;
-  left: 40px;
-  width: 4px;
-  height: 60px;
-  background: linear-gradient(to bottom, var(--primary-color), transparent);
-  border-radius: var(--border-radius-full);
-  opacity: 0.6;
-  animation: fadeInfinite 2s ease-in-out infinite alternate;
-}
-
-@keyframes fadeInfinite {
-  0% { opacity: 0.3; }
-  100% { opacity: 0.8; }
+  0% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.8;
+  }
 }
 
 /* Enhanced slider container */
@@ -1369,7 +1392,7 @@ button:hover::after {
 /* Icons in tabs and buttons */
 .tab i,
 button i {
-  margin-right: 6px;
+  /* margin-right: 6px; */
   font-size: 1em;
 }
 

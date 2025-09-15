@@ -204,7 +204,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function updateRangeCount() {
     if (rangeCountDisplay) {
-      const count = speedRanges.filter(r => r.point !== -1).length
+      const count = speedRanges.filter((r) => r.point !== -1).length
       rangeCountDisplay.textContent = `${count} ranges`
     }
   }
@@ -281,118 +281,137 @@ document.addEventListener("DOMContentLoaded", function () {
 
       verticalTimeline.innerHTML = ""
 
-      // Calculate container height based on number of ranges
-      const segmentHeight = 100
-      const containerHeight = Math.max(400, speedRanges.length * segmentHeight + 80)
+      // Calculate container height based on number of non-infinity breakpoints
+      const segmentHeight = 120 // Increased height for better spacing
+      const nonInfinityBreakpoints = speedRanges.filter((r) => r.point !== -1).length
+      const containerHeight = Math.max(500, nonInfinityBreakpoints * segmentHeight + 200)
       verticalTimeline.style.height = `${containerHeight}px`
 
       // Create the timeline bar
       const timelineBar = document.createElement("div")
       timelineBar.className = "timeline-bar"
-      timelineBar.style.height = `${containerHeight - 80}px`
+      timelineBar.style.height = `${containerHeight - 160}px`
       verticalTimeline.appendChild(timelineBar)
 
-      // Generate timeline segments for each range
+      // Generate timeline segments for each breakpoint and range
       speedRanges.forEach((currentRange, i) => {
         const isInfinity = currentRange.point === -1
 
-        // Create timeline segment
-        const segment = document.createElement("div")
-        segment.className = "timeline-segment"
-        segment.style.position = "absolute"
-        segment.style.top = `${i * segmentHeight + 40}px`
-        segment.style.width = "100%"
-        segment.style.height = `${segmentHeight}px`
-
-        // Create breakpoint dot
-        const breakpoint = document.createElement("div")
-        breakpoint.className = `breakpoint ${isInfinity ? 'infinity' : ''}`
+        // Create timeline segment for breakpoint (except infinity)
         if (!isInfinity) {
+          const segment = document.createElement("div")
+          segment.className = "timeline-segment"
+          segment.style.position = "absolute"
+          segment.style.top = `${i * segmentHeight + 40}px`
+          segment.style.width = "100%"
+          segment.style.height = `${segmentHeight}px`
+
+          // Create breakpoint dot
+          const breakpoint = document.createElement("div")
+          breakpoint.className = "breakpoint"
           breakpoint.addEventListener("click", () => editTimepoint(i))
-        }
 
-        // Create time control (for non-infinity points)
-        if (!isInfinity) {
+          // Create time control
           const timeControl = document.createElement("div")
           timeControl.className = "time-control"
-          
+          timeControl.title = "Duration breakpoint"
+
           const timeInput = document.createElement("input")
           timeInput.type = "number"
           timeInput.min = "0"
           timeInput.step = "1"
           timeInput.value = currentRange.point
           timeInput.placeholder = "0"
-          timeInput.addEventListener("change", function() {
+          timeInput.addEventListener("change", function () {
             updateBreakpointTime(i, parseFloat(this.value) || 0)
           })
-          
+
           const timeLabel = document.createElement("span")
           timeLabel.className = "label"
           timeLabel.textContent = "min"
-          
+
           timeControl.appendChild(timeInput)
           timeControl.appendChild(timeLabel)
+
+          // Add remove button for non-first breakpoints
+          if (i > 0) {
+            const removeBtn = document.createElement("button")
+            removeBtn.className = "remove-breakpoint-btn"
+            removeBtn.innerHTML = '<i class="bi bi-x"></i>'
+            removeBtn.title = "Remove breakpoint"
+            removeBtn.addEventListener("click", () => removeBreakpoint(i))
+            segment.appendChild(removeBtn)
+          }
+
+          segment.appendChild(breakpoint)
           segment.appendChild(timeControl)
+          verticalTimeline.appendChild(segment)
         }
 
-        // Create speed control
-        const speedControl = document.createElement("div")
-        speedControl.className = "speed-control"
-        
-        const speedInput = document.createElement("input")
-        speedInput.type = "number"
-        speedInput.min = "0.1"
-        speedInput.max = "8.0"
-        speedInput.step = "0.1"
-        speedInput.value = currentRange.speed.toFixed(1)
-        speedInput.placeholder = "1.0"
-        speedInput.addEventListener("change", function() {
-          updateRangeSpeed(i, parseFloat(this.value) || 1.0)
-        })
-        
-        const speedLabel = document.createElement("span")
-        speedLabel.className = "label"
-        speedLabel.textContent = "×"
-        
-        speedControl.appendChild(speedInput)
-        speedControl.appendChild(speedLabel)
+        // Create range and speed control (for each range between breakpoints)
+        if (i > 0) {
+          // Skip the first breakpoint since it's just the starting point
+          const rangeSegment = document.createElement("div")
+          rangeSegment.className = "speed-segment"
+          rangeSegment.style.position = "absolute"
 
-        // Create range label
-        const rangeLabel = document.createElement("div")
-        rangeLabel.className = `range-label ${isInfinity ? 'infinity' : ''}`
-        if (isInfinity) {
-          rangeLabel.textContent = "∞ Beyond last breakpoint"
-        } else if (i === 0) {
-          rangeLabel.textContent = `0 - ${currentRange.point} min`
-        } else {
-          const prevPoint = speedRanges[i-1]?.point || 0
-          rangeLabel.textContent = `${prevPoint} - ${currentRange.point} min`
+          // Position range segment between previous and current breakpoint
+          const prevSegmentTop = (i - 1) * segmentHeight + 40
+          const currentSegmentTop = isInfinity ? (i - 1) * segmentHeight + 40 + segmentHeight : i * segmentHeight + 40
+          rangeSegment.style.top = `${prevSegmentTop + segmentHeight / 2}px`
+          rangeSegment.style.width = "100%"
+          rangeSegment.style.height = `${segmentHeight / 2}px`
+
+          // Create speed control for this range
+          const speedControl = document.createElement("div")
+          speedControl.className = "speed-control"
+          speedControl.title = `Playback speed for this range`
+
+          const speedInput = document.createElement("input")
+          speedInput.type = "number"
+          speedInput.min = "0.1"
+          speedInput.max = "8.0"
+          speedInput.step = "0.1"
+          speedInput.value = currentRange.speed.toFixed(1)
+          speedInput.placeholder = "1.0"
+          speedInput.addEventListener("change", function () {
+            updateRangeSpeed(i, parseFloat(this.value) || 1.0)
+          })
+
+          const speedLabel = document.createElement("span")
+          speedLabel.className = "label"
+          speedLabel.textContent = "×"
+
+          speedControl.appendChild(speedInput)
+          speedControl.appendChild(speedLabel)
+
+          // Create range label
+          const rangeLabel = document.createElement("div")
+          rangeLabel.className = `range-label ${isInfinity ? "infinity" : ""}`
+          const prevPoint = speedRanges[i - 1].point
+          if (isInfinity) {
+            rangeLabel.textContent = `${prevPoint}min to ∞`
+          } else {
+            rangeLabel.textContent = `${prevPoint} to ${currentRange.point}min`
+          }
+
+          rangeSegment.appendChild(speedControl)
+          rangeSegment.appendChild(rangeLabel)
+          verticalTimeline.appendChild(rangeSegment)
         }
-
-        // Add remove button for non-first, non-infinity ranges
-        if (i > 0 && !isInfinity) {
-          const removeBtn = document.createElement("button")
-          removeBtn.className = "remove-breakpoint-btn"
-          removeBtn.innerHTML = '<i class="bi bi-x"></i>'
-          removeBtn.title = "Remove breakpoint"
-          removeBtn.addEventListener("click", () => removeBreakpoint(i))
-          segment.appendChild(removeBtn)
-        }
-
-        segment.appendChild(breakpoint)
-        segment.appendChild(speedControl)
-        segment.appendChild(rangeLabel)
-        verticalTimeline.appendChild(segment)
       })
 
       // Add infinity fade effect
       const infinityFade = document.createElement("div")
       infinityFade.className = "infinity-fade"
-      infinityFade.style.top = `${(speedRanges.length - 1) * segmentHeight + 20}px`
-      verticalTimeline.appendChild(infinityFade)
+      // Position it after the last non-infinity breakpoint
+      const lastNonInfinityIndex = speedRanges.findIndex((r) => r.point === -1) - 1
+      if (lastNonInfinityIndex >= 0) {
+        infinityFade.style.top = `${lastNonInfinityIndex * segmentHeight + 40 + segmentHeight + 30}px`
+        verticalTimeline.appendChild(infinityFade)
+      }
 
       updateRangeCount()
-
     } catch (error) {
       console.error("Error rendering vertical timeline:", error)
       showStatus("Error rendering timeline. Try reloading.", 3000)
@@ -401,12 +420,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function updateBreakpointTime(index, newTime) {
     if (index === 0 || newTime <= 0) return // Can't change first breakpoint or set negative time
-    
+
     // Validate time is greater than previous and less than next
     const prevTime = index > 0 ? speedRanges[index - 1].point : 0
     const nextRange = speedRanges[index + 1]
     const nextTime = nextRange && nextRange.point !== -1 ? nextRange.point : Infinity
-    
+
     if (newTime > prevTime && newTime < nextTime) {
       speedRanges[index].point = newTime
       saveSpeedRanges()
