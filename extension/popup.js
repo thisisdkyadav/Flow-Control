@@ -19,6 +19,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const helpButton = document.getElementById("help-button")
   const helpOverlay = document.getElementById("help-overlay")
   const closeHelpButton = document.getElementById("close-help")
+  const rangeCountDisplay = document.getElementById("range-count")
+  const verticalTimeline = document.getElementById("vertical-timeline")
 
   const MAX_SPEED = 4.0
   const MIN_SPEED = 0.1
@@ -163,6 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       renderRanges()
+      updateRangeCount()
     })
   }
 
@@ -176,6 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
       speedRanges[speedRanges.length - 1].speed = speedRanges[speedRanges.length - 2].speed
     }
     saveSpeedRanges()
+    updateRangeCount()
   }
 
   function sortRanges() {
@@ -194,7 +198,15 @@ document.addEventListener("DOMContentLoaded", function () {
     chrome.storage.sync.set(data, function () {
       showStatus("Range settings saved")
       notifyContentScript()
+      updateRangeCount()
     })
+  }
+
+  function updateRangeCount() {
+    if (rangeCountDisplay) {
+      const count = speedRanges.filter(r => r.point !== -1).length
+      rangeCountDisplay.textContent = `${count} ranges`
+    }
   }
 
   function notifyContentScript() {
@@ -240,75 +252,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   })
 
-  setLastPointButton.addEventListener("click", function () {
-    try {
-      const newPointValue = parseFloat(newPointInput.value)
-
-      if (isNaN(newPointValue) || newPointValue <= 0) {
-        showStatus("Please enter a valid number greater than 0", 3000)
-        return
-      }
-
-      const infinityIndex = speedRanges.findIndex((r) => r.point === -1)
-      if (infinityIndex <= 0) {
-        showStatus("Error: Invalid range structure", 3000)
-        return
-      }
-
-      const lastRegularIndex = infinityIndex - 1
-
-      if (lastRegularIndex > 0 && newPointValue <= speedRanges[lastRegularIndex - 1].point) {
-        showStatus(`Value must be greater than ${speedRanges[lastRegularIndex - 1].point}`, 3000)
-        return
-      }
-
-      speedRanges[lastRegularIndex].point = newPointValue
-
-      saveSpeedRanges()
-      renderRanges()
-
-      newPointInput.value = ""
-
-      showStatus("Last breakpoint updated")
-    } catch (error) {
-      console.error("Error setting last point:", error)
-      showStatus("Error updating breakpoint", 3000)
-    }
-  })
-
-  function renderTimeline() {
-    rangeTimeline.innerHTML = ""
-
-    const regularRanges = speedRanges.filter((r) => r.point !== -1)
-
-    if (regularRanges.length === 0) {
-      return
-    }
-
-    const maxPoint = Math.max(...regularRanges.map((r) => r.point)) || 10
-
-    speedRanges.forEach((range, index) => {
-      if (range.point === -1) return
-
-      const position = Math.min(100, Math.max(0, (range.point / maxPoint) * 100))
-
-      const point = document.createElement("div")
-      point.className = "range-point"
-      point.style.left = `${position}%`
-      point.dataset.index = index
-
-      const label = document.createElement("div")
-      label.className = "range-point-label"
-      label.textContent = `${range.point}m`
-      point.appendChild(label)
-
-      rangeTimeline.appendChild(point)
-
-      if (range.point !== 0) {
-        makeDraggable(point, index, maxPoint)
-      }
-    })
-  }
+  // Remove old setLastPointButton listener - no longer needed with vertical timeline
 
   function removeBreakpoint(index) {
     if (index <= 0 || index >= speedRanges.length - 1 || speedRanges[index].point === -1) {
@@ -328,116 +272,168 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  function makeDraggable(element, index, maxPoint) {
-    element.addEventListener("mousedown", function (e) {
-      e.preventDefault()
-
-      const originalPoint = speedRanges[index].point
-
-      function movePoint(event) {
-        try {
-          const rect = rangeTimeline.getBoundingClientRect()
-          const x = event.clientX - rect.left
-          let position = Math.max(0, Math.min(x, rect.width)) / rect.width
-
-          let newPoint = Math.round(position * maxPoint * 2) / 2
-
-          const prevPoint = index > 0 ? speedRanges[index - 1].point : 0
-          const nextRange = speedRanges.find((r, i) => i > index && r.point !== -1)
-          const nextPoint = nextRange ? nextRange.point : maxPoint + 5
-
-          newPoint = Math.max(prevPoint + 0.5, Math.min(newPoint, nextPoint - 0.5))
-
-          element.style.left = `${(newPoint / maxPoint) * 100}%`
-          element.querySelector(".range-point-label").textContent = `${newPoint}m`
-
-          speedRanges[index].point = newPoint
-        } catch (error) {
-          console.error("Error during drag:", error)
-          speedRanges[index].point = originalPoint
-        }
-      }
-
-      function stopMoving() {
-        document.removeEventListener("mousemove", movePoint)
-        document.removeEventListener("mouseup", stopMoving)
-        saveSpeedRanges()
-        renderRanges()
-      }
-
-      document.addEventListener("mousemove", movePoint)
-      document.addEventListener("mouseup", stopMoving)
-    })
-  }
-
   function renderRanges() {
     try {
-      renderTimeline()
-
-      if (!rangesContainer) {
-        console.error("Ranges container not found")
+      if (!verticalTimeline) {
+        console.error("Vertical timeline container not found")
         return
       }
 
-      rangesContainer.innerHTML = ""
+      verticalTimeline.innerHTML = ""
 
-      for (let i = 0; i < speedRanges.length - 1; i++) {
-        const currentRange = speedRanges[i]
-        const nextRange = speedRanges[i + 1]
+      // Calculate container height based on number of ranges
+      const segmentHeight = 100
+      const containerHeight = Math.max(400, speedRanges.length * segmentHeight + 80)
+      verticalTimeline.style.height = `${containerHeight}px`
 
-        const section = document.createElement("div")
-        section.className = "range-section"
-        if (nextRange.point === -1) {
-          section.classList.add("infinity-section")
+      // Create the timeline bar
+      const timelineBar = document.createElement("div")
+      timelineBar.className = "timeline-bar"
+      timelineBar.style.height = `${containerHeight - 80}px`
+      verticalTimeline.appendChild(timelineBar)
+
+      // Generate timeline segments for each range
+      speedRanges.forEach((currentRange, i) => {
+        const isInfinity = currentRange.point === -1
+
+        // Create timeline segment
+        const segment = document.createElement("div")
+        segment.className = "timeline-segment"
+        segment.style.position = "absolute"
+        segment.style.top = `${i * segmentHeight + 40}px`
+        segment.style.width = "100%"
+        segment.style.height = `${segmentHeight}px`
+
+        // Create breakpoint dot
+        const breakpoint = document.createElement("div")
+        breakpoint.className = `breakpoint ${isInfinity ? 'infinity' : ''}`
+        if (!isInfinity) {
+          breakpoint.addEventListener("click", () => editTimepoint(i))
         }
 
-        const rangeText = nextRange.point === -1 ? `${currentRange.point}+ minutes` : `${currentRange.point} - ${nextRange.point} minutes`
-
-        const deleteButtonHtml = i > 0 && i < speedRanges.length - 2 ? `<button class="delete-range-btn" data-index="${i}" title="Remove breakpoint">&times;</button>` : ""
-
-        section.innerHTML = `
-          <div class="range-section-header">
-            <span>${rangeText}</span>
-            <div class="slider-value">${currentRange.speed.toFixed(2)}x</div>
-            ${deleteButtonHtml}
-          </div>
-          <input type="range" class="speed-range-slider" data-index="${i}"
-                min="0.25" max="${MAX_SPEED}" step="0.25" value="${currentRange.speed}">
-        `
-
-        rangesContainer.appendChild(section)
-
-        const slider = section.querySelector(".speed-range-slider")
-        if (slider) {
-          slider.addEventListener("input", function () {
-            const speed = parseFloat(this.value)
-            section.querySelector(".slider-value").textContent = speed.toFixed(2) + "x"
+        // Create time control (for non-infinity points)
+        if (!isInfinity) {
+          const timeControl = document.createElement("div")
+          timeControl.className = "time-control"
+          
+          const timeInput = document.createElement("input")
+          timeInput.type = "number"
+          timeInput.min = "0"
+          timeInput.step = "1"
+          timeInput.value = currentRange.point
+          timeInput.placeholder = "0"
+          timeInput.addEventListener("change", function() {
+            updateBreakpointTime(i, parseFloat(this.value) || 0)
           })
-
-          slider.addEventListener("change", function () {
-            const speed = parseFloat(this.value)
-            speedRanges[i].speed = speed
-            saveSpeedRanges()
-          })
+          
+          const timeLabel = document.createElement("span")
+          timeLabel.className = "label"
+          timeLabel.textContent = "min"
+          
+          timeControl.appendChild(timeInput)
+          timeControl.appendChild(timeLabel)
+          segment.appendChild(timeControl)
         }
 
-        const deleteButton = section.querySelector(".delete-range-btn")
-        if (deleteButton) {
-          deleteButton.addEventListener("click", function () {
-            const index = parseInt(this.dataset.index)
-            removeBreakpoint(index)
-          })
-        }
-      }
+        // Create speed control
+        const speedControl = document.createElement("div")
+        speedControl.className = "speed-control"
+        
+        const speedInput = document.createElement("input")
+        speedInput.type = "number"
+        speedInput.min = "0.1"
+        speedInput.max = "8.0"
+        speedInput.step = "0.1"
+        speedInput.value = currentRange.speed.toFixed(1)
+        speedInput.placeholder = "1.0"
+        speedInput.addEventListener("change", function() {
+          updateRangeSpeed(i, parseFloat(this.value) || 1.0)
+        })
+        
+        const speedLabel = document.createElement("span")
+        speedLabel.className = "label"
+        speedLabel.textContent = "×"
+        
+        speedControl.appendChild(speedInput)
+        speedControl.appendChild(speedLabel)
 
-      const lastRegularIndex = speedRanges.findIndex((r) => r.point === -1) - 1
-      if (lastRegularIndex >= 0 && newPointInput) {
-        const lastPoint = speedRanges[lastRegularIndex].point
-        newPointInput.placeholder = (lastPoint + 5).toString()
-      }
+        // Create range label
+        const rangeLabel = document.createElement("div")
+        rangeLabel.className = `range-label ${isInfinity ? 'infinity' : ''}`
+        if (isInfinity) {
+          rangeLabel.textContent = "∞ Beyond last breakpoint"
+        } else if (i === 0) {
+          rangeLabel.textContent = `0 - ${currentRange.point} min`
+        } else {
+          const prevPoint = speedRanges[i-1]?.point || 0
+          rangeLabel.textContent = `${prevPoint} - ${currentRange.point} min`
+        }
+
+        // Add remove button for non-first, non-infinity ranges
+        if (i > 0 && !isInfinity) {
+          const removeBtn = document.createElement("button")
+          removeBtn.className = "remove-breakpoint-btn"
+          removeBtn.innerHTML = '<i class="bi bi-x"></i>'
+          removeBtn.title = "Remove breakpoint"
+          removeBtn.addEventListener("click", () => removeBreakpoint(i))
+          segment.appendChild(removeBtn)
+        }
+
+        segment.appendChild(breakpoint)
+        segment.appendChild(speedControl)
+        segment.appendChild(rangeLabel)
+        verticalTimeline.appendChild(segment)
+      })
+
+      // Add infinity fade effect
+      const infinityFade = document.createElement("div")
+      infinityFade.className = "infinity-fade"
+      infinityFade.style.top = `${(speedRanges.length - 1) * segmentHeight + 20}px`
+      verticalTimeline.appendChild(infinityFade)
+
+      updateRangeCount()
+
     } catch (error) {
-      console.error("Error rendering ranges:", error)
-      showStatus("Error rendering ranges. Try reloading.", 3000)
+      console.error("Error rendering vertical timeline:", error)
+      showStatus("Error rendering timeline. Try reloading.", 3000)
+    }
+  }
+
+  function updateBreakpointTime(index, newTime) {
+    if (index === 0 || newTime <= 0) return // Can't change first breakpoint or set negative time
+    
+    // Validate time is greater than previous and less than next
+    const prevTime = index > 0 ? speedRanges[index - 1].point : 0
+    const nextRange = speedRanges[index + 1]
+    const nextTime = nextRange && nextRange.point !== -1 ? nextRange.point : Infinity
+    
+    if (newTime > prevTime && newTime < nextTime) {
+      speedRanges[index].point = newTime
+      saveSpeedRanges()
+      renderRanges()
+    } else {
+      // Reset to original value if invalid
+      renderRanges()
+      showStatus("Invalid time range", 2000)
+    }
+  }
+
+  function updateRangeSpeed(index, newSpeed) {
+    if (newSpeed >= 0.1 && newSpeed <= 8.0) {
+      speedRanges[index].speed = newSpeed
+      saveSpeedRanges()
+    } else {
+      renderRanges() // Reset to original value
+      showStatus("Speed must be between 0.1x and 8.0x", 2000)
+    }
+  }
+
+  function editTimepoint(index) {
+    // Allow inline editing of timepoint
+    const timeControl = document.querySelector(`.timeline-segment:nth-child(${index + 2}) .time-control input`)
+    if (timeControl) {
+      timeControl.focus()
+      timeControl.select()
     }
   }
 

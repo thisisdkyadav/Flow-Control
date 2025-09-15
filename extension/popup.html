@@ -105,29 +105,27 @@
 
         <div id="ranges-tab" class="tab-content">
             <div id="ranges-content">
-                <div class="range-series">
-                    <div class="range-timeline" id="range-timeline">
-                        <!-- Range points will be added dynamically -->
+                <!-- Top Action Controls -->
+                <div class="ranges-header">
+                    <div class="ranges-title">
+                        <h3><i class="bi bi-graph-up"></i> Speed Timeline</h3>
+                        <span class="range-count" id="range-count">3 ranges</span>
+                    </div>
+                    <div class="ranges-actions">
+                        <button class="add-breakpoint-btn" id="add-range-button" title="Add Breakpoint">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                        <button class="reset-ranges-btn" id="reset-ranges-button" title="Reset to Default">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </button>
                     </div>
                 </div>
 
-                <div class="ranges-container" id="ranges-container">
-                    <!-- Range sections will be added dynamically -->
-                </div>
-
-                <div class="manual-point-input">
-                    <label for="new-point-value"><i class="bi bi-clock"></i> Final breakpoint (minutes)</label>
-                    <div class="input-group">
-                        <input type="number" id="new-point-value" min="1" step="1" placeholder="e.g., 20">
-                        <button id="set-last-point">Set</button>
+                <!-- Vertical Timeline -->
+                <div class="vertical-timeline-container">
+                    <div class="vertical-timeline" id="vertical-timeline">
+                        <!-- Timeline segments and breakpoints will be generated dynamically -->
                     </div>
-                </div>
-
-                <div class="action-buttons">
-                    <button class="add-range-btn" id="add-range-button"><i class="bi bi-plus-lg"></i> Add
-                        breakpoint</button>
-                    <button class="reset-ranges-btn" id="reset-ranges-button"><i
-                            class="bi bi-arrow-counterclockwise"></i> Reset</button>
                 </div>
             </div>
         </div>
