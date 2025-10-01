@@ -476,7 +476,7 @@ div[class^="panel-"] {
 }
 
 .time-control input {
-  width: 35px;
+  width: 48px;
   padding: 2px 4px;
   border: 1px solid var(--border-color);
   background: white;
@@ -535,7 +535,7 @@ div[class^="panel-"] {
 }
 
 .speed-control input {
-  width: 35px;
+  width: 48px;
   padding: 2px 4px;
   border: 1px solid var(--border-color);
   background: white;

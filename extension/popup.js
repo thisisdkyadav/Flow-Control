@@ -375,7 +375,7 @@ document.addEventListener("DOMContentLoaded", function () {
           speedInput.value = currentRange.speed.toFixed(1)
           speedInput.placeholder = "1.0"
           speedInput.addEventListener("change", function () {
-            updateRangeSpeed(i, parseFloat(this.value) || 1.0)
+            updateRangeSpeed(i - 1, parseFloat(this.value) || 1.0)
           })
 
           const speedLabel = document.createElement("span")
