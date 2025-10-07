@@ -234,91 +234,19 @@
         <div class="container">
             <div class="section-header">
                 <h2>How to Install</h2>
-                <p>Get started with Flow Control in a few simple steps</p>
+                <p>Get started with Flow Control in just one click</p>
             </div>
 
-            <div class="browser-selector-container">
-                <div class="browser-selector">
-                    <p>Select your browser:</p>
-                    <div class="browser-buttons-container">
-                        <button class="browser-select-btn active" data-browser="chrome">
-                            <i class="fab fa-chrome"></i> Chrome
-                        </button>
-                        <button class="browser-select-btn" data-browser="edge">
-                            <i class="fab fa-edge"></i> Edge <span class="direct-install-badge">Direct Install</span>
-                        </button>
-                        <button class="browser-select-btn" data-browser="brave">
-                            <i class="fab fa-chrome"></i> Brave
-                        </button>
-                        <button class="browser-select-btn" data-browser="opera">
-                            <i class="fab fa-opera"></i> Opera
-                        </button>
-                        <button class="browser-select-btn" data-browser="firefox">
-                            <i class="fab fa-firefox"></i> Firefox
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Add Edge notice for other browsers -->
-            <div id="edge-notice" class="edge-notice" style="display: none;">
-                <i class="fab fa-edge"></i>
-                <span>Edge users: <a href="#" id="switch-to-edge">Switch to Edge</a> for direct installation from the
-                    Microsoft Store.</span>
-            </div>
-
-            <!-- Add Edge Store Option -->
-            <div id="edge-store-option" class="edge-store-option" style="display: none;">
+            <div class="chrome-store-installation">
                 <div class="store-banner">
-                    <i class="fab fa-microsoft"></i>
-                    <h3>Install directly from Microsoft Edge Add-ons Store</h3>
-                    <a href="https://microsoftedge.microsoft.com/addons/detail/flow-control/beddgcklojomegoeahaalhdminpmlfao"
+                    <i class="bi bi-browser-chrome"></i>
+                    <h3>Install from Chrome Web Store</h3>
+                    <p>The easiest way to install Flow Control</p>
+                    <a href="https://chromewebstore.google.com/detail/flow-control/aimmndbolbcdighebiddijgfnipbmhef"
                         class="button button-primary" target="_blank">
-                        <i class="fab fa-edge"></i> Get from Edge Add-ons
+                        <i class="bi bi-download"></i> Add to Chrome
                     </a>
-                    <p>Or follow the manual installation steps below:</p>
-                </div>
-            </div>
-
-            <div class="steps">
-                <div class="step" data-aos="fade-up" data-aos-delay="100">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>Download</h3>
-                        <p>Download the extension files (e.g., as a ZIP) from <a
-                                href="https://github.com/thisisdkyadav/Flow-Control">GitHub</a> or clone the
-                            repository. If downloaded as a ZIP, unzip it.</p>
-                    </div>
-                </div>
-
-                <div class="step" data-aos="fade-up" data-aos-delay="100">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3 id="dev-mode-step-title">Enable Developer Mode</h3>
-                        <p id="dev-mode-instructions">Open your browser and go to <code
-                                id="extension-url">chrome://extensions/</code>, then enable "Developer mode" using the
-                            toggle switch (usually in the top-right corner).</p>
-                    </div>
-                </div>
-
-                <div class="step" data-aos="fade-up" data-aos-delay="100">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3 id="load-extension-step-title">Load Extension</h3>
-                        <p id="load-unpacked-instructions">Click "Load unpacked" and select the
-                            <strong><code>extension</code></strong> folder located
-                            inside the project directory you downloaded/cloned.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="step" data-aos="fade-up" data-aos-delay="100">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <h3>Start Using</h3>
-                        <p>Click the Flow Control icon in your browser toolbar to start controlling video speeds on any
-                            site.</p>
-                    </div>
+                    <p class="store-note">Open source on <a href="https://github.com/thisisdkyadav/Flow-Control" target="_blank">GitHub</a> if you want to install manually</p>
                 </div>
             </div>
         </div>
@@ -482,91 +410,6 @@
             });
         });
 
-        // Installation instructions based on browser
-        const browserInstructions = {
-            chrome: {
-                url: 'chrome://extensions/',
-                devModeTitle: 'Enable Developer Mode',
-                devModeText: 'Open Chrome and go to <code id="extension-url">chrome://extensions/</code>, then enable "Developer mode" using the toggle switch (usually in the top-right corner).',
-                loadTitle: 'Load Extension',
-                loadText: 'Click "Load unpacked" and select the <strong><code>extension</code></strong> folder located inside the project directory you downloaded/cloned.'
-            },
-            edge: {
-                url: 'edge://extensions/',
-                devModeTitle: 'Enable Developer Mode',
-                devModeText: 'Open Edge and go to <code id="extension-url">edge://extensions/</code>, then enable "Developer mode" using the toggle switch (usually in the bottom-left corner).',
-                loadTitle: 'Load Extension',
-                loadText: 'Click "Load unpacked" and select the <strong><code>extension</code></strong> folder located inside the project directory you downloaded/cloned.'
-            },
-            brave: {
-                url: 'brave://extensions/',
-                devModeTitle: 'Enable Developer Mode',
-                devModeText: 'Open Brave and go to <code id="extension-url">brave://extensions/</code>, then enable "Developer mode" using the toggle switch (usually in the top-right corner).',
-                loadTitle: 'Load Extension',
-                loadText: 'Click "Load unpacked" and select the <strong><code>extension</code></strong> folder located inside the project directory you downloaded/cloned.'
-            },
-            opera: {
-                url: 'opera://extensions',
-                devModeTitle: 'Enable Developer Mode',
-                devModeText: 'Open Opera and go to <code id="extension-url">opera://extensions</code>, then enable "Developer mode" using the toggle switch (usually in the top-right corner).',
-                loadTitle: 'Load Extension',
-                loadText: 'Click "Load unpacked" and select the <strong><code>extension</code></strong> folder located inside the project directory you downloaded/cloned.'
-            },
-            firefox: {
-                url: 'about:debugging#/runtime/this-firefox',
-                devModeTitle: 'Access Debugging',
-                devModeText: 'Open Firefox and go to <code id="extension-url">about:debugging#/runtime/this-firefox</code>. No "Developer mode" toggle is needed here.',
-                loadTitle: 'Load Temporary Add-on',
-                loadText: 'Click "Load Temporary Add-on..." and select the <strong><code>manifest.json</code></strong> file located inside the <strong><code>extension</code></strong> folder.'
-            }
-        };
-
-        const browserSelector = document.querySelector('.browser-selector');
-        const extensionUrlElement = document.getElementById('extension-url');
-        const devModeTitleElement = document.getElementById('dev-mode-step-title');
-        const devModeInstructionsElement = document.getElementById('dev-mode-instructions');
-        const loadExtensionTitleElement = document.getElementById('load-extension-step-title');
-        const loadUnpackedInstructionsElement = document.getElementById('load-unpacked-instructions');
-
-        browserSelector.addEventListener('click', (event) => {
-            if (event.target.classList.contains('browser-select-btn')) {
-                const selectedBrowser = event.target.dataset.browser;
-
-                // Update button styles
-                browserSelector.querySelectorAll('.browser-select-btn').forEach(btn => btn.classList.remove('active'));
-                event.target.classList.add('active');
-
-                // Update instructions
-                const instructions = browserInstructions[selectedBrowser];
-                if (instructions) {
-                    devModeTitleElement.textContent = instructions.devModeTitle;
-                    devModeInstructionsElement.innerHTML = instructions.devModeText; // Use innerHTML to render the <code> tag
-                    loadExtensionTitleElement.textContent = instructions.loadTitle;
-                    loadUnpackedInstructionsElement.innerHTML = instructions.loadText; // Use innerHTML for <strong> tags
-                }
-
-                // Show/hide Edge store option
-                const edgeStoreOption = document.getElementById('edge-store-option');
-                const edgeNotice = document.getElementById('edge-notice');
-                if (selectedBrowser === 'edge') {
-                    edgeStoreOption.style.display = 'block';
-                    edgeNotice.style.display = 'none';
-                } else {
-                    edgeStoreOption.style.display = 'none';
-                    edgeNotice.style.display = 'flex';
-                }
-            }
-        });
-
-        // Initialize with default (Chrome)
-        function initializeInstructions() {
-            const defaultInstructions = browserInstructions.chrome;
-            devModeTitleElement.textContent = defaultInstructions.devModeTitle;
-            devModeInstructionsElement.innerHTML = defaultInstructions.devModeText;
-            loadExtensionTitleElement.textContent = defaultInstructions.loadTitle;
-            loadUnpackedInstructionsElement.innerHTML = defaultInstructions.loadText;
-        }
-        initializeInstructions(); // Call on page load
 
         // Initialize AOS (Animate On Scroll)
         document.addEventListener('DOMContentLoaded', function () {
@@ -698,19 +541,6 @@
             });
         });
 
-        // Responsive browser selector handling for mobile
-        function adjustBrowserSelector() {
-            const container = document.querySelector('.browser-buttons-container');
-            if (window.innerWidth < 600) {
-                container.classList.add('mobile-view');
-            } else {
-                container.classList.remove('mobile-view');
-            }
-        }
-
-        // Call on load and resize
-        window.addEventListener('load', adjustBrowserSelector);
-        window.addEventListener('resize', adjustBrowserSelector);
 
         // Disable AOS animations on mobile for better performance
         function handleAOSOnMobile() {
@@ -733,21 +563,7 @@
             handleAOSOnMobile();
         });
 
-        // Add Edge Notice Functionality
-        document.getElementById('switch-to-edge').addEventListener('click', function (e) {
-            e.preventDefault();
-            // Find and click the Edge button
-            const edgeButton = document.querySelector('.browser-select-btn[data-browser="edge"]');
-            if (edgeButton) {
-                edgeButton.click();
-            }
-        });
 
-        // Initialize the Edge notice (hide on first load since Chrome is default)
-        document.addEventListener('DOMContentLoaded', function () {
-            // Edge notice should be hidden initially since Chrome is the default
-            document.getElementById('edge-notice').style.display = 'none';
-        });
 
     </script>
 </body>

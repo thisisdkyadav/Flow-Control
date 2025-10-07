@@ -822,6 +822,16 @@ header .container {
   background-color: var(--background-color);
 }
 
+/* Simplified Chrome Store Installation Styles */
+.chrome-store-installation {
+  max-width: 800px;
+  margin: 0 auto var(--space-lg);
+}
+
+.store-note {
+  color: var(--text-light);
+}
+
 /* NEW: Browser Selector Styles */
 .browser-selector {
   max-width: 800px;
