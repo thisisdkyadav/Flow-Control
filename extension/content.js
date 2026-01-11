@@ -1,12 +1,7 @@
 let currentSpeed = 1.0
-let isYouTube = window.location.hostname.includes("youtube.com")
-let speedRanges = []
-let rangeBasedEnabled = false
-let lastAppliedSpeeds = {}
 let extensionEnabled = true
 let isHolding = false
 let holdingSpeed = null
-let previousSpeed = null
 const SPEED_INCREMENT = 0.25
 const MIN_SPEED = 0.25
 const MAX_SPEED = 4.0
@@ -63,19 +58,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       if (!extensionEnabled) {
         resetAllVideoSpeeds()
       } else {
-        if (request.mode === "ranges" && request.ranges) {
-          rangeBasedEnabled = true
-          speedRanges = request.ranges
-          applySpeedToAllVideos()
-        } else if (request.mode === "simple") {
-          rangeBasedEnabled = false
-          if (request.speed !== undefined) {
-            currentSpeed = request.speed
-          }
-          applySpeedToAllVideos(currentSpeed)
-        } else {
-          applySpeedToAllVideos()
+        if (request.speed !== undefined) {
+          currentSpeed = request.speed
         }
+        applySpeedToAllVideos(currentSpeed)
       }
       sendResponse({ success: true })
     } else if (request.action === "setSpeed") {
@@ -86,38 +72,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
       if (request.speed !== undefined) {
         currentSpeed = request.speed
-        rangeBasedEnabled = false
         applySpeedToAllVideos(currentSpeed)
         showSpeedIndicator(currentSpeed)
       }
 
-      sendResponse({ success: true })
-    } else if (request.action === "updateRangeConfig") {
-      rangeBasedEnabled = request.enabled
-
-      if (request.ranges && Array.isArray(request.ranges)) {
-        speedRanges = request.ranges
-      }
-
-      if (extensionEnabled) {
-        applySpeedToAllVideos()
-      }
-      sendResponse({ success: true })
-    } else if (request.action === "resetToDefaults") {
-      speedRanges = [
-        { point: 0, speed: 1.0 },
-        { point: 5, speed: 1.25 },
-        { point: 10, speed: 1.5 },
-        { point: -1, speed: 2.0 },
-      ]
-
-      const data = {}
-      data[`${window.location.hostname}_ranges`] = speedRanges
-      chrome.storage.sync.set(data)
-
-      if (extensionEnabled) {
-        applySpeedToAllVideos()
-      }
       sendResponse({ success: true })
     }
   } catch (error) {
@@ -129,211 +87,53 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 function resetAllVideoSpeeds() {
   const videos = document.querySelectorAll("video")
-  videos.forEach((video, index) => {
+  videos.forEach((video) => {
     try {
       if (video.playbackRate !== 1.0) {
         video.playbackRate = 1.0
       }
-      const videoId = video.src || video.currentSrc || `video_${index}`
-      delete lastAppliedSpeeds[videoId]
     } catch (e) {
       console.error("Error resetting video speed:", e)
     }
   })
 }
 
-function getSpeedForDuration(durationMinutes) {
-  if (!extensionEnabled) {
-    return 1.0
-  }
-  if (!rangeBasedEnabled || !speedRanges || speedRanges.length === 0) {
-    return currentSpeed
-  }
-
-  if (isNaN(durationMinutes) || durationMinutes <= 0) {
-    return currentSpeed
-  }
-
-  const sortedRanges = [...speedRanges].sort((a, b) => {
-    if (a.point === -1) return 1
-    if (b.point === -1) return -1
-    return a.point - b.point
-  })
-
-  for (let i = 0; i < sortedRanges.length - 1; i++) {
-    const currentPoint = sortedRanges[i].point
-    const nextPoint = sortedRanges[i + 1].point
-
-    if (currentPoint === undefined || currentPoint === null) continue
-
-    if (nextPoint === -1) {
-      if (durationMinutes >= currentPoint) {
-        return sortedRanges[i].speed
-      }
-    } else if (durationMinutes >= currentPoint && durationMinutes < nextPoint) {
-      return sortedRanges[i].speed
-    }
-  }
-
-  return currentSpeed
-}
-
-function getVideoDurationMinutes(video) {
-  if (video.duration && video.duration !== Infinity && !isNaN(video.duration)) {
-    return video.duration / 60
-  }
-
-  if (isYouTube) {
-    try {
-      const timeDisplay = document.querySelector(".ytp-time-duration")
-      if (timeDisplay) {
-        const timeText = timeDisplay.textContent
-        const timeParts = timeText.split(":").map(Number)
-        let minutes = 0
-        if (timeParts.length === 2) {
-          minutes = timeParts[0] + timeParts[1] / 60
-        } else if (timeParts.length === 3) {
-          minutes = timeParts[0] * 60 + timeParts[1] + timeParts[2] / 60
-        }
-
-        if (!isNaN(minutes) && minutes > 0) {
-          return minutes
-        }
-      }
-
-      const videoData = document.querySelector("video")
-      if (videoData && videoData.dataset && videoData.dataset.durationSeconds) {
-        const durationSeconds = parseFloat(videoData.dataset.durationSeconds)
-        if (!isNaN(durationSeconds) && durationSeconds > 0) {
-          return durationSeconds / 60
-        }
-      }
-    } catch (e) {}
-  }
-
-  try {
-    const metaDuration = document.querySelector('meta[itemprop="duration"]')
-    if (metaDuration) {
-      const durationStr = metaDuration.getAttribute("content")
-      if (durationStr) {
-        const hours = durationStr.match(/(\d+)H/)
-        const minutes = durationStr.match(/(\d+)M/)
-        const seconds = durationStr.match(/(\d+)S/)
-
-        let totalMinutes = 0
-        if (hours && hours[1]) totalMinutes += parseInt(hours[1]) * 60
-        if (minutes && minutes[1]) totalMinutes += parseInt(minutes[1])
-        if (seconds && seconds[1]) totalMinutes += parseInt(seconds[1]) / 60
-
-        if (totalMinutes > 0) {
-          return totalMinutes
-        }
-      }
-    }
-  } catch (e) {}
-
-  return -1
-}
-
-function applySpeedToAllVideos(forcedSpeed = null) {
+function applySpeedToAllVideos(speed = null) {
   if (!extensionEnabled) {
     resetAllVideoSpeeds()
     return
   }
 
+  const targetSpeed = isHolding ? holdingSpeed : (speed !== null ? speed : currentSpeed)
   const videos = document.querySelectorAll("video")
 
-  if (videos.length > 0) {
-    videos.forEach((video, index) => {
-      try {
-        const videoId = video.src || video.currentSrc || `video_${index}`
+  videos.forEach((video) => {
+    try {
+      if (video.playbackRate !== targetSpeed) {
+        video.playbackRate = targetSpeed
+      }
 
-        const durationMinutes = getVideoDurationMinutes(video)
+      if (!video.hasAttribute("data-speed-controlled")) {
+        video.setAttribute("data-speed-controlled", "true")
 
-        let speed
-        if (isHolding) {
-          speed = holdingSpeed
-        } else if (forcedSpeed !== null) {
-          speed = forcedSpeed
-        } else if (rangeBasedEnabled && speedRanges.length > 0 && durationMinutes > 0) {
-          speed = getSpeedForDuration(durationMinutes)
-        } else {
-          speed = currentSpeed
-        }
+        video.addEventListener("ratechange", function (event) {
+          if (!extensionEnabled) return
+          const speed = isHolding ? holdingSpeed : currentSpeed
+          if (this.playbackRate !== speed && event.isTrusted) {
+            this.playbackRate = speed
+          }
+        })
 
-        if (lastAppliedSpeeds[videoId] === speed && video.playbackRate === speed) {
-          return
-        }
-
-        video.playbackRate = speed
-        lastAppliedSpeeds[videoId] = speed
-
-        if (!video.hasAttribute("data-speed-controlled")) {
-          video.setAttribute("data-speed-controlled", "true")
-
-          video.addEventListener("durationchange", function () {
-            if (!extensionEnabled) return
-            if (this.duration && this.duration !== Infinity && !isNaN(this.duration)) {
-              const newDurationMinutes = this.duration / 60
-
-              if (isHolding) {
-                speed = holdingSpeed
-              } else if (forcedSpeed !== null) {
-                speed = forcedSpeed
-              } else if (rangeBasedEnabled && speedRanges.length > 0) {
-                speed = getSpeedForDuration(newDurationMinutes)
-              } else {
-                speed = currentSpeed
-              }
-
-              if (this.playbackRate !== speed) {
-                this.playbackRate = speed
-                lastAppliedSpeeds[videoId] = speed
-              }
-            }
-          })
-
-          video.addEventListener("ratechange", function (event) {
-            if (!extensionEnabled) return
-            const durationMinutes = getVideoDurationMinutes(this)
-            if (isHolding) {
-              speed = holdingSpeed
-            } else if (forcedSpeed !== null) {
-              speed = forcedSpeed
-            } else if (rangeBasedEnabled && speedRanges.length > 0) {
-              speed = getSpeedForDuration(durationMinutes)
-            } else {
-              speed = currentSpeed
-            }
-            if (this.playbackRate !== speed && event.isTrusted) {
-              this.playbackRate = speed
-            }
-          })
-
-          video.addEventListener("loadeddata", function () {
-            if (!extensionEnabled) return
-            const videoId = this.src || this.currentSrc || `video_${index}`
-
-            let targetSpeed
-            if (isHolding) {
-              targetSpeed = holdingSpeed
-            } else if (forcedSpeed !== null) {
-              targetSpeed = forcedSpeed
-            } else if (rangeBasedEnabled && speedRanges.length > 0 && this.duration) {
-              targetSpeed = getSpeedForDuration(this.duration / 60)
-            } else {
-              targetSpeed = currentSpeed
-            }
-
-            if (this.playbackRate !== targetSpeed) {
-              this.playbackRate = targetSpeed
-              lastAppliedSpeeds[videoId] = targetSpeed
-            }
-          })
-        }
-      } catch (e) {}
-    })
-  }
+        video.addEventListener("loadeddata", function () {
+          if (!extensionEnabled) return
+          const speed = isHolding ? holdingSpeed : currentSpeed
+          if (this.playbackRate !== speed) {
+            this.playbackRate = speed
+          }
+        })
+      }
+    } catch (e) {}
+  })
 }
 
 function setupVideoPlayListener() {
@@ -342,15 +142,7 @@ function setupVideoPlayListener() {
     function (e) {
       if (!extensionEnabled) return
       if (e.target.tagName === "VIDEO") {
-        const durationMinutes = getVideoDurationMinutes(e.target)
-
-        let speed
-        if (rangeBasedEnabled && speedRanges.length > 0 && durationMinutes > 0) {
-          speed = getSpeedForDuration(durationMinutes)
-        } else {
-          speed = currentSpeed
-        }
-
+        const speed = isHolding ? holdingSpeed : currentSpeed
         if (e.target.playbackRate !== speed) {
           e.target.playbackRate = speed
         }
@@ -384,6 +176,7 @@ function setupVideoObserver() {
 
   observer.observe(document.body, { childList: true, subtree: true })
 
+  const isYouTube = window.location.hostname.includes("youtube.com")
   const checkInterval = isYouTube ? 1000 : 3000
   setInterval(() => {
     if (!extensionEnabled) return
@@ -392,7 +185,7 @@ function setupVideoObserver() {
 }
 
 function setupYouTubeNavObserver() {
-  if (!isYouTube) return
+  if (!window.location.hostname.includes("youtube.com")) return
 
   let lastUrl = location.href
 
@@ -415,12 +208,10 @@ function init() {
   try {
     const hostname = window.location.hostname
 
-    chrome.storage.sync.get([hostname, `${hostname}_ranges`, `${hostname}_enabled`, `${hostname}_active_tab`, `${hostname}_holding_speed`], function (result) {
+    chrome.storage.sync.get([hostname, `${hostname}_enabled`, `${hostname}_holding_speed`], function (result) {
       try {
         if (typeof result[`${hostname}_enabled`] === "boolean") {
           extensionEnabled = result[`${hostname}_enabled`]
-        } else if (result[`${hostname}_active_tab`] === "off") {
-          extensionEnabled = false
         } else {
           extensionEnabled = true
         }
@@ -434,27 +225,10 @@ function init() {
           currentSpeed = parseFloat(result[hostname])
         }
 
-        if (result[`${hostname}_ranges`] && Array.isArray(result[`${hostname}_ranges`]) && result[`${hostname}_ranges`].length > 0) {
-          speedRanges = result[`${hostname}_ranges`]
-        } else {
-          speedRanges = [
-            { point: 0, speed: 1.0 },
-            { point: 5, speed: 1.25 },
-            { point: 10, speed: 1.5 },
-            { point: -1, speed: 2.0 },
-          ]
-        }
-
-        // Initialize holding speed state
         holdingSpeed = result[`${hostname}_holding_speed`] || 2.0
-        previousSpeed = null
-
-        rangeBasedEnabled = result[`${hostname}_active_tab`] === "ranges"
 
         if (extensionEnabled) {
           applySpeedToAllVideos()
-        } else {
-          resetAllVideoSpeeds()
         }
 
         setupVideoObserver()
@@ -484,30 +258,18 @@ document.addEventListener("keydown", function (e) {
   if (e.key === "'") {
     e.preventDefault()
     isHolding = true
-    // if (isHolding) {
     const hostname = window.location.hostname
     chrome.storage.sync.get([`${hostname}_holding_speed`], function (result) {
-      const targetSpeed = result[`${hostname}_holding_speed`] || 2.0 // Default to 2x if not set
+      const targetSpeed = result[`${hostname}_holding_speed`] || 2.0
       holdingSpeed = targetSpeed
-      // currentSpeed = targetSpeed
       applySpeedToAllVideos()
       showSpeedIndicator(targetSpeed)
     })
-    // }
     return
   }
 
   if (e.key === "[" || e.key === "]") {
     e.preventDefault()
-
-    // Switch to simple mode if in ranges mode
-    if (rangeBasedEnabled) {
-      rangeBasedEnabled = false
-      const hostname = window.location.hostname
-      chrome.storage.sync.set({
-        [`${hostname}_active_tab`]: "simple",
-      })
-    }
 
     // Calculate new speed
     let newSpeed = currentSpeed
@@ -534,13 +296,7 @@ document.addEventListener("keyup", function (e) {
   if (e.key === "'" && holdingSpeed !== null) {
     e.preventDefault()
     isHolding = false
-
-    // if (previousSpeed !== null) {
-    // currentSpeed = previousSpeed
     applySpeedToAllVideos()
-    // showSpeedIndicator(currentSpeed)
-    // previousSpeed = null
-    // }
   }
 })
 

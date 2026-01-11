@@ -2,16 +2,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const speedSlider = document.getElementById("speed-slider")
   const sliderValue = document.querySelector(".slider-value")
   const resetButton = document.getElementById("reset-button")
-  const applyAllButton = document.getElementById("apply-all-videos")
   const statusElement = document.getElementById("status")
   const tabs = document.querySelectorAll(".tab")
-  const addRangeButton = document.getElementById("add-range-button")
-  const resetRangesButton = document.getElementById("reset-ranges-button")
-  const rangesContainer = document.getElementById("ranges-container")
-  const rangeTimeline = document.getElementById("range-timeline")
-  const rangesContent = document.getElementById("ranges-content")
-  const newPointInput = document.getElementById("new-point-value")
-  const setLastPointButton = document.getElementById("set-last-point")
   const customSpeedInput = document.getElementById("custom-speed-input")
   const setCustomSpeedButton = document.getElementById("set-custom-speed-button")
   const holdingSpeedInput = document.getElementById("holding-speed-input")
@@ -19,21 +11,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const helpButton = document.getElementById("help-button")
   const helpOverlay = document.getElementById("help-overlay")
   const closeHelpButton = document.getElementById("close-help")
-  const rangeCountDisplay = document.getElementById("range-count")
-  const verticalTimeline = document.getElementById("vertical-timeline")
 
   const MAX_SPEED = 4.0
   const MIN_SPEED = 0.1
 
   let currentHost = ""
-  let speedRanges = []
   let activeTab = "simple"
   let isEnabled = true
 
-  // Function to show status messages with animation
+  // Function to show status messages
   function showStatus(message, duration = 2000) {
-    // Status messages are disabled, so this function does nothing now
-    console.log("Status: " + message) // Log to console instead
+    console.log("Status: " + message)
   }
 
   tabs.forEach((tab) => {
@@ -86,23 +74,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     notifyContentScriptEnabled(isEnabled)
 
-    if (isEnabled && (tabName === "simple" || tabName === "ranges")) {
-      notifyContentScript()
+    if (isEnabled && tabName === "simple") {
+      sendSpeedToContentScript(parseFloat(speedSlider.value))
     }
 
     activeTab = tabName
-
-    // If ranges tab is selected, ensure ranges are rendered
-    if (tabName === "ranges") {
-      loadSpeedRanges()
-    }
   }
 
   function saveActiveTabState(tabName) {
     const data = {}
     data[`${currentHost}_active_tab`] = tabName
     chrome.storage.sync.set(data)
-    // No need to show status message
   }
 
   function loadActiveTabState() {
@@ -113,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
         savedTab = result[`${currentHost}_enabled`] ? "simple" : "off"
       }
 
-      if (!savedTab) {
+      if (!savedTab || savedTab === "ranges") {
         savedTab = "simple"
       }
 
@@ -128,9 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
           .sendMessage(tabs[0].id, {
             action: "setEnabled",
             enabled: isEnabled,
-            mode: activeTab,
-            speed: activeTab === "simple" ? parseFloat(speedSlider.value) : undefined,
-            ranges: activeTab === "ranges" ? speedRanges : undefined,
+            speed: parseFloat(speedSlider.value),
           })
           .catch((error) => {
             console.error("Failed to send enabled state:", error)
@@ -139,348 +119,20 @@ document.addEventListener("DOMContentLoaded", function () {
     })
   }
 
-  function updateRangesContentVisibility(isVisible) {
-    if (rangesContent) {
-      rangesContent.style.opacity = isVisible ? "1" : "0.5"
-      rangesContent.style.pointerEvents = isVisible ? "auto" : "none"
-    }
-  }
-
-  function loadSpeedRanges() {
-    chrome.storage.sync.get([`${currentHost}_ranges`], function (result) {
-      if (result[`${currentHost}_ranges`] && Array.isArray(result[`${currentHost}_ranges`]) && result[`${currentHost}_ranges`].length > 0) {
-        speedRanges = result[`${currentHost}_ranges`]
-      } else {
-        resetToDefaultRanges()
-      }
-
-      sortRanges()
-
-      if (speedRanges.length > 0 && speedRanges[0].point !== 0) {
-        speedRanges.unshift({ point: 0, speed: 1.0 })
-      }
-
-      if (!speedRanges.some((range) => range.point === -1)) {
-        speedRanges.push({ point: -1, speed: 2.0 })
-      }
-
-      renderRanges()
-      updateRangeCount()
-    })
-  }
-
-  function resetToDefaultRanges() {
-    speedRanges = [
-      { point: 0, speed: 1.0 },
-      { point: 5, speed: 1.5 },
-      { point: -1, speed: 1.5 },
-    ]
-    if (speedRanges.length >= 2) {
-      speedRanges[speedRanges.length - 1].speed = speedRanges[speedRanges.length - 2].speed
-    }
-    saveSpeedRanges()
-    updateRangeCount()
-  }
-
-  function sortRanges() {
-    speedRanges.sort((a, b) => {
-      if (a.point === -1) return 1
-      if (b.point === -1) return -1
-      return a.point - b.point
-    })
-  }
-
-  function saveSpeedRanges() {
-    sortRanges()
-
-    const data = {}
-    data[`${currentHost}_ranges`] = speedRanges
-    chrome.storage.sync.set(data, function () {
-      showStatus("Range settings saved")
-      notifyContentScript()
-      updateRangeCount()
-    })
-  }
-
-  function updateRangeCount() {
-    if (rangeCountDisplay) {
-      const count = speedRanges.filter((r) => r.point !== -1).length
-      rangeCountDisplay.textContent = `${count} ranges`
-    }
-  }
-
-  function notifyContentScript() {
+  function sendSpeedToContentScript(speed) {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      if (tabs && tabs[0] && tabs[0].id) {
+      if (tabs[0] && tabs[0].id) {
         chrome.tabs
           .sendMessage(tabs[0].id, {
-            action: "updateRangeConfig",
-            enabled: activeTab === "ranges",
-            ranges: speedRanges,
+            action: "setSpeed",
+            speed: speed,
           })
           .catch((error) => {
-            console.log("Error sending message to content script:", error)
+            console.error("Failed to send speed update:", error)
           })
       }
     })
   }
-
-  resetRangesButton.addEventListener("click", function () {
-    try {
-      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        if (tabs && tabs[0] && tabs[0].id) {
-          chrome.tabs
-            .sendMessage(tabs[0].id, {
-              action: "resetToDefaults",
-            })
-            .then((response) => {
-              if (response && response.success) {
-                loadSpeedRanges()
-                showStatus("Reset to default ranges")
-              }
-            })
-            .catch((error) => {
-              console.error("Error resetting ranges:", error)
-              resetToDefaultRanges()
-              renderRanges()
-            })
-        }
-      })
-    } catch (error) {
-      console.error("Error in reset handler:", error)
-      showStatus("Error resetting ranges", 3000)
-    }
-  })
-
-  // Remove old setLastPointButton listener - no longer needed with vertical timeline
-
-  function removeBreakpoint(index) {
-    if (index <= 0 || index >= speedRanges.length - 1 || speedRanges[index].point === -1) {
-      return
-    }
-
-    try {
-      speedRanges.splice(index, 1)
-
-      saveSpeedRanges()
-      renderRanges()
-
-      showStatus("Breakpoint removed")
-    } catch (error) {
-      console.error("Error removing breakpoint:", error)
-      showStatus("Error removing breakpoint", 3000)
-    }
-  }
-
-  function renderRanges() {
-    try {
-      if (!verticalTimeline) {
-        console.error("Vertical timeline container not found")
-        return
-      }
-
-      verticalTimeline.innerHTML = ""
-
-      // Calculate container height based on number of non-infinity breakpoints
-      const segmentHeight = 120 // Increased height for better spacing
-      const nonInfinityBreakpoints = speedRanges.filter((r) => r.point !== -1).length
-      const containerHeight = Math.max(500, nonInfinityBreakpoints * segmentHeight + 200)
-      verticalTimeline.style.height = `${containerHeight}px`
-
-      // Create the timeline bar
-      const timelineBar = document.createElement("div")
-      timelineBar.className = "timeline-bar"
-      timelineBar.style.height = `${containerHeight - 160}px`
-      verticalTimeline.appendChild(timelineBar)
-
-      // Generate timeline segments for each breakpoint and range
-      speedRanges.forEach((currentRange, i) => {
-        const isInfinity = currentRange.point === -1
-
-        // Create timeline segment for breakpoint (except infinity)
-        if (!isInfinity) {
-          const segment = document.createElement("div")
-          segment.className = "timeline-segment"
-          segment.style.position = "absolute"
-          segment.style.top = `${i * segmentHeight + 40}px`
-          segment.style.width = "100%"
-          segment.style.height = `${segmentHeight}px`
-
-          // Create breakpoint dot
-          const breakpoint = document.createElement("div")
-          breakpoint.className = "breakpoint"
-          breakpoint.addEventListener("click", () => editTimepoint(i))
-
-          // Create time control
-          const timeControl = document.createElement("div")
-          timeControl.className = "time-control"
-          timeControl.title = "Duration breakpoint"
-
-          const timeInput = document.createElement("input")
-          timeInput.type = "number"
-          timeInput.min = "0"
-          timeInput.step = "1"
-          timeInput.value = currentRange.point
-          timeInput.placeholder = "0"
-          timeInput.addEventListener("change", function () {
-            updateBreakpointTime(i, parseFloat(this.value) || 0)
-          })
-
-          const timeLabel = document.createElement("span")
-          timeLabel.className = "label"
-          timeLabel.textContent = "min"
-
-          timeControl.appendChild(timeInput)
-          timeControl.appendChild(timeLabel)
-
-          // Add remove button for non-first breakpoints
-          if (i > 0) {
-            const removeBtn = document.createElement("button")
-            removeBtn.className = "remove-breakpoint-btn"
-            removeBtn.innerHTML = '<i class="bi bi-x"></i>'
-            removeBtn.title = "Remove breakpoint"
-            removeBtn.addEventListener("click", () => removeBreakpoint(i))
-            segment.appendChild(removeBtn)
-          }
-
-          segment.appendChild(breakpoint)
-          segment.appendChild(timeControl)
-          verticalTimeline.appendChild(segment)
-        }
-
-        // Create range and speed control (for each range between breakpoints)
-        if (i > 0) {
-          // Skip the first breakpoint since it's just the starting point
-          const rangeSegment = document.createElement("div")
-          rangeSegment.className = "speed-segment"
-          rangeSegment.style.position = "absolute"
-
-          // Position range segment between previous and current breakpoint
-          const prevSegmentTop = (i - 1) * segmentHeight + 40
-          const currentSegmentTop = isInfinity ? (i - 1) * segmentHeight + 40 + segmentHeight : i * segmentHeight + 40
-          rangeSegment.style.top = `${prevSegmentTop + segmentHeight / 2}px`
-          rangeSegment.style.width = "100%"
-          rangeSegment.style.height = `${segmentHeight / 2}px`
-
-          // Create speed control for this range
-          const speedControl = document.createElement("div")
-          speedControl.className = "speed-control"
-          speedControl.title = `Playback speed for this range`
-
-          const speedInput = document.createElement("input")
-          speedInput.type = "number"
-          speedInput.min = "0.1"
-          speedInput.max = "8.0"
-          speedInput.step = "0.1"
-          speedInput.value = currentRange.speed.toFixed(1)
-          speedInput.placeholder = "1.0"
-          speedInput.addEventListener("change", function () {
-            updateRangeSpeed(i - 1, parseFloat(this.value) || 1.0)
-          })
-
-          const speedLabel = document.createElement("span")
-          speedLabel.className = "label"
-          speedLabel.textContent = "×"
-
-          speedControl.appendChild(speedInput)
-          speedControl.appendChild(speedLabel)
-
-          // Create range label
-          const rangeLabel = document.createElement("div")
-          rangeLabel.className = `range-label ${isInfinity ? "infinity" : ""}`
-          const prevPoint = speedRanges[i - 1].point
-          if (isInfinity) {
-            rangeLabel.textContent = `${prevPoint}min to ∞`
-          } else {
-            rangeLabel.textContent = `${prevPoint} to ${currentRange.point}min`
-          }
-
-          rangeSegment.appendChild(speedControl)
-          rangeSegment.appendChild(rangeLabel)
-          verticalTimeline.appendChild(rangeSegment)
-        }
-      })
-
-      // Add infinity fade effect
-      const infinityFade = document.createElement("div")
-      infinityFade.className = "infinity-fade"
-      // Position it after the last non-infinity breakpoint
-      const lastNonInfinityIndex = speedRanges.findIndex((r) => r.point === -1) - 1
-      if (lastNonInfinityIndex >= 0) {
-        infinityFade.style.top = `${lastNonInfinityIndex * segmentHeight + 40 + segmentHeight + 30}px`
-        verticalTimeline.appendChild(infinityFade)
-      }
-
-      updateRangeCount()
-    } catch (error) {
-      console.error("Error rendering vertical timeline:", error)
-      showStatus("Error rendering timeline. Try reloading.", 3000)
-    }
-  }
-
-  function updateBreakpointTime(index, newTime) {
-    if (index === 0 || newTime <= 0) return // Can't change first breakpoint or set negative time
-
-    // Validate time is greater than previous and less than next
-    const prevTime = index > 0 ? speedRanges[index - 1].point : 0
-    const nextRange = speedRanges[index + 1]
-    const nextTime = nextRange && nextRange.point !== -1 ? nextRange.point : Infinity
-
-    if (newTime > prevTime && newTime < nextTime) {
-      speedRanges[index].point = newTime
-      saveSpeedRanges()
-      renderRanges()
-    } else {
-      // Reset to original value if invalid
-      renderRanges()
-      showStatus("Invalid time range", 2000)
-    }
-  }
-
-  function updateRangeSpeed(index, newSpeed) {
-    if (newSpeed >= 0.1 && newSpeed <= 8.0) {
-      speedRanges[index].speed = newSpeed
-      saveSpeedRanges()
-    } else {
-      renderRanges() // Reset to original value
-      showStatus("Speed must be between 0.1x and 8.0x", 2000)
-    }
-  }
-
-  function editTimepoint(index) {
-    // Allow inline editing of timepoint
-    const timeControl = document.querySelector(`.timeline-segment:nth-child(${index + 2}) .time-control input`)
-    if (timeControl) {
-      timeControl.focus()
-      timeControl.select()
-    }
-  }
-
-  addRangeButton.addEventListener("click", function () {
-    try {
-      const infinityIndex = speedRanges.findIndex((r) => r.point === -1)
-
-      if (infinityIndex === -1 || infinityIndex === 0) {
-        showStatus("Cannot add breakpoint", 3000)
-        return
-      }
-
-      const lastRegularIndex = infinityIndex - 1
-      const lastRegularPoint = speedRanges[lastRegularIndex].point
-
-      const newPoint = lastRegularPoint + 5
-      speedRanges.splice(infinityIndex, 0, {
-        point: newPoint,
-        speed: speedRanges[lastRegularIndex].speed,
-      })
-
-      saveSpeedRanges()
-      renderRanges()
-    } catch (error) {
-      console.error("Error adding breakpoint:", error)
-      showStatus("Error adding breakpoint", 3000)
-    }
-  })
 
   function loadHoldingSpeed() {
     if (!currentHost) return
@@ -496,13 +148,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function init() {
-    console.log("currentHost", currentHost)
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       if (tabs[0]?.url) {
         currentHost = new URL(tabs[0].url).hostname
 
         loadCurrentSpeed()
-        loadSpeedRanges()
         loadActiveTabState()
         loadHoldingSpeed()
       }
@@ -579,11 +229,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return
     }
 
-    if (activeTab === "ranges") {
-      showStatus("Simple speed ignored in Ranges mode")
-      return
-    }
-
     const validatedSpeed = Math.min(Math.max(speed, MIN_SPEED), MAX_SPEED * 2)
 
     // Update UI first
@@ -596,18 +241,7 @@ document.addEventListener("DOMContentLoaded", function () {
     chrome.storage.sync.set(data)
 
     // Send message to content script
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      if (tabs[0] && tabs[0].id) {
-        chrome.tabs
-          .sendMessage(tabs[0].id, {
-            action: "setSpeed",
-            speed: validatedSpeed,
-          })
-          .catch((error) => {
-            console.error("Failed to send speed update:", error)
-          })
-      }
-    })
+    sendSpeedToContentScript(validatedSpeed)
   }
 
   function loadCurrentSpeed() {

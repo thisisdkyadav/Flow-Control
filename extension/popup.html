@@ -42,11 +42,7 @@
             </button>
             <button class="tab active" data-tab="simple">
                 <i class="bi bi-speedometer"></i>
-                <span>Simple</span>
-            </button>
-            <button class="tab" data-tab="ranges">
-                <i class="bi bi-graph-up"></i>
-                <span>Ranges</span>
+                <span>Speed</span>
             </button>
         </div>
 
@@ -54,7 +50,7 @@
             <div class="off-message">
                 <i class="bi bi-pause-circle status-icon"></i>
                 <p>Extension is turned off</p>
-                <p>Videos will play at normal speed. Switch to Simple or Ranges mode to control speed.</p>
+                <p>Videos will play at normal speed. Switch to Speed mode to control playback.</p>
             </div>
         </div>
 
@@ -77,7 +73,7 @@
             <div class="custom-speed-input-container">
                 <div class="speed-input-row">
                     <label for="custom-speed-input">
-                        <i class="bi bi-sliders"></i> 
+                        <i class="bi bi-sliders"></i>
                         <span>Custom Speed</span>
                     </label>
                     <div class="input-group-inline">
@@ -90,7 +86,7 @@
             <div class="custom-speed-input-container">
                 <div class="speed-input-row">
                     <label for="holding-speed-input">
-                        <i class="bi bi-hand-index-thumb"></i> 
+                        <i class="bi bi-hand-index-thumb"></i>
                         <span>Holding Speed</span>
                     </label>
                     <div class="input-group-inline">
@@ -101,33 +97,6 @@
             </div>
 
             <button id="reset-button"><i class="bi bi-arrow-counterclockwise"></i> Reset to default</button>
-        </div>
-
-        <div id="ranges-tab" class="tab-content">
-            <div id="ranges-content">
-                <!-- Top Action Controls -->
-                <div class="ranges-header">
-                    <div class="ranges-title">
-                        <h3><i class="bi bi-graph-up"></i> Speed Timeline</h3>
-                        <span class="range-count" id="range-count">3 ranges</span>
-                    </div>
-                    <div class="ranges-actions">
-                        <button class="add-breakpoint-btn" id="add-range-button" title="Add Breakpoint">
-                            <i class="bi bi-plus-lg"></i>
-                        </button>
-                        <button class="reset-ranges-btn" id="reset-ranges-button" title="Reset to Default">
-                            <i class="bi bi-arrow-counterclockwise"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Vertical Timeline -->
-                <div class="vertical-timeline-container">
-                    <div class="vertical-timeline" id="vertical-timeline">
-                        <!-- Timeline segments and breakpoints will be generated dynamically -->
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Help Modal Overlay -->
@@ -141,22 +110,12 @@
                 </div>
                 <div class="help-modal-content">
                     <div class="help-section">
-                        <h3><i class="bi bi-speedometer2"></i> Simple Mode</h3>
-                        <p>Set a single speed for all videos on the current site.</p>
+                        <h3><i class="bi bi-speedometer2"></i> Speed Control</h3>
+                        <p>Set playback speed for all videos on the current site.</p>
                         <ul>
                             <li>Use slider or input to set speed</li>
                             <li>Speed remembered per website</li>
                             <li>Works on all video players</li>
-                        </ul>
-                    </div>
-
-                    <div class="help-section">
-                        <h3><i class="bi bi-graph-up"></i> Ranges Mode</h3>
-                        <p>Set different speeds based on video duration.</p>
-                        <ul>
-                            <li>Perfect for different content types</li>
-                            <li>Short videos → faster speeds</li>
-                            <li>Long videos → comfortable speeds</li>
                         </ul>
                     </div>
 
