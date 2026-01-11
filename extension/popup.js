@@ -1,259 +1,148 @@
-document.addEventListener("DOMContentLoaded", function () {
+// Flow Control - Popup Script
+document.addEventListener("DOMContentLoaded", () => {
+  // DOM Elements
+  const enabledToggle = document.getElementById("enabled-toggle")
   const speedSlider = document.getElementById("speed-slider")
   const sliderValue = document.querySelector(".slider-value")
-  const resetButton = document.getElementById("reset-button")
-  const statusElement = document.getElementById("status")
-  const tabs = document.querySelectorAll(".tab")
   const customSpeedInput = document.getElementById("custom-speed-input")
-  const setCustomSpeedButton = document.getElementById("set-custom-speed-button")
+  const setCustomSpeedBtn = document.getElementById("set-custom-speed-button")
   const holdingSpeedInput = document.getElementById("holding-speed-input")
-  const setHoldingSpeedButton = document.getElementById("set-holding-speed-button")
+  const setHoldingSpeedBtn = document.getElementById("set-holding-speed-button")
+  const resetButton = document.getElementById("reset-button")
   const helpButton = document.getElementById("help-button")
   const helpOverlay = document.getElementById("help-overlay")
-  const closeHelpButton = document.getElementById("close-help")
+  const closeHelpBtn = document.getElementById("close-help")
+  const controlsSection = document.getElementById("controls-section")
 
-  const MAX_SPEED = 4.0
+  const MAX_SPEED = 8.0
   const MIN_SPEED = 0.1
 
-  let currentHost = ""
-  let activeTab = "simple"
-  let isEnabled = true
+  let hostname = ""
+  let config = { enabled: true, speed: 1.0, holdSpeed: 2.0 }
 
-  // Function to show status messages
-  function showStatus(message, duration = 2000) {
-    console.log("Status: " + message)
-  }
-
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      const newTab = tab.dataset.tab
-      setActiveTab(newTab)
-      saveActiveTabState(newTab)
-    })
-  })
-
-  // Help modal event listeners
-  helpButton.addEventListener("click", () => {
-    helpOverlay.classList.add("active")
-  })
-
-  closeHelpButton.addEventListener("click", () => {
-    helpOverlay.classList.remove("active")
-  })
-
-  helpOverlay.addEventListener("click", (e) => {
-    if (e.target === helpOverlay) {
-      helpOverlay.classList.remove("active")
+  // Initialize
+  chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+    if (tabs[0]?.url) {
+      try {
+        hostname = new URL(tabs[0].url).hostname
+        loadConfig()
+      } catch (e) {
+        console.error("Invalid URL:", e)
+      }
     }
   })
 
-  function setActiveTab(tabName) {
-    // Remove active class from all tabs
-    tabs.forEach((t) => {
-      t.classList.remove("active")
-      if (t.dataset.tab === tabName) {
-        t.classList.add("active")
+  function loadConfig() {
+    if (!hostname) return
+    chrome.storage.sync.get([hostname], result => {
+      if (result[hostname]) {
+        config = { ...config, ...result[hostname] }
       }
-    })
-
-    // Hide all tab contents and show the selected one
-    document.querySelectorAll(".tab-content").forEach((content) => {
-      content.classList.remove("active")
-      if (content.id === `${tabName}-tab`) {
-        content.classList.add("active")
-      }
-    })
-
-    const isEnabled = tabName !== "off"
-    this.isEnabled = isEnabled
-
-    // Update storage and notify content script
-    const data = {}
-    data[`${currentHost}_enabled`] = isEnabled
-    chrome.storage.sync.set(data)
-
-    notifyContentScriptEnabled(isEnabled)
-
-    if (isEnabled && tabName === "simple") {
-      sendSpeedToContentScript(parseFloat(speedSlider.value))
-    }
-
-    activeTab = tabName
-  }
-
-  function saveActiveTabState(tabName) {
-    const data = {}
-    data[`${currentHost}_active_tab`] = tabName
-    chrome.storage.sync.set(data)
-  }
-
-  function loadActiveTabState() {
-    chrome.storage.sync.get([`${currentHost}_active_tab`, `${currentHost}_enabled`], function (result) {
-      let savedTab = result[`${currentHost}_active_tab`]
-
-      if (!savedTab && typeof result[`${currentHost}_enabled`] === "boolean") {
-        savedTab = result[`${currentHost}_enabled`] ? "simple" : "off"
-      }
-
-      if (!savedTab || savedTab === "ranges") {
-        savedTab = "simple"
-      }
-
-      setActiveTab(savedTab)
+      updateUI()
     })
   }
 
-  function notifyContentScriptEnabled(isEnabled) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      if (tabs && tabs[0] && tabs[0].id) {
-        chrome.tabs
-          .sendMessage(tabs[0].id, {
-            action: "setEnabled",
-            enabled: isEnabled,
-            speed: parseFloat(speedSlider.value),
-          })
-          .catch((error) => {
-            console.error("Failed to send enabled state:", error)
-          })
-      }
-    })
+  function updateUI() {
+    enabledToggle.checked = config.enabled
+    speedSlider.value = Math.min(config.speed, 4.0)
+    sliderValue.textContent = config.speed.toFixed(2) + "x"
+    holdingSpeedInput.value = config.holdSpeed.toFixed(2)
+    controlsSection.classList.toggle("disabled", !config.enabled)
   }
 
-  function sendSpeedToContentScript(speed) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      if (tabs[0] && tabs[0].id) {
-        chrome.tabs
-          .sendMessage(tabs[0].id, {
-            action: "setSpeed",
-            speed: speed,
-          })
-          .catch((error) => {
-            console.error("Failed to send speed update:", error)
-          })
-      }
-    })
-  }
-
-  function loadHoldingSpeed() {
-    if (!currentHost) return
-
-    chrome.storage.sync.get([`${currentHost}_holding_speed`], function (result) {
-      if (result[`${currentHost}_holding_speed`]) {
-        const savedSpeed = parseFloat(result[`${currentHost}_holding_speed`])
-        if (!isNaN(savedSpeed)) {
-          holdingSpeedInput.value = savedSpeed.toFixed(2)
-        }
-      }
-    })
-  }
-
-  function init() {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      if (tabs[0]?.url) {
-        currentHost = new URL(tabs[0].url).hostname
-
-        loadCurrentSpeed()
-        loadActiveTabState()
-        loadHoldingSpeed()
-      }
-    })
-  }
-
-  setHoldingSpeedButton.addEventListener("click", function () {
-    if (!currentHost) return
-
-    const holdingSpeed = parseFloat(holdingSpeedInput.value)
-    if (!isNaN(holdingSpeed) && holdingSpeed >= MIN_SPEED && holdingSpeed <= MAX_SPEED * 2) {
-      const clampedSpeed = Math.min(Math.max(holdingSpeed, MIN_SPEED), MAX_SPEED * 2)
-
-      chrome.storage.sync.set({
-        [`${currentHost}_holding_speed`]: clampedSpeed,
-      })
-
-      holdingSpeedInput.value = clampedSpeed.toFixed(2)
-      showStatus(`Holding speed set to ${clampedSpeed.toFixed(2)}x`)
-    } else {
-      showStatus(`Invalid speed. Enter between ${MIN_SPEED} and ${MAX_SPEED * 2}.`, 3000)
-    }
-  })
-
-  holdingSpeedInput.addEventListener("keypress", function (event) {
-    if (event.key === "Enter") {
-      event.preventDefault()
-      setHoldingSpeedButton.click()
-    }
-  })
-
-  init()
-
-  speedSlider.addEventListener("input", function () {
-    const speed = parseFloat(this.value)
-    if (!isNaN(speed)) {
-      sliderValue.textContent = speed.toFixed(2) + "x"
-      saveAndApplySpeed(speed)
-    }
-  })
-
-  setCustomSpeedButton.addEventListener("click", function () {
-    const customSpeed = parseFloat(customSpeedInput.value)
-    if (!isNaN(customSpeed) && customSpeed >= MIN_SPEED && customSpeed <= MAX_SPEED * 2) {
-      const clampedSpeed = Math.min(Math.max(customSpeed, MIN_SPEED), MAX_SPEED * 2)
-
-      speedSlider.value = clampedSpeed
-      sliderValue.textContent = clampedSpeed.toFixed(2) + "x"
-
-      saveAndApplySpeed(clampedSpeed)
-      customSpeedInput.value = ""
-      showStatus(`Custom speed ${clampedSpeed.toFixed(2)}x set`)
-    } else {
-      showStatus(`Invalid speed. Enter between ${MIN_SPEED} and ${MAX_SPEED * 2}.`, 3000)
-    }
-  })
-
-  customSpeedInput.addEventListener("keypress", function (event) {
-    if (event.key === "Enter") {
-      event.preventDefault()
-      setCustomSpeedButton.click()
-    }
-  })
-
-  resetButton.addEventListener("click", function () {
-    speedSlider.value = 1.0
-    sliderValue.textContent = "1.0x"
-    customSpeedInput.value = ""
-    saveAndApplySpeed(1.0)
-  })
-
-  function saveAndApplySpeed(speed) {
-    if (!currentHost || activeTab === "off" || !isEnabled) {
-      return
-    }
-
-    const validatedSpeed = Math.min(Math.max(speed, MIN_SPEED), MAX_SPEED * 2)
-
-    // Update UI first
-    speedSlider.value = validatedSpeed
-    sliderValue.textContent = validatedSpeed.toFixed(2) + "x"
-
+  function saveConfig(showIndicator = false) {
+    if (!hostname) return
+    
     // Save to storage
-    const data = {}
-    data[currentHost] = validatedSpeed
-    chrome.storage.sync.set(data)
-
-    // Send message to content script
-    sendSpeedToContentScript(validatedSpeed)
-  }
-
-  function loadCurrentSpeed() {
-    if (!currentHost) return
-    chrome.storage.sync.get([currentHost], function (result) {
-      if (result[currentHost]) {
-        const savedSpeed = parseFloat(result[currentHost])
-        if (!isNaN(savedSpeed)) {
-          speedSlider.value = savedSpeed
-          sliderValue.textContent = savedSpeed.toFixed(2) + "x"
-        }
+    chrome.storage.sync.set({ [hostname]: config }, () => {
+      console.log("Saved config:", hostname, config)
+    })
+    
+    // Send message to content script for immediate feedback
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+      if (tabs[0]?.id) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          action: "applySpeed",
+          config: config,
+          showIndicator: showIndicator
+        }).catch(err => {
+          console.log("Could not send message:", err.message)
+        })
       }
     })
   }
+
+  // Toggle enabled/disabled
+  enabledToggle.addEventListener("change", () => {
+    config.enabled = enabledToggle.checked
+    controlsSection.classList.toggle("disabled", !config.enabled)
+    saveConfig()
+  })
+
+  // Speed slider
+  speedSlider.addEventListener("input", () => {
+    const speed = parseFloat(speedSlider.value)
+    if (!isNaN(speed)) {
+      config.speed = speed
+      sliderValue.textContent = speed.toFixed(2) + "x"
+      saveConfig(true)
+    }
+  })
+
+  // Custom speed input
+  setCustomSpeedBtn.addEventListener("click", () => {
+    const speed = parseFloat(customSpeedInput.value)
+    if (!isNaN(speed) && speed >= MIN_SPEED && speed <= MAX_SPEED) {
+      config.speed = speed
+      speedSlider.value = Math.min(speed, 4.0)
+      sliderValue.textContent = speed.toFixed(2) + "x"
+      customSpeedInput.value = ""
+      saveConfig(true)
+    }
+  })
+
+  customSpeedInput.addEventListener("keypress", e => {
+    if (e.key === "Enter") setCustomSpeedBtn.click()
+  })
+
+  // Holding speed input
+  setHoldingSpeedBtn.addEventListener("click", () => {
+    const speed = parseFloat(holdingSpeedInput.value)
+    if (!isNaN(speed) && speed >= MIN_SPEED && speed <= MAX_SPEED) {
+      config.holdSpeed = speed
+      holdingSpeedInput.value = speed.toFixed(2)
+      saveConfig()
+    }
+  })
+
+  holdingSpeedInput.addEventListener("keypress", e => {
+    if (e.key === "Enter") setHoldingSpeedBtn.click()
+  })
+
+  // Reset button
+  resetButton.addEventListener("click", () => {
+    config.speed = 1.0
+    speedSlider.value = 1.0
+    sliderValue.textContent = "1.00x"
+    customSpeedInput.value = ""
+    saveConfig(true)
+  })
+
+  // Help modal
+  helpButton.addEventListener("click", () => helpOverlay.classList.add("active"))
+  closeHelpBtn.addEventListener("click", () => helpOverlay.classList.remove("active"))
+  helpOverlay.addEventListener("click", e => {
+    if (e.target === helpOverlay) helpOverlay.classList.remove("active")
+  })
+
+  // Listen for storage changes (when content script updates speed via keyboard)
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === "sync" && changes[hostname]) {
+      const newConfig = changes[hostname].newValue
+      if (newConfig) {
+        config = { ...config, ...newConfig }
+        updateUI()
+      }
+    }
+  })
 })

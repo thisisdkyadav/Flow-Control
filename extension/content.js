@@ -1,15 +1,20 @@
-let currentSpeed = 1.0
-let extensionEnabled = true
-let isHolding = false
-let holdingSpeed = null
+// Flow Control - Content Script
+// Simplified architecture using chrome.storage.onChanged for sync
+
 const SPEED_INCREMENT = 0.25
 const MIN_SPEED = 0.25
 const MAX_SPEED = 4.0
+const DEFAULT_HOLD_SPEED = 2.0
 
-// Add speed indicator styles
-const styleSheet = document.createElement("style")
-styleSheet.textContent = `
-  .speed-indicator {
+// State
+let config = { enabled: true, speed: 1.0, holdSpeed: DEFAULT_HOLD_SPEED }
+let isHolding = false
+let hostname = window.location.hostname
+
+// Speed indicator styles
+const style = document.createElement("style")
+style.textContent = `
+  .flow-speed-indicator {
     position: fixed;
     top: 50px;
     left: 50%;
@@ -24,280 +29,145 @@ styleSheet.textContent = `
     opacity: 0;
     transition: opacity 0.2s ease-in-out;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    pointer-events: none;
   }
-  .speed-indicator.visible {
-    opacity: 1;
-  }
+  .flow-speed-indicator.visible { opacity: 1; }
 `
-document.head.appendChild(styleSheet)
+document.head.appendChild(style)
 
-// Create speed indicator element
-let speedIndicator = document.createElement("div")
-speedIndicator.className = "speed-indicator"
-document.body.appendChild(speedIndicator)
+// Speed indicator element
+const indicator = document.createElement("div")
+indicator.className = "flow-speed-indicator"
+document.body.appendChild(indicator)
 
 let indicatorTimeout = null
 
-function showSpeedIndicator(speed) {
-  speedIndicator.textContent = speed.toFixed(2) + "×"
-  speedIndicator.classList.add("visible")
-
-  if (indicatorTimeout) {
-    clearTimeout(indicatorTimeout)
-  }
-
-  indicatorTimeout = setTimeout(() => {
-    speedIndicator.classList.remove("visible")
-  }, 1000)
+function showIndicator(speed) {
+  indicator.textContent = speed.toFixed(2) + "×"
+  indicator.classList.add("visible")
+  clearTimeout(indicatorTimeout)
+  indicatorTimeout = setTimeout(() => indicator.classList.remove("visible"), 1000)
 }
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  try {
-    if (request.action === "setEnabled") {
-      extensionEnabled = request.enabled
-      if (!extensionEnabled) {
-        resetAllVideoSpeeds()
-      } else {
-        if (request.speed !== undefined) {
-          currentSpeed = request.speed
-        }
-        applySpeedToAllVideos(currentSpeed)
-      }
-      sendResponse({ success: true })
-    } else if (request.action === "setSpeed") {
-      if (!extensionEnabled) {
-        sendResponse({ success: false, reason: "Extension disabled" })
-        return true
-      }
-
-      if (request.speed !== undefined) {
-        currentSpeed = request.speed
-        applySpeedToAllVideos(currentSpeed)
-        showSpeedIndicator(currentSpeed)
-      }
-
-      sendResponse({ success: true })
-    }
-  } catch (error) {
-    console.error("Message handler error:", error)
-    sendResponse({ success: false, error: error.message })
-  }
-  return true
-})
-
-function resetAllVideoSpeeds() {
-  const videos = document.querySelectorAll("video")
-  videos.forEach((video) => {
+// Apply speed to all videos
+function applySpeed() {
+  const speed = config.enabled ? (isHolding ? config.holdSpeed : config.speed) : 1.0
+  document.querySelectorAll("video").forEach(video => {
     try {
-      if (video.playbackRate !== 1.0) {
-        video.playbackRate = 1.0
-      }
-    } catch (e) {
-      console.error("Error resetting video speed:", e)
-    }
-  })
-}
-
-function applySpeedToAllVideos(speed = null) {
-  if (!extensionEnabled) {
-    resetAllVideoSpeeds()
-    return
-  }
-
-  const targetSpeed = isHolding ? holdingSpeed : (speed !== null ? speed : currentSpeed)
-  const videos = document.querySelectorAll("video")
-
-  videos.forEach((video) => {
-    try {
-      if (video.playbackRate !== targetSpeed) {
-        video.playbackRate = targetSpeed
-      }
-
-      if (!video.hasAttribute("data-speed-controlled")) {
-        video.setAttribute("data-speed-controlled", "true")
-
-        video.addEventListener("ratechange", function (event) {
-          if (!extensionEnabled) return
-          const speed = isHolding ? holdingSpeed : currentSpeed
-          if (this.playbackRate !== speed && event.isTrusted) {
-            this.playbackRate = speed
-          }
-        })
-
-        video.addEventListener("loadeddata", function () {
-          if (!extensionEnabled) return
-          const speed = isHolding ? holdingSpeed : currentSpeed
-          if (this.playbackRate !== speed) {
-            this.playbackRate = speed
-          }
-        })
+      if (video.playbackRate !== speed) {
+        video.playbackRate = speed
       }
     } catch (e) {}
   })
 }
 
-function setupVideoPlayListener() {
-  document.addEventListener(
-    "play",
-    function (e) {
-      if (!extensionEnabled) return
-      if (e.target.tagName === "VIDEO") {
-        const speed = isHolding ? holdingSpeed : currentSpeed
-        if (e.target.playbackRate !== speed) {
-          e.target.playbackRate = speed
-        }
+// Watch for new videos
+const observer = new MutationObserver(mutations => {
+  if (!config.enabled) return
+  for (const mutation of mutations) {
+    for (const node of mutation.addedNodes) {
+      if (node.nodeName === "VIDEO" || (node.querySelector && node.querySelector("video"))) {
+        applySpeed()
+        return
       }
-    },
-    true
-  )
-}
-
-function setupVideoObserver() {
-  const observer = new MutationObserver(function (mutations) {
-    if (!extensionEnabled) return
-    let shouldCheckForVideos = false
-
-    mutations.forEach(function (mutation) {
-      if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-        mutation.addedNodes.forEach((node) => {
-          if (node.nodeName === "VIDEO") {
-            shouldCheckForVideos = true
-          } else if (node.querySelector && node.querySelector("video")) {
-            shouldCheckForVideos = true
-          }
-        })
-      }
-    })
-
-    if (shouldCheckForVideos) {
-      applySpeedToAllVideos()
     }
-  })
+  }
+})
 
-  observer.observe(document.body, { childList: true, subtree: true })
+// Listen for storage changes (sync with popup and cross-tab)
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== "sync" || !changes[hostname]) return
+  const newConfig = changes[hostname].newValue
+  if (newConfig) {
+    config = { ...config, ...newConfig }
+    applySpeed()
+    console.log("Config updated from storage:", config)
+  }
+})
 
-  const isYouTube = window.location.hostname.includes("youtube.com")
-  const checkInterval = isYouTube ? 1000 : 3000
-  setInterval(() => {
-    if (!extensionEnabled) return
-    applySpeedToAllVideos()
-  }, checkInterval)
-}
-
-function setupYouTubeNavObserver() {
-  if (!window.location.hostname.includes("youtube.com")) return
-
-  let lastUrl = location.href
-
-  const urlObserver = new MutationObserver(() => {
-    if (location.href !== lastUrl) {
-      lastUrl = location.href
-      setTimeout(() => {
-        applySpeedToAllVideos()
-      }, 1000)
+// Listen for messages from popup (for immediate feedback)
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "applySpeed") {
+    config = { ...config, ...request.config }
+    applySpeed()
+    if (request.showIndicator) {
+      showIndicator(config.speed)
     }
-  })
-
-  const titleElement = document.querySelector("title")
-  if (titleElement) {
-    urlObserver.observe(titleElement, { subtree: true, characterData: true, childList: true })
+    console.log("Config updated from popup message:", config)
+    sendResponse({ success: true })
   }
-}
+  return true
+})
 
-function init() {
-  try {
-    const hostname = window.location.hostname
+// Keyboard shortcuts
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.isContentEditable) return
+  if (!config.enabled) return
 
-    chrome.storage.sync.get([hostname, `${hostname}_enabled`, `${hostname}_holding_speed`], function (result) {
-      try {
-        if (typeof result[`${hostname}_enabled`] === "boolean") {
-          extensionEnabled = result[`${hostname}_enabled`]
-        } else {
-          extensionEnabled = true
-        }
-
-        if (!extensionEnabled) {
-          resetAllVideoSpeeds()
-          return
-        }
-
-        if (result[hostname] && !isNaN(parseFloat(result[hostname]))) {
-          currentSpeed = parseFloat(result[hostname])
-        }
-
-        holdingSpeed = result[`${hostname}_holding_speed`] || 2.0
-
-        if (extensionEnabled) {
-          applySpeedToAllVideos()
-        }
-
-        setupVideoObserver()
-        setupVideoPlayListener()
-        setupYouTubeNavObserver()
-      } catch (error) {
-        console.error("Error in storage callback:", error)
-      }
-    })
-  } catch (error) {
-    console.error("Error in init:", error)
-  }
-}
-
-// Add keyboard shortcut handler
-document.addEventListener("keydown", function (e) {
-  // Check if user is typing in an input field
-  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.isContentEditable) {
-    return
-  }
-
-  if (!extensionEnabled) {
-    return
-  }
-
-  // Handle holding button shortcut
+  // Hold key for temporary speed
   if (e.key === "'") {
     e.preventDefault()
     isHolding = true
-    const hostname = window.location.hostname
-    chrome.storage.sync.get([`${hostname}_holding_speed`], function (result) {
-      const targetSpeed = result[`${hostname}_holding_speed`] || 2.0
-      holdingSpeed = targetSpeed
-      applySpeedToAllVideos()
-      showSpeedIndicator(targetSpeed)
-    })
+    applySpeed()
+    showIndicator(config.holdSpeed)
     return
   }
 
+  // Speed adjustment
   if (e.key === "[" || e.key === "]") {
     e.preventDefault()
+    let newSpeed = config.speed
+    if (e.key === "]") newSpeed = Math.min(MAX_SPEED, config.speed + SPEED_INCREMENT)
+    if (e.key === "[") newSpeed = Math.max(MIN_SPEED, config.speed - SPEED_INCREMENT)
 
-    // Calculate new speed
-    let newSpeed = currentSpeed
-    if (e.key === "]") {
-      newSpeed = Math.min(MAX_SPEED, currentSpeed + SPEED_INCREMENT)
-    } else if (e.key === "[") {
-      newSpeed = Math.max(MIN_SPEED, currentSpeed - SPEED_INCREMENT)
-    }
-
-    if (newSpeed !== currentSpeed) {
-      currentSpeed = newSpeed
-      const hostname = window.location.hostname
-      chrome.storage.sync.set({
-        [hostname]: currentSpeed,
-      })
-      applySpeedToAllVideos(currentSpeed)
-      showSpeedIndicator(newSpeed)
+    if (newSpeed !== config.speed) {
+      config.speed = newSpeed
+      chrome.storage.sync.set({ [hostname]: config })
+      applySpeed()
+      showIndicator(newSpeed)
     }
   }
 })
 
-// Add keyup handler for the holding button
-document.addEventListener("keyup", function (e) {
-  if (e.key === "'" && holdingSpeed !== null) {
+document.addEventListener("keyup", e => {
+  if (e.key === "'" && isHolding) {
     e.preventDefault()
     isHolding = false
-    applySpeedToAllVideos()
+    applySpeed()
   }
 })
 
-init()
+// Initialize
+function init() {
+  chrome.storage.sync.get([hostname], result => {
+    if (result[hostname]) {
+      config = { ...config, ...result[hostname] }
+    }
+    console.log("Loaded config:", hostname, config)
+    applySpeed()
+    
+    // Start observer
+    if (document.body) {
+      observer.observe(document.body, { childList: true, subtree: true })
+    }
+    
+    // Fallback interval for stubborn players
+    setInterval(() => {
+      if (config.enabled) applySpeed()
+    }, 2000)
+  })
+
+  // Handle video play events
+  document.addEventListener("play", e => {
+    if (config.enabled && e.target.tagName === "VIDEO") {
+      applySpeed()
+    }
+  }, true)
+}
+
+// Wait for DOM to be ready
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init)
+} else {
+  init()
+}
