@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Flow Control - Video Speed Controller",
+  "short_name": "Flow Control",
   "version": "2.0.0",
-  "description": "Control video speed on any site. Remembers per-site speed and sets defaults by video length for smarter playback.",
+  "description": "Control video speed on any website. Per-site memory, keyboard shortcuts, and hold-to-speed. Works everywhere.",
   "permissions": ["storage", "activeTab", "scripting"],
   "host_permissions": ["<all_urls>"],
   "action": {

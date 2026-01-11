@@ -1,0 +1,29 @@
+Flow Control gives you complete control over video playback speed across every website. YouTube, Netflix, Coursera, Udemy, news sites, and more. Watch faster, learn smarter, and never sit through slow content again.
+
+KEY FEATURES
+
+Universal Speed Control
+Works on all HTML5 videos across any website. Supports embedded videos and iframes like YouTube embeds. Speed range from 0.25x to 4x with custom speeds up to 8x.
+
+Per-Site Memory
+Automatically remembers your preferred speed for each website. YouTube at 2x, Netflix at 1.5x, lectures at 1.75x. Toggle on/off per site without losing your settings.
+
+Keyboard Shortcuts
+Press [ and ] to decrease or increase speed by 0.25x. Hold the ' key to temporarily boost to your holding speed. No mouse needed. Control speed without leaving the video.
+
+Hold-to-Speed Feature
+Set a custom holding speed like 3x. Hold the ' key to temporarily speed up. Release to return to normal. Perfect for skipping slow sections.
+
+PERFECT FOR
+
+Students speeding through lectures and review content faster. Professionals getting through webinars and training videos efficiently. Developers watching tutorials at their own pace. Everyone who wants control over how they consume video content.
+
+PRIVACY FIRST
+
+No data collection. Zero tracking, zero analytics. 100% offline with all settings stored locally in your browser. No accounts required. Install and use immediately. Lightweight, transparent code.
+
+SIMPLE AND CLEAN
+
+Minimalist popup interface. One-click on/off toggle per site. Speed slider plus custom input for precise control. Visual speed indicator overlay on videos.
+
+Take control of your video experience. Install Flow Control today.
