@@ -69,8 +69,8 @@
         <div class="container">
             <div class="hero-content" data-aos="fade-right" data-aos-delay="100">
                 <h1>Control Video Speed <span class="gradient-text">Your Way</span></h1>
-                <p>A powerful browser extension with a sleek new interface that remembers your speed preferences for
-                    each website and adjusts playback speed automatically based on video length.</p>
+                <p>A powerful browser extension with a sleek interface that remembers your speed preferences for
+                    each website. Use keyboard shortcuts for instant control and hold-to-speed for quick previews.</p>
                 <div class="hero-buttons">
                     <a href="#installation" class="button button-primary">Get Started</a>
                     <a href="#demo" class="button button-secondary">See Demo</a>
@@ -113,11 +113,10 @@
 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="bi bi-clock-history"></i>
+                        <i class="bi bi-hand-index-thumb"></i>
                     </div>
-                    <h3>Smart Speed Ranges</h3>
-                    <p>Set different speeds based on video duration - play shorter videos slower and longer videos
-                        faster.</p>
+                    <h3>Hold-to-Speed</h3>
+                    <p>Hold a key to temporarily boost speed for quick previews, release to return to your set speed.</p>
                 </div>
 
                 <div class="feature-card">
@@ -139,10 +138,10 @@
 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="bi bi-sliders"></i>
+                        <i class="bi bi-keyboard"></i>
                     </div>
-                    <h3>New Intuitive Interface</h3>
-                    <p>Modern, clean UI with simple controls and visual breakpoint editor for speed ranges.</p>
+                    <h3>Keyboard Shortcuts</h3>
+                    <p>Use <kbd>[</kbd> <kbd>]</kbd> to adjust speed and <kbd>'</kbd> to hold for temporary speed boost.</p>
                 </div>
             </div>
         </div>
@@ -152,78 +151,59 @@
         <div class="container">
             <div class="section-header">
                 <h2>See Flow Control in Action</h2>
-                <p>Brand new UI makes it even easier to control video playback speeds</p>
+                <p>Simple, powerful controls that stay out of your way</p>
             </div>
 
             <div class="demo-showcase">
-                <div class="tab-container">
-                    <button class="tab active" data-tab="simple">
-                        <i class="bi bi-speedometer"></i> Simple Speed
-                    </button>
-                    <button class="tab" data-tab="ranges">
-                        <i class="bi bi-graph-up"></i> Speed Ranges
-                    </button>
-                    <button class="tab" data-tab="off">
-                        <i class="bi bi-pause-circle"></i> Off Mode
-                    </button>
-                </div>
+                <div class="demo-content">
+                    <div class="demo-screenshot">
+                        <img src="images/simple-mode.png" alt="Flow Control Interface">
+                    </div>
+                    <div class="demo-features">
+                        <h3 class="feature-title">Intuitive Speed Control</h3>
+                        <p class="feature-description">Set your preferred playback speed for all videos on any website with a clean, modern interface.</p>
 
-                <div class="tab-content active" id="simple-tab">
-                    <div class="tab-screenshot">
-                        <img src="images/simple-mode.png" alt="Simple Speed Mode">
-                    </div>
-                    <div class="feature-list">
-                        <h3 class="feature-title">Simple Speed Mode</h3>
-                        <p class="feature-description">Quickly set a fixed playback speed for all videos on the current
-                            site with our redesigned interface.</p>
-                        <ul>
-                            <li><i class="bi bi-check-circle-fill"></i> Enhanced slider control from 0.25x to 4.0x</li>
-                            <li><i class="bi bi-check-circle-fill"></i> Enter custom speeds for precise control</li>
-                            <li><i class="bi bi-check-circle-fill"></i> One-click reset to normal speed (1.0x)</li>
-                            <li><i class="bi bi-check-circle-fill"></i> Beautiful new interface with visual feedback
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                        <div class="demo-feature-grid">
+                            <div class="demo-feature-item">
+                                <div class="demo-feature-icon">
+                                    <i class="bi bi-sliders"></i>
+                                </div>
+                                <div class="demo-feature-text">
+                                    <h4>Speed Slider</h4>
+                                    <p>Drag to adjust from 0.25x to 4.0x, or enter custom values up to 8.0x</p>
+                                </div>
+                            </div>
 
-                <div class="tab-content" id="ranges-tab">
-                    <div class="tab-screenshot">
-                        <img src="images/ranges-mode.png" alt="Speed Ranges Mode">
-                    </div>
-                    <div class="feature-list">
-                        <h3 class="feature-title">Speed Ranges Mode</h3>
-                        <p class="feature-description">Automatically adjust playback speed based on video length with
-                            our redesigned UI.</p>
-                        <ul>
-                            <li><i class="bi bi-check-circle-fill"></i> Set different speeds for videos of different
-                                lengths</li>
-                            <li><i class="bi bi-check-circle-fill"></i> Redesigned visual timeline with draggable
-                                breakpoints</li>
-                            <li><i class="bi bi-check-circle-fill"></i> Perfect for educational content and lectures
-                            </li>
-                            <li><i class="bi bi-check-circle-fill"></i> New UI makes it easier to visualize and adjust
-                                speed ranges</li>
-                        </ul>
-                    </div>
-                </div>
+                            <div class="demo-feature-item">
+                                <div class="demo-feature-icon">
+                                    <i class="bi bi-hand-index-thumb"></i>
+                                </div>
+                                <div class="demo-feature-text">
+                                    <h4>Hold Speed</h4>
+                                    <p>Configure a separate speed for when you hold the <kbd>'</kbd> key</p>
+                                </div>
+                            </div>
 
-                <div class="tab-content" id="off-tab">
-                    <div class="tab-screenshot">
-                        <div class="off-message">
-                            <i class="bi bi-pause-circle status-icon"></i>
-                            <p>Flow Control can be disabled with a single click</p>
-                            <p>The new interface allows for quick toggling between modes</p>
+                            <div class="demo-feature-item">
+                                <div class="demo-feature-icon">
+                                    <i class="bi bi-toggle-on"></i>
+                                </div>
+                                <div class="demo-feature-text">
+                                    <h4>Per-Site Toggle</h4>
+                                    <p>Enable or disable Flow Control for each website individually</p>
+                                </div>
+                            </div>
+
+                            <div class="demo-feature-item">
+                                <div class="demo-feature-icon">
+                                    <i class="bi bi-keyboard"></i>
+                                </div>
+                                <div class="demo-feature-text">
+                                    <h4>Keyboard Shortcuts</h4>
+                                    <p>Press <kbd>[</kbd> <kbd>]</kbd> to adjust speed without opening the popup</p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="feature-list">
-                        <h3 class="feature-title">Off Mode</h3>
-                        <p class="feature-description">Easily turn off the extension when you don't need it without
-                            losing your settings.</p>
-                        <ul>
-                            <li><i class="bi bi-check-circle-fill"></i> Easy to turn off when not needed</li>
-                            <li><i class="bi bi-check-circle-fill"></i> Toggle between modes with a single click</li>
-                            <li><i class="bi bi-check-circle-fill"></i> Retains your settings when you re-enable</li>
-                        </ul>
                     </div>
                 </div>
             </div>
@@ -297,14 +277,14 @@
 
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3>How do speed ranges work?</h3>
+                        <h3>What are the keyboard shortcuts?</h3>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p>Speed ranges let you set different playback speeds based on video length. For example, you
-                            might want to play short videos at 1.25x speed, medium-length videos at 1.5x, and long
-                            videos at 2x. Flow Control automatically detects video duration and applies the appropriate
-                            speed.</p>
+                        <p>Flow Control supports three keyboard shortcuts: Press <kbd>[</kbd> to decrease speed by 0.25x,
+                            <kbd>]</kbd> to increase speed by 0.25x, and hold <kbd>'</kbd> (apostrophe) for a temporary
+                            speed boost. When you release the hold key, speed returns to your set value.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -360,47 +340,6 @@
     </footer>
 
     <script>
-        // Simple tab functionality for the demo section
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Remove active class from all tabs
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                // Add active class to clicked tab
-                tab.classList.add('active');
-
-                // Hide all tab contents
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-
-                // Get the corresponding content
-                const targetContent = document.getElementById(tab.dataset.tab + '-tab');
-
-                // Add active class to show the content
-                targetContent.classList.add('active');
-
-                // Highlight the feature title and description with a brief animation
-                const featureTitle = targetContent.querySelector('.feature-title');
-                const featureDesc = targetContent.querySelector('.feature-description');
-
-                if (featureTitle) {
-                    featureTitle.style.color = 'var(--primary-color)';
-                    setTimeout(() => {
-                        featureTitle.style.color = '';
-                    }, 1500);
-                }
-
-                if (featureDesc) {
-                    featureDesc.style.borderLeftColor = 'var(--primary-color)';
-                    featureDesc.style.color = 'var(--text-color)';
-
-                    setTimeout(() => {
-                        featureDesc.style.borderLeftColor = '';
-                        featureDesc.style.color = '';
-                    }, 1500);
-                }
-            });
-        });
 
         // FAQ accordion functionality
         document.querySelectorAll('.faq-question').forEach(question => {
@@ -478,13 +417,10 @@
                 }
             });
 
-            // Set the initial feature title color to match tab switching behavior
-            const activeTab = document.querySelector('.tab-content.active');
-            if (activeTab) {
-                const featureTitle = activeTab.querySelector('.feature-title');
-                if (featureTitle) {
-                    featureTitle.style.color = 'var(--primary-color)';
-                }
+            // Set the initial feature title color
+            const featureTitle = document.querySelector('.feature-title');
+            if (featureTitle) {
+                featureTitle.style.color = 'var(--primary-color)';
             }
         });
 

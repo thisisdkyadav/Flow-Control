@@ -534,6 +534,15 @@ header .container {
   margin-top: auto;
 }
 
+.feature-card kbd {
+  background: var(--primary-color);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
 /* Demo Section */
 .demo {
   padding: var(--space-xxl) 0;
@@ -773,6 +782,135 @@ header .container {
 .feature-list i {
   color: var(--primary-color);
   margin-right: 0.5rem;
+}
+
+/* New Demo Section Styles */
+.demo-content {
+  display: flex;
+  gap: var(--space-xl);
+  align-items: flex-start;
+  padding: var(--space-lg);
+}
+
+.demo-screenshot {
+  flex: 0 0 320px;
+  position: relative;
+}
+
+.demo-screenshot img {
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  max-width: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.demo-screenshot:hover img {
+  transform: scale(1.02);
+  box-shadow: var(--shadow-hover);
+}
+
+.demo-features {
+  flex: 1;
+}
+
+.demo-features .feature-title {
+  font-size: 1.6rem;
+  margin-bottom: var(--space-sm);
+}
+
+.demo-features .feature-description {
+  margin-bottom: var(--space-lg);
+  max-width: 100%;
+}
+
+.demo-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+}
+
+.demo-feature-item {
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--neutral-light);
+  border-radius: var(--border-radius-md);
+  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.demo-feature-item:hover {
+  transform: translateY(-4px);
+  background: white;
+  box-shadow: var(--shadow-md);
+}
+
+.demo-feature-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  background: var(--primary-gradient);
+  border-radius: var(--border-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.demo-feature-text h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text-color);
+}
+
+.demo-feature-text p {
+  font-size: 0.875rem;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+.demo-feature-text kbd {
+  background: var(--primary-color);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Demo Section Responsive */
+@media (max-width: 900px) {
+  .demo-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .demo-screenshot {
+    flex: 0 0 auto;
+    max-width: 350px;
+    margin: 0 auto;
+  }
+
+  .demo-features .feature-title::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .demo-features .feature-description {
+    border-left: none;
+    padding-left: 0;
+    text-align: center;
+  }
+
+  .demo-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-feature-item {
+    text-align: left;
+  }
 }
 
 /* Use Case Section */
