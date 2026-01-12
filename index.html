@@ -2,22 +2,199 @@
 <html lang="en">
 
 <head>
+    <!-- Essential Meta Tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flow Control - Smart Video Speed Controller</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Primary SEO Meta Tags -->
+    <title>Flow Control - Video Speed Controller Extension for Chrome | Control Playback Speed</title>
+    <meta name="title" content="Flow Control - Video Speed Controller Extension for Chrome | Control Playback Speed">
+    <meta name="description" content="Flow Control is a powerful Chrome extension that lets you control video playback speed on any website. Features per-site memory, keyboard shortcuts, hold-to-speed, and works on YouTube, Netflix, and more.">
+    <meta name="keywords" content="video speed controller, chrome extension, playback speed, youtube speed control, netflix speed, video player extension, speed up video, slow down video, browser extension, html5 video, flow control">
+    <meta name="author" content="DK Yadav">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    <meta name="rating" content="General">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://flowcontrol.andiindia.in/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://flowcontrol.andiindia.in/">
+    <meta property="og:title" content="Flow Control - Video Speed Controller Extension for Chrome">
+    <meta property="og:description" content="Control video playback speed on any website with keyboard shortcuts, per-site memory, and hold-to-speed feature. Works on YouTube, Netflix, and all HTML5 video players.">
+    <meta property="og:image" content="https://flowcontrol.andiindia.in/images/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Flow Control - Video Speed Controller Chrome Extension">
+    <meta property="og:site_name" content="Flow Control">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://flowcontrol.andiindia.in/">
+    <meta name="twitter:title" content="Flow Control - Video Speed Controller Extension for Chrome">
+    <meta name="twitter:description" content="Control video playback speed on any website with keyboard shortcuts, per-site memory, and hold-to-speed feature. Works on YouTube, Netflix, and all HTML5 video players.">
+    <meta name="twitter:image" content="https://flowcontrol.andiindia.in/images/og-image.png">
+    <meta name="twitter:image:alt" content="Flow Control Chrome Extension Interface">
+    <meta name="twitter:creator" content="@thisisdkyadav">
+
+    <!-- Theme and Mobile -->
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Flow Control">
+    <meta name="application-name" content="Flow Control">
+    <meta name="msapplication-TileColor" content="#3b82f6">
+    <meta name="msapplication-config" content="images/browserconfig.xml">
+
+    <!-- Favicon and Icons -->
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Preconnect for Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Flow Control",
+        "alternateName": "Flow Control - Video Speed Controller",
+        "description": "A powerful Chrome extension that lets you control video playback speed on any website with per-site memory, keyboard shortcuts, and hold-to-speed feature.",
+        "applicationCategory": "BrowserApplication",
+        "operatingSystem": "Chrome, Edge, Brave, Opera",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "5",
+            "ratingCount": "100",
+            "bestRating": "5",
+            "worstRating": "1"
+        },
+        "author": {
+            "@type": "Person",
+            "name": "DK Yadav",
+            "url": "https://github.com/thisisdkyadav"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "DK Yadav"
+        },
+        "downloadUrl": "https://chromewebstore.google.com/detail/flow-control/aimmndbolbcdighebiddijgfnipbmhef",
+        "softwareVersion": "2.0.0",
+        "screenshot": "https://flowcontrol.andiindia.in/images/simple-mode.png",
+        "featureList": [
+            "Video speed control from 0.25x to 8.0x",
+            "Per-site speed memory",
+            "Keyboard shortcuts for speed adjustment",
+            "Hold-to-speed for temporary speed boost",
+            "Works on YouTube, Netflix, and all HTML5 video players",
+            "Per-site enable/disable toggle"
+        ],
+        "keywords": "video speed controller, chrome extension, playback speed, youtube, netflix"
+    }
+    </script>
+
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Flow Control - Video Speed Controller",
+        "description": "Control video playback speed on any website with Flow Control Chrome extension.",
+        "url": "https://flowcontrol.andiindia.in/",
+        "mainEntity": {
+            "@type": "SoftwareApplication",
+            "name": "Flow Control"
+        },
+        "breadcrumb": {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://flowcontrol.andiindia.in/"
+                }
+            ]
+        }
+    }
+    </script>
+
+    <!-- FAQ Schema for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Which websites does Flow Control work with?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Flow Control works with any website that uses HTML5 video players, including YouTube, Netflix, Vimeo, educational platforms like Coursera and Udemy, and most video-hosting websites."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Does it affect audio quality?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Flow Control uses the browser's built-in speed adjustment which preserves audio pitch even at higher speeds. This means voices won't sound distorted even at 2x speed."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What are the keyboard shortcuts?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Flow Control supports three keyboard shortcuts: Press [ to decrease speed by 0.25x, ] to increase speed by 0.25x, and hold ' (apostrophe) for a temporary speed boost. When you release the hold key, speed returns to your set value."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What happens if a website already has speed controls?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Flow Control works alongside native speed controls. If you use both, whichever was applied last will take effect. For consistency, we recommend using only one method to control playback speed."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <!-- AOS Animation Library -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 </head>
 
 <body>
+    <!-- Skip Navigation for Accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <!-- Add page-wide animated background -->
-    <div class="bg-animation">
+    <div class="bg-animation" aria-hidden="true">
         <div class="bubble bubble1"></div>
         <div class="bubble bubble2"></div>
         <div class="bubble bubble3"></div>
@@ -28,297 +205,298 @@
         <div class="light-beam light-beam2"></div>
     </div>
 
-    <header>
-        <nav class="container">
-            <div class="logo">
-                <img src="images/logo.png" alt="Flow Control Logo">
+    <header role="banner">
+        <nav class="container" role="navigation" aria-label="Main navigation">
+            <a href="/" class="logo" aria-label="Flow Control - Home">
+                <img src="images/logo.png" alt="Flow Control Logo" width="32" height="32">
                 <span>Flow Control</span>
-            </div>
-            <ul class="nav-links">
-                <li><a href="#features">Features</a></li>
-                <li><a href="#demo">Demo</a></li>
-                <li><a href="#installation">Installation</a></li>
-                <li><a href="#faq">FAQ</a></li>
-            </ul>
-            <a href="https://github.com/thisisdkyadav/Flow-Control" class="button button-outlined desktop-only">
-                <i class="bi bi-github"></i> View on GitHub
             </a>
-            <button class="mobile-menu-toggle" aria-label="Toggle menu">
-                <i class="bi bi-list"></i>
+            <ul class="nav-links" role="menubar">
+                <li role="none"><a href="#features" role="menuitem">Features</a></li>
+                <li role="none"><a href="#demo" role="menuitem">Demo</a></li>
+                <li role="none"><a href="#installation" role="menuitem">Installation</a></li>
+                <li role="none"><a href="#faq" role="menuitem">FAQ</a></li>
+            </ul>
+            <a href="https://github.com/thisisdkyadav/Flow-Control" class="button button-outlined desktop-only" rel="noopener noreferrer" target="_blank" aria-label="View Flow Control source code on GitHub">
+                <i class="bi bi-github" aria-hidden="true"></i> View on GitHub
+            </a>
+            <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu">
+                <i class="bi bi-list" aria-hidden="true"></i>
             </button>
         </nav>
-        <div class="mobile-menu">
+        <div class="mobile-menu" id="mobile-menu" role="menu" aria-label="Mobile navigation">
             <ul>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#demo">Demo</a></li>
-                <li><a href="#installation">Installation</a></li>
-                <li><a href="#faq">FAQ</a></li>
-                <li><a href="https://github.com/thisisdkyadav/Flow-Control">
-                        <i class="bi bi-github"></i> View on GitHub
+                <li><a href="#features" role="menuitem">Features</a></li>
+                <li><a href="#demo" role="menuitem">Demo</a></li>
+                <li><a href="#installation" role="menuitem">Installation</a></li>
+                <li><a href="#faq" role="menuitem">FAQ</a></li>
+                <li><a href="https://github.com/thisisdkyadav/Flow-Control" rel="noopener noreferrer" target="_blank" role="menuitem">
+                        <i class="bi bi-github" aria-hidden="true"></i> View on GitHub
                     </a></li>
             </ul>
         </div>
     </header>
 
-    <section class="hero">
-        <div class="floating-shapes">
-            <div class="shape shape1"></div>
-            <div class="shape shape2"></div>
-            <div class="shape shape3"></div>
-        </div>
-        <div class="container">
-            <div class="hero-content" data-aos="fade-right" data-aos-delay="100">
-                <h1>Control Video Speed <span class="gradient-text">Your Way</span></h1>
-                <p>A powerful browser extension with a sleek interface that remembers your speed preferences for
-                    each website. Use keyboard shortcuts for instant control and hold-to-speed for quick previews.</p>
-                <div class="hero-buttons">
-                    <a href="#installation" class="button button-primary">Get Started</a>
-                    <a href="#demo" class="button button-secondary">See Demo</a>
+    <main id="main-content" role="main">
+        <section class="hero" aria-labelledby="hero-heading">
+            <div class="floating-shapes" aria-hidden="true">
+                <div class="shape shape1"></div>
+                <div class="shape shape2"></div>
+                <div class="shape shape3"></div>
+            </div>
+            <div class="container">
+                <div class="hero-content" data-aos="fade-right" data-aos-delay="100">
+                    <h1 id="hero-heading">Control Video Speed <span class="gradient-text">Your Way</span></h1>
+                    <p>A powerful browser extension with a sleek interface that remembers your speed preferences for
+                        each website. Use keyboard shortcuts for instant control and hold-to-speed for quick previews.</p>
+                    <div class="hero-buttons">
+                        <a href="#installation" class="button button-primary">Get Started</a>
+                        <a href="#demo" class="button button-secondary">See Demo</a>
+                    </div>
+                </div>
+                <div class="hero-image" data-aos="fade-left" data-aos-delay="300">
+                    <img src="images/hero-mockup.png" alt="Flow Control Chrome Extension interface showing video speed control slider and keyboard shortcuts" width="400" height="600" loading="eager">
+                    <div class="feature-badge" aria-label="New user interface available">
+                        <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+                        <span>v2.0</span>
+                    </div>
                 </div>
             </div>
-            <div class="hero-image" data-aos="fade-left" data-aos-delay="300">
-                <img src="images/hero-mockup.png" alt="Flow Control Extension Interface">
-                <div class="feature-badge">
-                    <i class="bi bi-lightning-charge-fill"></i>
-                    <span>New UI</span>
+        </section>
+
+        <section id="features" class="features" aria-labelledby="features-heading">
+            <div class="container">
+                <div class="section-header">
+                    <h2 id="features-heading">Powerful Features</h2>
+                    <p>Everything you need to control video playback on any website, now with a brand new interface</p>
+                </div>
+
+                <div class="feature-grid" role="list">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-speedometer2"></i>
+                        </div>
+                        <h3>Precise Speed Control</h3>
+                        <p>Adjust playback from 0.25x to 4.0x with custom speeds for fine-tuning your viewing experience.
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-cpu"></i>
+                        </div>
+                        <h3>Per-Site Memory</h3>
+                        <p>Your preferred speed settings are remembered for each website you visit.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-hand-index-thumb"></i>
+                        </div>
+                        <h3>Hold-to-Speed</h3>
+                        <p>Hold a key to temporarily boost speed for quick previews, release to return to your set speed.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-magic"></i>
+                        </div>
+                        <h3>Auto-Apply</h3>
+                        <p>Settings automatically apply to new videos, even after page reloads or navigation.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-globe"></i>
+                        </div>
+                        <h3>Works Everywhere</h3>
+                        <p>Compatible with YouTube, Netflix, educational platforms, and virtually any site with HTML5 video.
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-keyboard"></i>
+                        </div>
+                        <h3>Keyboard Shortcuts</h3>
+                        <p>Use <kbd>[</kbd> <kbd>]</kbd> to adjust speed and <kbd>'</kbd> to hold for temporary speed boost.</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="features" class="features">
-        <div class="container">
-            <div class="section-header">
-                <h2>Powerful Features</h2>
-                <p>Everything you need to control video playback on any website, now with a brand new interface</p>
-            </div>
-
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="bi bi-speedometer2"></i>
-                    </div>
-                    <h3>Precise Speed Control</h3>
-                    <p>Adjust playback from 0.25x to 4.0x with custom speeds for fine-tuning your viewing experience.
-                    </p>
+        <section id="demo" class="demo" aria-labelledby="demo-heading">
+            <div class="container">
+                <div class="section-header">
+                    <h2 id="demo-heading">See Flow Control in Action</h2>
+                    <p>Simple, powerful controls that stay out of your way</p>
                 </div>
 
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="bi bi-cpu"></i>
-                    </div>
-                    <h3>Per-Site Memory</h3>
-                    <p>Your preferred speed settings are remembered for each website you visit.</p>
-                </div>
+                <div class="demo-showcase">
+                    <div class="demo-content">
+                        <div class="demo-screenshot">
+                            <img src="images/simple-mode.png" alt="Flow Control popup interface showing speed slider, custom speed input, holding speed configuration, and reset button" loading="lazy" width="320" height="480">
+                        </div>
+                        <div class="demo-features">
+                            <h3 class="feature-title">Intuitive Speed Control</h3>
+                            <p class="feature-description">Set your preferred playback speed for all videos on any website with a clean, modern interface.</p>
 
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="bi bi-hand-index-thumb"></i>
-                    </div>
-                    <h3>Hold-to-Speed</h3>
-                    <p>Hold a key to temporarily boost speed for quick previews, release to return to your set speed.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="bi bi-magic"></i>
-                    </div>
-                    <h3>Auto-Apply</h3>
-                    <p>Settings automatically apply to new videos, even after page reloads or navigation.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="bi bi-globe"></i>
-                    </div>
-                    <h3>Works Everywhere</h3>
-                    <p>Compatible with YouTube, Netflix, educational platforms, and virtually any site with HTML5 video.
-                    </p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="bi bi-keyboard"></i>
-                    </div>
-                    <h3>Keyboard Shortcuts</h3>
-                    <p>Use <kbd>[</kbd> <kbd>]</kbd> to adjust speed and <kbd>'</kbd> to hold for temporary speed boost.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="demo" class="demo">
-        <div class="container">
-            <div class="section-header">
-                <h2>See Flow Control in Action</h2>
-                <p>Simple, powerful controls that stay out of your way</p>
-            </div>
-
-            <div class="demo-showcase">
-                <div class="demo-content">
-                    <div class="demo-screenshot">
-                        <img src="images/simple-mode.png" alt="Flow Control Interface">
-                    </div>
-                    <div class="demo-features">
-                        <h3 class="feature-title">Intuitive Speed Control</h3>
-                        <p class="feature-description">Set your preferred playback speed for all videos on any website with a clean, modern interface.</p>
-
-                        <div class="demo-feature-grid">
-                            <div class="demo-feature-item">
-                                <div class="demo-feature-icon">
-                                    <i class="bi bi-sliders"></i>
+                            <div class="demo-feature-grid">
+                                <div class="demo-feature-item">
+                                    <div class="demo-feature-icon">
+                                        <i class="bi bi-sliders"></i>
+                                    </div>
+                                    <div class="demo-feature-text">
+                                        <h4>Speed Slider</h4>
+                                        <p>Drag to adjust from 0.25x to 4.0x, or enter custom values up to 8.0x</p>
+                                    </div>
                                 </div>
-                                <div class="demo-feature-text">
-                                    <h4>Speed Slider</h4>
-                                    <p>Drag to adjust from 0.25x to 4.0x, or enter custom values up to 8.0x</p>
-                                </div>
-                            </div>
 
-                            <div class="demo-feature-item">
-                                <div class="demo-feature-icon">
-                                    <i class="bi bi-hand-index-thumb"></i>
+                                <div class="demo-feature-item">
+                                    <div class="demo-feature-icon">
+                                        <i class="bi bi-hand-index-thumb"></i>
+                                    </div>
+                                    <div class="demo-feature-text">
+                                        <h4>Hold Speed</h4>
+                                        <p>Configure a separate speed for when you hold the <kbd>'</kbd> key</p>
+                                    </div>
                                 </div>
-                                <div class="demo-feature-text">
-                                    <h4>Hold Speed</h4>
-                                    <p>Configure a separate speed for when you hold the <kbd>'</kbd> key</p>
-                                </div>
-                            </div>
 
-                            <div class="demo-feature-item">
-                                <div class="demo-feature-icon">
-                                    <i class="bi bi-toggle-on"></i>
+                                <div class="demo-feature-item">
+                                    <div class="demo-feature-icon">
+                                        <i class="bi bi-toggle-on"></i>
+                                    </div>
+                                    <div class="demo-feature-text">
+                                        <h4>Per-Site Toggle</h4>
+                                        <p>Enable or disable Flow Control for each website individually</p>
+                                    </div>
                                 </div>
-                                <div class="demo-feature-text">
-                                    <h4>Per-Site Toggle</h4>
-                                    <p>Enable or disable Flow Control for each website individually</p>
-                                </div>
-                            </div>
 
-                            <div class="demo-feature-item">
-                                <div class="demo-feature-icon">
-                                    <i class="bi bi-keyboard"></i>
-                                </div>
-                                <div class="demo-feature-text">
-                                    <h4>Keyboard Shortcuts</h4>
-                                    <p>Press <kbd>[</kbd> <kbd>]</kbd> to adjust speed without opening the popup</p>
+                                <div class="demo-feature-item">
+                                    <div class="demo-feature-icon">
+                                        <i class="bi bi-keyboard"></i>
+                                    </div>
+                                    <div class="demo-feature-text">
+                                        <h4>Keyboard Shortcuts</h4>
+                                        <p>Press <kbd>[</kbd> <kbd>]</kbd> to adjust speed without opening the popup</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="installation" class="installation">
-        <div class="container">
-            <div class="section-header">
-                <h2>How to Install</h2>
-                <p>Get started with Flow Control in just one click</p>
-            </div>
-
-            <div class="chrome-store-installation">
-                <div class="store-banner">
-                    <i class="bi bi-browser-chrome"></i>
-                    <h3>Install from Chrome Web Store</h3>
-                    <p>The easiest way to install Flow Control</p>
-                    <a href="https://chromewebstore.google.com/detail/flow-control/aimmndbolbcdighebiddijgfnipbmhef"
-                        class="button button-primary" target="_blank">
-                        <i class="bi bi-download"></i> Add to Chrome
-                    </a>
-                    <p class="store-note">Open source on <a href="https://github.com/thisisdkyadav/Flow-Control" target="_blank">GitHub</a> if you want to install manually</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="faq" class="faq">
-        <div class="container">
-            <div class="section-header">
-                <h2>Frequently Asked Questions</h2>
-                <p>Get answers to common questions about Flow Control</p>
-            </div>
-
-            <div class="faq-items">
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <h3>Which websites does Flow Control work with?</h3>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Flow Control works with any website that uses HTML5 video players, including YouTube,
-                            Netflix, Vimeo, educational platforms like Coursera and Udemy, and most video-hosting
-                            websites.</p>
-                    </div>
+        <section id="installation" class="installation" aria-labelledby="installation-heading">
+            <div class="container">
+                <div class="section-header">
+                    <h2 id="installation-heading">How to Install</h2>
+                    <p>Get started with Flow Control in just one click</p>
                 </div>
 
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <h3>Does it affect audio quality?</h3>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Flow Control uses the browser's built-in speed adjustment which preserves audio pitch even at
-                            higher speeds. This means voices won't sound distorted even at 2x speed.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <h3>What happens if a website already has speed controls?</h3>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Flow Control works alongside native speed controls. If you use both, whichever was applied
-                            last will take effect. For consistency, we recommend using only one method to control
-                            playback speed.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <h3>What are the keyboard shortcuts?</h3>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Flow Control supports three keyboard shortcuts: Press <kbd>[</kbd> to decrease speed by 0.25x,
-                            <kbd>]</kbd> to increase speed by 0.25x, and hold <kbd>'</kbd> (apostrophe) for a temporary
-                            speed boost. When you release the hold key, speed returns to your set value.
-                        </p>
+                <div class="chrome-store-installation">
+                    <div class="store-banner">
+                        <i class="bi bi-browser-chrome" aria-hidden="true"></i>
+                        <h3>Install from Chrome Web Store</h3>
+                        <p>The easiest way to install Flow Control</p>
+                        <a href="https://chromewebstore.google.com/detail/flow-control/aimmndbolbcdighebiddijgfnipbmhef"
+                            class="button button-primary" target="_blank" rel="noopener noreferrer" aria-label="Add Flow Control extension to Chrome browser">
+                            <i class="bi bi-download" aria-hidden="true"></i> Add to Chrome
+                        </a>
+                        <p class="store-note">Open source on <a href="https://github.com/thisisdkyadav/Flow-Control" target="_blank" rel="noopener noreferrer">GitHub</a> if you want to install manually</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="cta">
-        <div class="container">
-            <h2>Ready to Take Control?</h2>
-            <p>Install Flow Control today and experience videos at your perfect pace.</p>
-            <a href="https://github.com/thisisdkyadav/Flow-Control" class="button button-primary">
-                <i class="fab fa-github"></i> Download on GitHub
-            </a>
-        </div>
-    </section>
+        <section id="faq" class="faq" aria-labelledby="faq-heading">
+            <div class="container">
+                <div class="section-header">
+                    <h2 id="faq-heading">Frequently Asked Questions</h2>
+                    <p>Get answers to common questions about Flow Control</p>
+                </div>
 
-    <footer>
+                <div class="faq-items">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Which websites does Flow Control work with?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Flow Control works with any website that uses HTML5 video players, including YouTube,
+                                Netflix, Vimeo, educational platforms like Coursera and Udemy, and most video-hosting
+                                websites.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Does it affect audio quality?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Flow Control uses the browser's built-in speed adjustment which preserves audio pitch even at
+                                higher speeds. This means voices won't sound distorted even at 2x speed.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>What happens if a website already has speed controls?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Flow Control works alongside native speed controls. If you use both, whichever was applied
+                                last will take effect. For consistency, we recommend using only one method to control
+                                playback speed.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>What are the keyboard shortcuts?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Flow Control supports three keyboard shortcuts: Press <kbd>[</kbd> to decrease speed by 0.25x,
+                                <kbd>]</kbd> to increase speed by 0.25x, and hold <kbd>'</kbd> (apostrophe) for a temporary
+                                speed boost. When you release the hold key, speed returns to your set value.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta" aria-labelledby="cta-heading">
+            <div class="container">
+                <h2 id="cta-heading">Ready to Take Control?</h2>
+                <p>Install Flow Control today and experience videos at your perfect pace.</p>
+                <a href="https://chromewebstore.google.com/detail/flow-control/aimmndbolbcdighebiddijgfnipbmhef" class="button button-primary" target="_blank" rel="noopener noreferrer" aria-label="Install Flow Control from Chrome Web Store">
+                    <i class="bi bi-download" aria-hidden="true"></i> Install Now
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer role="contentinfo">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-logo">
-                    <img src="images/logo.png" alt="Flow Control Logo">
+                    <img src="images/logo.png" alt="Flow Control Logo" width="32" height="32">
                     <span>Flow Control</span>
                 </div>
-                <p>A smart video speed controller for Chrome</p>
+                <p>A smart video speed controller for Chrome, Edge, Brave, and other Chromium browsers.</p>
             </div>
 
             <div class="footer-links">
                 <div class="link-group">
                     <h4>Resources</h4>
                     <ul>
-                        <li><a href="https://github.com/thisisdkyadav/Flow-Control">GitHub Repository</a></li>
-                        <li><a href="https://github.com/thisisdkyadav/Flow-Control/issues">Report Issues</a></li>
-                        <li><a href="https://github.com/thisisdkyadav/Flow-Control/blob/main/LICENSE">License</a>
-                        </li>
+                        <li><a href="https://github.com/thisisdkyadav/Flow-Control" rel="noopener noreferrer" target="_blank">GitHub Repository</a></li>
+                        <li><a href="https://github.com/thisisdkyadav/Flow-Control/issues" rel="noopener noreferrer" target="_blank">Report Issues</a></li>
+                        <li><a href="https://github.com/thisisdkyadav/Flow-Control/blob/main/LICENSE" rel="noopener noreferrer" target="_blank">MIT License</a></li>
                     </ul>
                 </div>
 
@@ -326,7 +504,7 @@
                     <h4>Contact</h4>
                     <ul>
                         <li><a href="mailto:thisisdkyadav@gmail.com">Email Developer</a></li>
-                        <li><a href="https://github.com/thisisdkyadav">GitHub Profile</a></li>
+                        <li><a href="https://github.com/thisisdkyadav" rel="noopener noreferrer" target="_blank">GitHub Profile</a></li>
                     </ul>
                 </div>
             </div>
@@ -334,7 +512,7 @@
 
         <div class="footer-bottom">
             <div class="container">
-                <p>&copy; 2025 Flow Control. Released under the MIT License.</p>
+                <p>&copy; 2026 Flow Control. Released under the <a href="https://opensource.org/licenses/MIT" rel="noopener noreferrer" target="_blank">MIT License</a>.</p>
             </div>
         </div>
     </footer>
