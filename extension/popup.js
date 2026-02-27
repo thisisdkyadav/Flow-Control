@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const MAX_SPEED = 8.0
   const MIN_SPEED = 0.1
+  const SLIDER_MAX = parseFloat(speedSlider.max) || 4.0
   const DEFAULT_CONFIG = { enabled: true, speed: 1.0, holdSpeed: 2.0 }
   const WRITE_DEBOUNCE_MS = 200
 
@@ -47,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateUI() {
     enabledToggle.checked = config.enabled
-    speedSlider.value = Math.min(config.speed, 4.0)
+    speedSlider.value = Math.min(config.speed, SLIDER_MAX)
     sliderValue.textContent = config.speed.toFixed(2) + "x"
     holdingSpeedInput.value = config.holdSpeed.toFixed(2)
     controlsSection.classList.toggle("disabled", !config.enabled)
@@ -123,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const speed = parseFloat(customSpeedInput.value)
     if (!isNaN(speed) && speed >= MIN_SPEED && speed <= MAX_SPEED) {
       config.speed = speed
-      speedSlider.value = Math.min(speed, 4.0)
+      speedSlider.value = Math.min(speed, SLIDER_MAX)
       sliderValue.textContent = speed.toFixed(2) + "x"
       customSpeedInput.value = ""
       saveConfig(true)
