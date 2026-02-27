@@ -10,6 +10,7 @@ const DEFAULT_HOLD_SPEED = 2.0
 let config = { enabled: true, speed: 1.0, holdSpeed: DEFAULT_HOLD_SPEED }
 let isHolding = false
 let hostname = window.location.hostname
+let indicatorTimeout = null
 
 // Speed indicator styles
 const style = document.createElement("style")
@@ -31,6 +32,9 @@ style.textContent = `
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
     pointer-events: none;
   }
+  .flow-speed-indicator.in-fullscreen {
+    position: absolute;
+  }
   .flow-speed-indicator.visible { opacity: 1; }
 `
 document.head.appendChild(style)
@@ -38,11 +42,36 @@ document.head.appendChild(style)
 // Speed indicator element
 const indicator = document.createElement("div")
 indicator.className = "flow-speed-indicator"
-document.body.appendChild(indicator)
 
-let indicatorTimeout = null
+function getFullscreenElement() {
+  return document.fullscreenElement || document.webkitFullscreenElement || null
+}
+
+function getIndicatorHost() {
+  const fullscreenElement = getFullscreenElement()
+  if (fullscreenElement && fullscreenElement instanceof HTMLElement) {
+    return fullscreenElement
+  }
+
+  if (document.body) return document.body
+  return document.documentElement
+}
+
+function syncIndicatorHost() {
+  const host = getIndicatorHost()
+  if (indicator.parentElement !== host) {
+    host.appendChild(indicator)
+  }
+
+  if (getFullscreenElement()) {
+    indicator.classList.add("in-fullscreen")
+  } else {
+    indicator.classList.remove("in-fullscreen")
+  }
+}
 
 function showIndicator(speed) {
+  syncIndicatorHost()
   indicator.textContent = speed.toFixed(2) + "×"
   indicator.classList.add("visible")
   clearTimeout(indicatorTimeout)
@@ -139,6 +168,10 @@ document.addEventListener("keyup", e => {
 
 // Initialize
 function init() {
+  syncIndicatorHost()
+  document.addEventListener("fullscreenchange", syncIndicatorHost)
+  document.addEventListener("webkitfullscreenchange", syncIndicatorHost)
+
   chrome.storage.sync.get([hostname], result => {
     if (result[hostname]) {
       config = { ...config, ...result[hostname] }
