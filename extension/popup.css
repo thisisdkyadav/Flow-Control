@@ -513,44 +513,66 @@ button:active {
   border-radius: var(--border-radius-xl);
   box-shadow: var(--shadow-xl), var(--shadow-glow);
   width: 320px;
-  max-height: 400px;
+  max-height: 420px;
   overflow: hidden;
   animation: modalSlideIn 0.25s ease-out;
-  border: 1px solid rgba(59, 130, 246, 0.1);
+  border: 1px solid var(--border-color);
 }
 
+/* Help Header */
 .help-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--border-color);
-  background: var(--primary-surface);
+  background: var(--neutral-50);
 }
 
-.help-header h2 {
+.help-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.help-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--border-radius-sm);
+}
+
+.help-title h2 {
   font-size: 14px;
   font-weight: 700;
   margin: 0;
   color: var(--text-color);
   letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.help-subtitle {
+  font-size: 11px;
+  color: var(--text-light);
+  font-weight: 500;
+  display: block;
+  margin-top: 1px;
 }
 
 .close-help {
-  background: none;
+  background: var(--neutral-100);
   border: 1px solid var(--border-color);
   color: var(--text-light);
   cursor: pointer;
   padding: 0;
-  border-radius: 50%;
-  width: 26px;
-  height: 26px;
+  border-radius: var(--border-radius-sm);
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: none;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 400;
   line-height: 1;
   transition: var(--transition-fast);
 }
@@ -560,20 +582,20 @@ button:active {
 }
 
 .close-help:hover {
-  background: var(--danger-color);
-  border-color: var(--danger-color);
-  color: white;
+  background: var(--danger-light);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: var(--danger-color);
 }
 
+/* Help Content */
 .help-modal-content {
-  padding: 14px;
-  max-height: 300px;
+  padding: 12px;
+  max-height: 330px;
   overflow-y: auto;
 }
 
-/* Custom scrollbar for modal */
 .help-modal-content::-webkit-scrollbar {
-  width: 5px;
+  width: 4px;
 }
 
 .help-modal-content::-webkit-scrollbar-track {
@@ -589,21 +611,19 @@ button:active {
   background: var(--neutral-400);
 }
 
+/* Help Sections */
 .help-section {
   background: var(--neutral-50);
   border-radius: var(--border-radius-md);
   padding: 14px;
-  margin-bottom: 10px;
-  border-left: 3px solid var(--primary-color);
+  margin-bottom: 8px;
+  border: 1px solid var(--border-light);
   transition: var(--transition-fast);
-  border-top: 1px solid var(--border-light);
-  border-right: 1px solid var(--border-light);
-  border-bottom: 1px solid var(--border-light);
 }
 
 .help-section:hover {
+  border-color: rgba(59, 130, 246, 0.15);
   background: var(--primary-surface);
-  border-left-color: var(--primary-dark);
 }
 
 .help-section:last-child {
@@ -611,14 +631,16 @@ button:active {
 }
 
 .help-section h3 {
-  color: var(--primary-color);
+  color: var(--text-color);
   font-size: 13px;
   font-weight: 700;
-  margin: 0 0 8px 0;
+  margin: 0 0 10px 0;
   display: flex;
   align-items: center;
   gap: 6px;
   letter-spacing: -0.01em;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .help-section p {
@@ -630,60 +652,92 @@ button:active {
 
 .help-section ul {
   margin: 0;
-  padding-left: 16px;
+  padding-left: 0;
+  list-style: none;
   color: var(--text-secondary);
   font-size: 12px;
 }
 
 .help-section li {
-  margin-bottom: 4px;
+  margin-bottom: 5px;
   line-height: 1.4;
+  padding-left: 16px;
+  position: relative;
 }
 
-.help-section li::marker {
-  color: var(--primary-light);
+.help-section li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 6px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  opacity: 0.5;
 }
 
+.help-section li:last-child {
+  margin-bottom: 0;
+}
+
+/* Shortcuts in Help */
 .shortcuts-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .shortcut-item-help {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   background: white;
-  padding: 8px 10px;
+  padding: 10px 12px;
   border-radius: var(--border-radius-sm);
-  box-shadow: var(--shadow-xs);
   border: 1px solid var(--border-light);
   transition: var(--transition-fast);
 }
 
 .shortcut-item-help:hover {
-  box-shadow: var(--shadow-sm);
   border-color: rgba(59, 130, 246, 0.15);
+}
+
+.shortcut-item-help .keys {
+  display: flex;
+  gap: 4px;
+  min-width: 52px;
 }
 
 .shortcut-item-help .keys kbd {
   background: var(--primary-color);
   color: white;
   border: none;
-  padding: 3px 6px;
+  padding: 4px 7px;
   border-radius: var(--border-radius-xs);
   font-size: 10px;
   font-weight: 700;
-  min-width: 20px;
+  min-width: 22px;
   text-align: center;
   box-shadow: var(--shadow-button);
 }
 
+.shortcut-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
 .shortcut-item-help .desc {
   font-size: 12px;
-  font-weight: 500;
-  color: var(--text-secondary);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.shortcut-item-help .desc-sub {
+  font-size: 11px;
+  color: var(--text-light);
+  font-weight: 400;
 }
 
 @keyframes modalSlideIn {
