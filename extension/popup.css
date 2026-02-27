@@ -339,11 +339,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
   border-color: var(--primary-dark);
 }
 
-input[type="range"]::-webkit-slider-thumb:active {
-  transform: scale(1.05);
-  background: var(--primary-surface);
-}
-
 input[type="range"]:focus-visible::-webkit-slider-thumb {
   outline: 2px solid var(--primary-light);
   outline-offset: 2px;
