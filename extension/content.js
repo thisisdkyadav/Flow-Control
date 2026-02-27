@@ -2,14 +2,34 @@
 // Simplified architecture using chrome.storage.onChanged for sync
 
 const SPEED_INCREMENT = 0.25
-const MIN_SPEED = 0.25
-const MAX_SPEED = 4.0
+const MIN_SPEED = 0.1
+const MAX_SPEED = 8.0
 const DEFAULT_HOLD_SPEED = 2.0
+
+function getTopLevelHostname() {
+  if (window.top === window) return window.location.hostname
+
+  try {
+    if (window.top?.location?.hostname) {
+      return window.top.location.hostname
+    }
+  } catch (e) {}
+
+  const ancestorOrigins = window.location.ancestorOrigins
+  if (ancestorOrigins && ancestorOrigins.length > 0) {
+    const topOrigin = ancestorOrigins[ancestorOrigins.length - 1]
+    try {
+      return new URL(topOrigin).hostname || window.location.hostname
+    } catch (e) {}
+  }
+
+  return window.location.hostname
+}
 
 // State
 let config = { enabled: true, speed: 1.0, holdSpeed: DEFAULT_HOLD_SPEED }
 let isHolding = false
-let hostname = window.location.hostname
+let hostname = getTopLevelHostname()
 let indicatorTimeout = null
 
 // Speed indicator styles
@@ -131,6 +151,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // Keyboard shortcuts
 document.addEventListener("keydown", e => {
   if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.isContentEditable) return
+  if (e.ctrlKey || e.metaKey || e.altKey) return
   if (!config.enabled) return
 
   // Hold key for temporary speed
@@ -151,7 +172,11 @@ document.addEventListener("keydown", e => {
 
     if (newSpeed !== config.speed) {
       config.speed = newSpeed
-      chrome.storage.sync.set({ [hostname]: config })
+      chrome.storage.sync.set({ [hostname]: config }, () => {
+        if (chrome.runtime.lastError) {
+          console.warn("Could not save shortcut speed:", chrome.runtime.lastError.message)
+        }
+      })
       applySpeed()
       showIndicator(newSpeed)
     }

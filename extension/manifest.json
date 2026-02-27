@@ -6,8 +6,7 @@
   "description": "Control video speed on any website. Per-site memory, keyboard shortcuts, and hold-to-speed. Works everywhere.",
   "permissions": [
     "storage",
-    "activeTab",
-    "scripting"
+    "activeTab"
   ],
   "host_permissions": [
     "<all_urls>"

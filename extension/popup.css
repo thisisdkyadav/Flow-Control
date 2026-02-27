@@ -156,16 +156,15 @@ html, body {
   transition: var(--transition-fast);
   padding: 0;
   box-shadow: none;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .help-button:hover {
   background: var(--primary-color);
   color: white;
   transform: scale(1.05);
-}
-
-.help-button i {
-  font-size: 14px;
 }
 
 /* Shortcuts Bar */
@@ -326,11 +325,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
   margin: 0;
 }
 
-.custom-speed-input-container label i {
-  color: var(--primary-color);
-  font-size: 14px;
-}
-
 .input-group-inline {
   display: flex;
   gap: 6px;
@@ -395,10 +389,6 @@ button:active {
   color: var(--text-color);
 }
 
-label i {
-  color: var(--primary-color);
-}
-
 /* Help Modal */
 .help-overlay {
   position: fixed;
@@ -455,15 +445,14 @@ label i {
   align-items: center;
   justify-content: center;
   box-shadow: none;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
 }
 
 .close-help:hover {
   background: var(--danger-color);
   color: white;
-}
-
-.close-help i {
-  font-size: 12px;
 }
 
 .help-modal-content {

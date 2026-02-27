@@ -16,9 +16,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const MAX_SPEED = 8.0
   const MIN_SPEED = 0.1
+  const DEFAULT_CONFIG = { enabled: true, speed: 1.0, holdSpeed: 2.0 }
+  const WRITE_DEBOUNCE_MS = 200
 
   let hostname = ""
-  let config = { enabled: true, speed: 1.0, holdSpeed: 2.0 }
+  let config = { ...DEFAULT_CONFIG }
+  let pendingWriteTimeout = null
 
   // Initialize
   chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
@@ -50,15 +53,27 @@ document.addEventListener("DOMContentLoaded", () => {
     controlsSection.classList.toggle("disabled", !config.enabled)
   }
 
-  function saveConfig(showIndicator = false) {
+  function persistConfig() {
     if (!hostname) return
-    
-    // Save to storage
+
     chrome.storage.sync.set({ [hostname]: config }, () => {
+      if (chrome.runtime.lastError) {
+        console.warn("Could not save config:", chrome.runtime.lastError.message)
+        return
+      }
       console.log("Saved config:", hostname, config)
     })
-    
-    // Send message to content script for immediate feedback
+  }
+
+  function persistConfigDebounced() {
+    clearTimeout(pendingWriteTimeout)
+    pendingWriteTimeout = setTimeout(() => {
+      persistConfig()
+      pendingWriteTimeout = null
+    }, WRITE_DEBOUNCE_MS)
+  }
+
+  function notifyContentScript(showIndicator = false) {
     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
       if (tabs[0]?.id) {
         chrome.tabs.sendMessage(tabs[0].id, {
@@ -70,6 +85,19 @@ document.addEventListener("DOMContentLoaded", () => {
         })
       }
     })
+  }
+
+  function saveConfig(showIndicator = false, { debounceWrite = false } = {}) {
+    if (!hostname) return
+    if (debounceWrite) {
+      persistConfigDebounced()
+    } else {
+      clearTimeout(pendingWriteTimeout)
+      pendingWriteTimeout = null
+      persistConfig()
+    }
+
+    notifyContentScript(showIndicator)
   }
 
   // Toggle enabled/disabled
@@ -85,9 +113,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!isNaN(speed)) {
       config.speed = speed
       sliderValue.textContent = speed.toFixed(2) + "x"
-      saveConfig(true)
+      saveConfig(true, { debounceWrite: true })
     }
   })
+  speedSlider.addEventListener("change", () => saveConfig())
 
   // Custom speed input
   setCustomSpeedBtn.addEventListener("click", () => {
@@ -121,10 +150,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Reset button
   resetButton.addEventListener("click", () => {
-    config.speed = 1.0
-    speedSlider.value = 1.0
-    sliderValue.textContent = "1.00x"
+    config = { ...DEFAULT_CONFIG }
     customSpeedInput.value = ""
+    updateUI()
     saveConfig(true)
   })
 
@@ -143,6 +171,14 @@ document.addEventListener("DOMContentLoaded", () => {
         config = { ...config, ...newConfig }
         updateUI()
       }
+    }
+  })
+
+  window.addEventListener("beforeunload", () => {
+    if (pendingWriteTimeout) {
+      clearTimeout(pendingWriteTimeout)
+      pendingWriteTimeout = null
+      persistConfig()
     }
   })
 })
