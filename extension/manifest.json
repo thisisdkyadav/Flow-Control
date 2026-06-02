@@ -3,7 +3,7 @@
   "name": "Video Speed Controller - Flow Control",
   "short_name": "Flow Control",
   "version": "2.2.2",
-  "description": "Video Speed Controller - Control video speed on any website (youtube, instagram, etc.). Per-site memory, keyboard shortcuts, and hold-to-speed. Works everywhere.",
+  "description": "Video Speed Controller - Control video speed on any website (youtube, instagram, X, etc.)",
   "permissions": [
     "storage",
     "activeTab"
