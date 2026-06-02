@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const controlsSection = document.getElementById("controls-section")
 
   const MAX_SPEED = 8.0
-  const MIN_SPEED = 0.1
+  const MIN_SPEED = 0.25
   const SLIDER_MAX = parseFloat(speedSlider.max) || 4.0
   const DEFAULT_CONFIG = { enabled: true, speed: 1.0, holdSpeed: 2.0 }
   const WRITE_DEBOUNCE_MS = 200

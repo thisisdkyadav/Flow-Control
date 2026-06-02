@@ -2,7 +2,7 @@
 // Simplified architecture using chrome.storage.onChanged for sync
 
 const SPEED_INCREMENT = 0.25
-const MIN_SPEED = 0.1
+const MIN_SPEED = 0.25
 const MAX_SPEED = 8.0
 const DEFAULT_HOLD_SPEED = 2.0
 
