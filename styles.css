@@ -369,12 +369,13 @@ body.menu-open { overflow: hidden; }
   mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
 .film-track {
-  display: flex; gap: 8px; width: max-content; height: 100%;
+  display: flex; width: max-content; height: 100%;
   animation: roll 6s linear infinite;
   animation-duration: calc(6s / var(--rate));
 }
 .film-cell {
   width: 30px; height: 100%; border-radius: 5px; flex: 0 0 auto;
+  margin-right: 8px; /* spacing lives on the cell so each half includes its trailing gap → seamless -50% loop */
   background: rgba(255, 255, 255, 0.06); border: 1px solid var(--ink-line);
 }
 .film-cell:nth-child(4n) { background: rgba(79, 70, 229, 0.34); }
