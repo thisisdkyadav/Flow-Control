@@ -588,13 +588,23 @@
             const slider = document.getElementById('rate-slider');
             const readout = document.getElementById('rate-value');
             const track = document.getElementById('film-track');
+            const strip = document.querySelector('.film-strip');
             if (!lab || !slider || !readout || !track) return;
 
-            // Build an ambient film-strip; duplicate the set for a seamless -50% loop
-            const CELLS = 22;
-            let cells = '';
-            for (let i = 0; i < CELLS; i++) cells += '<span class="film-cell"></span>';
-            track.innerHTML = cells + cells;
+            // Build the strip so ONE copy is wider than the visible strip, then
+            // duplicate it. The -50% loop is seamless AND the end is never exposed.
+            const CELL_TOTAL = 38; // 30px cell + 8px margin
+            let builtFor = 0;
+            const buildStrip = () => {
+                const w = strip ? strip.clientWidth : 0;
+                const perCopy = Math.max(22, Math.ceil(w / CELL_TOTAL) + 6);
+                if (perCopy <= builtFor) return; // existing strip already covers the width
+                builtFor = perCopy;
+                const copy = '<span class="film-cell"></span>'.repeat(perCopy);
+                track.innerHTML = copy + copy;
+            };
+            buildStrip();
+            window.addEventListener('resize', buildStrip);
 
             const render = () => {
                 const rate = parseFloat(slider.value);
