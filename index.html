@@ -68,8 +68,7 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
@@ -185,8 +184,6 @@
     }
     </script>
 
-    <!-- AOS Animation Library -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 </head>
 
 <body>
@@ -199,10 +196,6 @@
         <div class="bubble bubble2"></div>
         <div class="bubble bubble3"></div>
         <div class="bubble bubble4"></div>
-        <div class="bubble bubble5"></div>
-        <div class="bubble bubble6"></div>
-        <div class="light-beam light-beam1"></div>
-        <div class="light-beam light-beam2"></div>
     </div>
 
     <header role="banner">
@@ -241,26 +234,48 @@
 
     <main id="main-content" role="main">
         <section class="hero" aria-labelledby="hero-heading">
-            <div class="floating-shapes" aria-hidden="true">
-                <div class="shape shape1"></div>
-                <div class="shape shape2"></div>
-                <div class="shape shape3"></div>
-            </div>
             <div class="container">
-                <div class="hero-content" data-aos="fade-right" data-aos-delay="100">
-                    <h1 id="hero-heading">Control Video Speed <span class="gradient-text">Your Way</span></h1>
-                    <p>A powerful browser extension with a sleek interface that remembers your speed preferences for
-                        each website. Use keyboard shortcuts for instant control and hold-to-speed for quick previews.</p>
-                    <div class="hero-buttons">
-                        <a href="#installation" class="button button-primary">Get Started</a>
-                        <a href="#demo" class="button button-secondary">See Demo</a>
+                <div class="hero-top">
+                    <div class="hero-content">
+                        <span class="eyebrow on-dark">Chrome · Edge · Brave · Opera</span>
+                        <h1 id="hero-heading">Control video speed, <span class="gradient-text">your way</span></h1>
+                        <p>A precise browser extension that remembers your pace for every site. Nudge speed from the
+                            keyboard, hold to boost through the slow parts, and pick up right where you left off.</p>
+                        <div class="hero-buttons">
+                            <a href="https://chromewebstore.google.com/detail/flow-control/aimmndbolbcdighebiddijgfnipbmhef" class="button button-primary" target="_blank" rel="noopener noreferrer">
+                                <i class="bi bi-download" aria-hidden="true"></i> Add to Chrome
+                            </a>
+                            <a href="#demo" class="button button-secondary">See it move</a>
+                        </div>
+                        <div class="hero-keys" aria-hidden="true">
+                            <span class="kbd-chip"><kbd>[</kbd> <kbd>]</kbd> Adjust speed</span>
+                            <span class="kbd-chip"><kbd>'</kbd> Hold to boost</span>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <div class="hero-stage">
+                            <img src="images/hero-mockup.png" alt="Flow Control extension popup showing the speed slider, custom speed input, and keyboard shortcuts" width="400" height="600" loading="eager">
+                        </div>
+                        <div class="feature-badge" aria-label="Current version 2.3">
+                            <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+                            <span>v2.3</span>
+                        </div>
                     </div>
                 </div>
-                <div class="hero-image" data-aos="fade-left" data-aos-delay="300">
-                    <img src="images/hero-mockup.png" alt="Flow Control Chrome Extension interface showing video speed control slider and keyboard shortcuts" width="400" height="600" loading="eager">
-                    <div class="feature-badge" aria-label="New user interface available">
-                        <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
-                        <span>v2.0</span>
+
+                <!-- Signature: drag to feel the speed before you install -->
+                <div class="speed-lab" id="speed-lab">
+                    <div class="speed-lab-top">
+                        <span class="eyebrow on-dark">Try the playback rate</span>
+                        <div class="speed-readout" aria-live="polite"><span id="rate-value">1.00</span><span class="x">×</span></div>
+                    </div>
+                    <input type="range" class="scrubber" id="rate-slider" min="0.25" max="8" step="0.25" value="1"
+                        aria-label="Preview playback speed from 0.25x to 8x">
+                    <div class="speed-ticks" aria-hidden="true">
+                        <span>0.25×</span><span>1×</span><span>2×</span><span>4×</span><span>8×</span>
+                    </div>
+                    <div class="film-strip" aria-hidden="true">
+                        <div class="film-track" id="film-track"></div>
                     </div>
                 </div>
             </div>
@@ -269,8 +284,9 @@
         <section id="features" class="features" aria-labelledby="features-heading">
             <div class="container">
                 <div class="section-header">
-                    <h2 id="features-heading">Powerful Features</h2>
-                    <p>Everything you need to control video playback on any website, now with a brand new interface</p>
+                    <span class="eyebrow">Features</span>
+                    <h2 id="features-heading">Built for people who watch a lot</h2>
+                    <p>Everything you need to control video playback on any website — precise, persistent, and out of your way.</p>
                 </div>
 
                 <div class="feature-grid" role="list">
@@ -330,7 +346,8 @@
         <section id="demo" class="demo" aria-labelledby="demo-heading">
             <div class="container">
                 <div class="section-header">
-                    <h2 id="demo-heading">See Flow Control in Action</h2>
+                    <span class="eyebrow">Live demo</span>
+                    <h2 id="demo-heading">See Flow Control in action</h2>
                     <p>Simple, powerful controls that stay out of your way</p>
                 </div>
 
@@ -393,7 +410,8 @@
         <section id="installation" class="installation" aria-labelledby="installation-heading">
             <div class="container">
                 <div class="section-header">
-                    <h2 id="installation-heading">How to Install</h2>
+                    <span class="eyebrow">Install</span>
+                    <h2 id="installation-heading">Up and running in one click</h2>
                     <p>Get started with Flow Control in just one click</p>
                 </div>
 
@@ -415,7 +433,8 @@
         <section id="faq" class="faq" aria-labelledby="faq-heading">
             <div class="container">
                 <div class="section-header">
-                    <h2 id="faq-heading">Frequently Asked Questions</h2>
+                    <span class="eyebrow">FAQ</span>
+                    <h2 id="faq-heading">Frequently asked questions</h2>
                     <p>Get answers to common questions about Flow Control</p>
                 </div>
 
@@ -423,7 +442,7 @@
                     <div class="faq-item">
                         <div class="faq-question">
                             <h3>Which websites does Flow Control work with?</h3>
-                            <i class="fas fa-chevron-down"></i>
+                            <i class="bi bi-chevron-down" aria-hidden="true"></i>
                         </div>
                         <div class="faq-answer">
                             <p>Flow Control works with any website that uses HTML5 video players, including YouTube,
@@ -435,7 +454,7 @@
                     <div class="faq-item">
                         <div class="faq-question">
                             <h3>Does it affect audio quality?</h3>
-                            <i class="fas fa-chevron-down"></i>
+                            <i class="bi bi-chevron-down" aria-hidden="true"></i>
                         </div>
                         <div class="faq-answer">
                             <p>Flow Control uses the browser's built-in speed adjustment which preserves audio pitch even at
@@ -446,7 +465,7 @@
                     <div class="faq-item">
                         <div class="faq-question">
                             <h3>What happens if a website already has speed controls?</h3>
-                            <i class="fas fa-chevron-down"></i>
+                            <i class="bi bi-chevron-down" aria-hidden="true"></i>
                         </div>
                         <div class="faq-answer">
                             <p>Flow Control works alongside native speed controls. If you use both, whichever was applied
@@ -458,7 +477,7 @@
                     <div class="faq-item">
                         <div class="faq-question">
                             <h3>What are the keyboard shortcuts?</h3>
-                            <i class="fas fa-chevron-down"></i>
+                            <i class="bi bi-chevron-down" aria-hidden="true"></i>
                         </div>
                         <div class="faq-answer">
                             <p>Flow Control supports three keyboard shortcuts: Press <kbd>[</kbd> to decrease speed by 0.25x,
@@ -529,167 +548,62 @@
     </footer>
 
     <script>
-
-        // FAQ accordion functionality
+        // FAQ accordion
         document.querySelectorAll('.faq-question').forEach(question => {
             question.addEventListener('click', () => {
-                const faqItem = question.parentElement;
-                faqItem.classList.toggle('active');
+                question.parentElement.classList.toggle('active');
             });
         });
 
-
-        // Initialize AOS (Animate On Scroll)
-        document.addEventListener('DOMContentLoaded', function () {
-            AOS.init({
-                duration: 800,
-                easing: 'ease-in-out',
-                once: true
-            });
-
-            // Parallax scroll effect for background elements
-            window.addEventListener('scroll', function () {
-                const scrollY = window.scrollY;
-
-                // Subtle parallax for background bubbles
-                document.querySelectorAll('.bubble').forEach((bubble, index) => {
-                    const speed = 0.03 + (index * 0.01);
-                    bubble.style.transform = `translateY(${scrollY * speed}px)`;
-                });
-
-                // Parallax for light beams
-                document.querySelectorAll('.light-beam').forEach((beam, index) => {
-                    const speed = 0.07 + (index * 0.03);
-                    beam.style.transform = `translateY(${scrollY * speed}px) rotate(-45deg)`;
-                });
-
-                // Subtle rotation for feature icons on scroll
-                if (scrollY > 300) {
-                    document.querySelectorAll('.feature-icon').forEach((icon, index) => {
-                        const rotateAmount = (scrollY - 300) * 0.01 * (index % 2 === 0 ? 1 : -1);
-                        const limitedRotation = Math.min(Math.abs(rotateAmount), 15) * (rotateAmount < 0 ? -1 : 1);
-                        icon.style.transform = `rotate(${limitedRotation}deg)`;
-                    });
-                }
-            });
-
-            // Enhance page transitions with subtle animations
-            const sections = document.querySelectorAll('section');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('section-visible');
-
-                        // Add subtle animations to section backgrounds
-                        if (entry.target.classList.contains('features') ||
-                            entry.target.classList.contains('demo') ||
-                            entry.target.classList.contains('installation') ||
-                            entry.target.classList.contains('faq')) {
-                            entry.target.querySelector('.container').style.opacity = '1';
-                            entry.target.querySelector('.container').style.transform = 'translateY(0)';
-                        }
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            sections.forEach(section => {
-                observer.observe(section);
-
-                // Add initial state for animation
-                if (section.classList.contains('features') ||
-                    section.classList.contains('demo') ||
-                    section.classList.contains('installation') ||
-                    section.classList.contains('faq')) {
-                    section.querySelector('.container').style.opacity = '0';
-                    section.querySelector('.container').style.transform = 'translateY(20px)';
-                    section.querySelector('.container').style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-                }
-            });
-
-            // Set the initial feature title color
-            const featureTitle = document.querySelector('.feature-title');
-            if (featureTitle) {
-                featureTitle.style.color = 'var(--primary-color)';
-            }
-        });
-
-        // Enable smooth scrolling for anchor links
+        // Smooth scrolling for in-page anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
+                const id = this.getAttribute('href');
+                if (id.length < 2) return;
+                const target = document.querySelector(id);
+                if (!target) return;
                 e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+                target.scrollIntoView({ behavior: 'smooth' });
             });
         });
 
-        // Mobile menu toggle functionality - Fixed implementation
+        // Mobile menu
         const menuToggle = document.querySelector('.mobile-menu-toggle');
         const mobileMenu = document.querySelector('.mobile-menu');
-
-        menuToggle.addEventListener('click', () => {
-            // Toggle mobile menu
-            mobileMenu.classList.toggle('active');
-            menuToggle.classList.toggle('active');
-            document.body.classList.toggle('menu-open');
-
-            // Ensure menu is visible after toggle
-            if (mobileMenu.classList.contains('active')) {
-                // Show menu with flex display
-                mobileMenu.style.display = 'flex';
-                setTimeout(() => {
-                    mobileMenu.style.opacity = '1';
-                }, 10);
-            } else {
-                mobileMenu.style.opacity = '0';
-                // Wait for fade out before hiding
-                setTimeout(() => {
-                    if (!mobileMenu.classList.contains('active')) {
-                        mobileMenu.style.display = 'none';
-                    }
-                }, 300);
-            }
-        });
-
-        // Close mobile menu when clicking on links - Improved implementation
-        document.querySelectorAll('.mobile-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('active');
-                menuToggle.classList.remove('active');
-                document.body.classList.remove('menu-open');
-
-                // Fade out menu
-                mobileMenu.style.opacity = '0';
-                setTimeout(() => {
-                    mobileMenu.style.display = 'none';
-                }, 300);
-            });
-        });
-
-
-        // Disable AOS animations on mobile for better performance
-        function handleAOSOnMobile() {
-            if (window.innerWidth < 768) {
-                AOS.init({ disable: true });
-            } else {
-                AOS.init({
-                    duration: 800,
-                    easing: 'ease-in-out',
-                    once: true
-                });
-            }
+        if (menuToggle && mobileMenu) {
+            const setMenu = open => {
+                mobileMenu.classList.toggle('active', open);
+                menuToggle.setAttribute('aria-expanded', String(open));
+                document.body.classList.toggle('menu-open', open);
+            };
+            menuToggle.addEventListener('click', () =>
+                setMenu(!mobileMenu.classList.contains('active')));
+            mobileMenu.querySelectorAll('a').forEach(link =>
+                link.addEventListener('click', () => setMenu(false)));
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            handleAOSOnMobile();
-        });
+        // Signature: interactive playback-rate preview
+        (function () {
+            const lab = document.getElementById('speed-lab');
+            const slider = document.getElementById('rate-slider');
+            const readout = document.getElementById('rate-value');
+            const track = document.getElementById('film-track');
+            if (!lab || !slider || !readout || !track) return;
 
-        window.addEventListener('resize', function () {
-            handleAOSOnMobile();
-        });
+            // Build an ambient film-strip; duplicate the set for a seamless -50% loop
+            const CELLS = 22;
+            let cells = '';
+            for (let i = 0; i < CELLS; i++) cells += '<span class="film-cell"></span>';
+            track.innerHTML = cells + cells;
 
-
-
+            const render = () => {
+                const rate = parseFloat(slider.value);
+                readout.textContent = rate.toFixed(2);
+                lab.style.setProperty('--rate', rate);
+            };
+            slider.addEventListener('input', render);
+            render();
+        })();
     </script>
 </body>
 

@@ -26,7 +26,7 @@
     <meta property="og:site_name" content="Flow Control">
 
     <!-- Theme and Mobile -->
-    <meta name="theme-color" content="#3b82f6">
+    <meta name="theme-color" content="#0a0b16">
 
     <!-- Favicon and Icons -->
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
@@ -43,148 +43,122 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Donate page specific styles */
+        /* Donate page — built on the site's design tokens */
         .donate-hero {
-            padding: var(--space-xxl) 0 var(--space-xl);
-            text-align: center;
             position: relative;
-            z-index: 1;
+            text-align: center;
+            padding: clamp(64px, 9vw, 104px) 0 clamp(36px, 5vw, 56px);
         }
-
+        .donate-hero .eyebrow { margin-bottom: 18px; }
         .donate-hero h1 {
-            font-size: 3rem;
-            line-height: 1.2;
-            margin-bottom: var(--space-sm);
+            font-size: clamp(2.4rem, 5vw, 3.6rem);
+            font-weight: 800;
+            margin-bottom: 18px;
         }
-
         .donate-hero p {
-            font-size: 1.2rem;
-            color: var(--text-light);
-            max-width: 620px;
+            max-width: 600px;
             margin: 0 auto;
+            color: var(--muted);
+            font-size: 1.12rem;
         }
-
         .donate-heart {
-            color: var(--danger-color);
+            color: var(--amber);
             display: inline-block;
-            animation: heart-beat 1.4s ease-in-out infinite;
+            animation: heart-beat 1.5s var(--ease) infinite;
         }
-
         @keyframes heart-beat {
             0%, 100% { transform: scale(1); }
-            15% { transform: scale(1.25); }
+            15% { transform: scale(1.22); }
             30% { transform: scale(1); }
-            45% { transform: scale(1.15); }
+            45% { transform: scale(1.12); }
         }
 
-        .donate-section {
-            padding: 0 0 var(--space-xxl);
-            position: relative;
-            z-index: 1;
-        }
-
+        .donate-section { padding: 0 0 clamp(72px, 9vw, 110px); }
         .donate-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: var(--space-md);
-            max-width: 980px;
+            gap: 22px;
+            max-width: 1000px;
             margin: 0 auto;
             align-items: stretch;
         }
-
         .donate-card {
-            background-color: white;
-            padding: var(--space-lg);
-            border-radius: var(--border-radius-lg);
+            position: relative;
+            overflow: hidden;
+            background: var(--bg);
+            padding: 34px 30px;
+            border-radius: var(--r-lg);
             box-shadow: var(--shadow-md);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--line);
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.3s ease;
+            transition: transform 0.4s var(--spring), box-shadow 0.4s var(--ease), border-color 0.3s var(--ease);
         }
-
         .donate-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.15);
-            border-color: var(--primary-light);
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: transparent;
         }
+        .donate-card::before {
+            content: "";
+            position: absolute;
+            left: 0; top: 0;
+            height: 3px; width: 100%;
+            background: var(--indigo);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s var(--ease-out);
+        }
+        .donate-card:hover::before { transform: scaleX(1); }
 
         .donate-card-icon {
-            width: 64px;
-            height: 64px;
-            border-radius: var(--border-radius-full);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            color: white;
-            margin-bottom: var(--space-sm);
+            width: 60px; height: 60px;
+            border-radius: var(--r-md);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.7rem; color: white;
+            margin-bottom: 18px;
         }
+        .donate-card-icon.kofi { background: #ef4e4e; }
+        .donate-card-icon.paypal { background: #0070ba; }
+        .donate-card-icon.upi { background: var(--indigo); }
 
-        .donate-card-icon.kofi { background: linear-gradient(135deg, #ff5e5b, #e23b3b); }
-        .donate-card-icon.paypal { background: linear-gradient(135deg, #009cde, #003087); }
-        .donate-card-icon.upi { background: var(--primary-gradient); }
-
-        .donate-card h3 {
-            font-size: 1.35rem;
-            margin-bottom: var(--space-xs);
-        }
-
+        .donate-card h3 { font-size: 1.35rem; margin-bottom: 8px; }
         .donate-card p {
-            color: var(--text-light);
-            margin-bottom: var(--space-md);
+            color: var(--muted);
+            margin-bottom: 24px;
             flex-grow: 1;
+            font-size: 0.98rem;
         }
-
-        .donate-card .button {
-            width: 100%;
-        }
+        .donate-card .button { width: 100%; }
 
         .qr-wrapper {
             background: white;
-            padding: 10px;
-            border-radius: var(--border-radius-md);
-            border: 1px solid var(--border-color);
-            margin-bottom: var(--space-md);
+            padding: 12px;
+            border-radius: var(--r-md);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 16px;
             width: 100%;
-            max-width: 220px;
+            max-width: 218px;
         }
-
-        .qr-wrapper img {
-            width: 100%;
-            height: auto;
-            border-radius: var(--border-radius-sm);
-        }
-
+        .qr-wrapper img { width: 100%; height: auto; border-radius: var(--r-sm); }
         .upi-hint {
-            font-size: 0.85rem;
-            color: var(--text-light);
-            margin-top: -0.5rem;
-            margin-bottom: var(--space-md);
+            font-family: var(--font-mono);
+            font-size: 0.74rem;
+            letter-spacing: 0.04em;
+            color: var(--muted);
+            margin-bottom: 0 !important;
         }
 
-        .donate-back {
-            text-align: center;
-            margin-top: var(--space-lg);
-        }
+        .donate-back { text-align: center; margin-top: 44px; }
 
-        .donate-thanks {
-            text-align: center;
-            max-width: 620px;
-            margin: 0 auto var(--space-xl);
-            color: var(--text-light);
-            position: relative;
-            z-index: 1;
-        }
-
-        @media (max-width: 768px) {
-            .donate-hero h1 { font-size: 2.2rem; }
-            .donate-hero p { font-size: 1.05rem; }
+        @media (max-width: 480px) {
+            .donate-hero h1 { font-size: 2.1rem; }
         }
     </style>
 </head>
@@ -199,10 +173,6 @@
         <div class="bubble bubble2"></div>
         <div class="bubble bubble3"></div>
         <div class="bubble bubble4"></div>
-        <div class="bubble bubble5"></div>
-        <div class="bubble bubble6"></div>
-        <div class="light-beam light-beam1"></div>
-        <div class="light-beam light-beam2"></div>
     </div>
 
     <header role="banner">
@@ -226,8 +196,9 @@
     <main id="main-content" role="main">
         <section class="donate-hero" aria-labelledby="donate-heading">
             <div class="container">
-                <h1 id="donate-heading">Support <span class="gradient-text">Flow Control</span> <span class="donate-heart" aria-hidden="true">&#10084;</span></h1>
-                <p>Flow Control is free and open source, and it always will be. If it has made your video watching a little better, you can support its continued development with a small donation. Every bit is genuinely appreciated.</p>
+                <span class="eyebrow">Support</span>
+                <h1 id="donate-heading">Keep Flow Control <span class="gradient-text">free</span> <span class="donate-heart" aria-hidden="true">&#10084;</span></h1>
+                <p>Flow Control is free and open source, and it always will be. If it has made your watching a little better, you can chip in toward its development. Every bit genuinely helps.</p>
             </div>
         </section>
 
@@ -240,7 +211,7 @@
                             <i class="bi bi-cup-hot-fill"></i>
                         </div>
                         <h3>Ko-fi</h3>
-                        <p>Buy me a coffee and fuel the next feature. Quick, secure, and supports cards &amp; Apple/Google Pay.</p>
+                        <p>Buy me a coffee and fuel the next feature. Cards and Apple/Google Pay supported.</p>
                         <a href="https://ko-fi.com/thisisdkyadav" class="button button-primary" target="_blank" rel="noopener noreferrer" aria-label="Support on Ko-fi">
                             <i class="bi bi-cup-hot" aria-hidden="true"></i> Buy me a coffee
                         </a>
@@ -264,11 +235,11 @@
                             <i class="bi bi-qr-code"></i>
                         </div>
                         <h3>UPI</h3>
-                        <p>In India? Scan the QR with any UPI app to send a quick contribution.</p>
+                        <p>In India? Scan the code with any UPI app to send a quick contribution.</p>
                         <div class="qr-wrapper">
-                            <img src="../images/upiqr.png" alt="UPI QR code to donate to Flow Control" width="220" height="220" loading="lazy">
+                            <img src="../images/upiqr.png" alt="UPI QR code to donate to Flow Control" width="218" height="218" loading="lazy">
                         </div>
-                        <p class="upi-hint">Works with PhonePe, Google Pay, Paytm &amp; any UPI app</p>
+                        <p class="upi-hint">PhonePe · GPay · Paytm · any UPI app</p>
                     </div>
                 </div>
 
