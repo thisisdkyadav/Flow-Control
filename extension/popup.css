@@ -487,6 +487,44 @@ button:active {
 }
 
 /* ═══════════════════════════════════════════
+   Donate / Support Link
+   ═══════════════════════════════════════════ */
+.donate-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 16px;
+  border-radius: var(--border-radius-md);
+  background: var(--primary-surface);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  color: var(--primary-color);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  transition: var(--transition-normal);
+}
+
+.donate-link:hover {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-button-hover);
+}
+
+.donate-heart {
+  color: var(--danger-color);
+  font-size: 13px;
+  line-height: 1;
+  transition: var(--transition-normal);
+}
+
+.donate-link:hover .donate-heart {
+  color: white;
+}
+
+/* ═══════════════════════════════════════════
    Help Modal
    ═══════════════════════════════════════════ */
 .help-overlay {

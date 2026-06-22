@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Essential Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Primary SEO Meta Tags -->
+    <title>Support Flow Control - Donate | Video Speed Controller</title>
+    <meta name="title" content="Support Flow Control - Donate | Video Speed Controller">
+    <meta name="description" content="Flow Control is free and open source. If it has been useful to you, support its development with a small donation via Ko-fi, PayPal, or UPI.">
+    <meta name="author" content="DK Yadav">
+    <meta name="robots" content="index, follow">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://flowcontrol.awacxo.com/donate">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://flowcontrol.awacxo.com/donate">
+    <meta property="og:title" content="Support Flow Control - Donate">
+    <meta property="og:description" content="Flow Control is free and open source. Support its development with a small donation via Ko-fi, PayPal, or UPI.">
+    <meta property="og:image" content="https://flowcontrol.awacxo.com/images/og-image.png">
+    <meta property="og:site_name" content="Flow Control">
+
+    <!-- Theme and Mobile -->
+    <meta name="theme-color" content="#3b82f6">
+
+    <!-- Favicon and Icons -->
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/apple-touch-icon.png">
+    <link rel="manifest" href="../manifest.json">
+
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Donate page specific styles */
+        .donate-hero {
+            padding: var(--space-xxl) 0 var(--space-xl);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .donate-hero h1 {
+            font-size: 3rem;
+            line-height: 1.2;
+            margin-bottom: var(--space-sm);
+        }
+
+        .donate-hero p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 620px;
+            margin: 0 auto;
+        }
+
+        .donate-heart {
+            color: var(--danger-color);
+            display: inline-block;
+            animation: heart-beat 1.4s ease-in-out infinite;
+        }
+
+        @keyframes heart-beat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.25); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.15); }
+        }
+
+        .donate-section {
+            padding: 0 0 var(--space-xxl);
+            position: relative;
+            z-index: 1;
+        }
+
+        .donate-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-md);
+            max-width: 980px;
+            margin: 0 auto;
+            align-items: stretch;
+        }
+
+        .donate-card {
+            background-color: white;
+            padding: var(--space-lg);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.3s ease;
+        }
+
+        .donate-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.15);
+            border-color: var(--primary-light);
+        }
+
+        .donate-card-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: var(--border-radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: var(--space-sm);
+        }
+
+        .donate-card-icon.kofi { background: linear-gradient(135deg, #ff5e5b, #e23b3b); }
+        .donate-card-icon.paypal { background: linear-gradient(135deg, #009cde, #003087); }
+        .donate-card-icon.upi { background: var(--primary-gradient); }
+
+        .donate-card h3 {
+            font-size: 1.35rem;
+            margin-bottom: var(--space-xs);
+        }
+
+        .donate-card p {
+            color: var(--text-light);
+            margin-bottom: var(--space-md);
+            flex-grow: 1;
+        }
+
+        .donate-card .button {
+            width: 100%;
+        }
+
+        .qr-wrapper {
+            background: white;
+            padding: 10px;
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--space-md);
+            width: 100%;
+            max-width: 220px;
+        }
+
+        .qr-wrapper img {
+            width: 100%;
+            height: auto;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .upi-hint {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: -0.5rem;
+            margin-bottom: var(--space-md);
+        }
+
+        .donate-back {
+            text-align: center;
+            margin-top: var(--space-lg);
+        }
+
+        .donate-thanks {
+            text-align: center;
+            max-width: 620px;
+            margin: 0 auto var(--space-xl);
+            color: var(--text-light);
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .donate-hero h1 { font-size: 2.2rem; }
+            .donate-hero p { font-size: 1.05rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Skip Navigation for Accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Page-wide animated background -->
+    <div class="bg-animation" aria-hidden="true">
+        <div class="bubble bubble1"></div>
+        <div class="bubble bubble2"></div>
+        <div class="bubble bubble3"></div>
+        <div class="bubble bubble4"></div>
+        <div class="bubble bubble5"></div>
+        <div class="bubble bubble6"></div>
+        <div class="light-beam light-beam1"></div>
+        <div class="light-beam light-beam2"></div>
+    </div>
+
+    <header role="banner">
+        <nav class="container" role="navigation" aria-label="Main navigation">
+            <a href="/" class="logo" aria-label="Flow Control - Home">
+                <img src="../images/logo.png" alt="Flow Control Logo" width="32" height="32">
+                <span>Flow Control</span>
+            </a>
+            <ul class="nav-links" role="menubar">
+                <li role="none"><a href="/#features" role="menuitem">Features</a></li>
+                <li role="none"><a href="/#demo" role="menuitem">Demo</a></li>
+                <li role="none"><a href="/#installation" role="menuitem">Installation</a></li>
+                <li role="none"><a href="/#faq" role="menuitem">FAQ</a></li>
+            </ul>
+            <a href="https://github.com/thisisdkyadav/Flow-Control" class="button button-outlined desktop-only" rel="noopener noreferrer" target="_blank" aria-label="View Flow Control source code on GitHub">
+                <i class="bi bi-github" aria-hidden="true"></i> View on GitHub
+            </a>
+        </nav>
+    </header>
+
+    <main id="main-content" role="main">
+        <section class="donate-hero" aria-labelledby="donate-heading">
+            <div class="container">
+                <h1 id="donate-heading">Support <span class="gradient-text">Flow Control</span> <span class="donate-heart" aria-hidden="true">&#10084;</span></h1>
+                <p>Flow Control is free and open source, and it always will be. If it has made your video watching a little better, you can support its continued development with a small donation. Every bit is genuinely appreciated.</p>
+            </div>
+        </section>
+
+        <section class="donate-section" aria-label="Donation options">
+            <div class="container">
+                <div class="donate-grid">
+                    <!-- Ko-fi -->
+                    <div class="donate-card">
+                        <div class="donate-card-icon kofi" aria-hidden="true">
+                            <i class="bi bi-cup-hot-fill"></i>
+                        </div>
+                        <h3>Ko-fi</h3>
+                        <p>Buy me a coffee and fuel the next feature. Quick, secure, and supports cards &amp; Apple/Google Pay.</p>
+                        <a href="https://ko-fi.com/thisisdkyadav" class="button button-primary" target="_blank" rel="noopener noreferrer" aria-label="Support on Ko-fi">
+                            <i class="bi bi-cup-hot" aria-hidden="true"></i> Buy me a coffee
+                        </a>
+                    </div>
+
+                    <!-- PayPal -->
+                    <div class="donate-card">
+                        <div class="donate-card-icon paypal" aria-hidden="true">
+                            <i class="bi bi-paypal"></i>
+                        </div>
+                        <h3>PayPal</h3>
+                        <p>Send a one-time donation in your own currency through PayPal &mdash; no account required.</p>
+                        <a href="https://paypal.me/thisisdkyadav" class="button button-primary" target="_blank" rel="noopener noreferrer" aria-label="Donate via PayPal">
+                            <i class="bi bi-paypal" aria-hidden="true"></i> Donate with PayPal
+                        </a>
+                    </div>
+
+                    <!-- UPI -->
+                    <div class="donate-card">
+                        <div class="donate-card-icon upi" aria-hidden="true">
+                            <i class="bi bi-qr-code"></i>
+                        </div>
+                        <h3>UPI</h3>
+                        <p>In India? Scan the QR with any UPI app to send a quick contribution.</p>
+                        <div class="qr-wrapper">
+                            <img src="../images/upiqr.png" alt="UPI QR code to donate to Flow Control" width="220" height="220" loading="lazy">
+                        </div>
+                        <p class="upi-hint">Works with PhonePe, Google Pay, Paytm &amp; any UPI app</p>
+                    </div>
+                </div>
+
+                <div class="donate-back">
+                    <a href="/" class="button button-secondary">
+                        <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to Home
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="../images/logo.png" alt="Flow Control Logo" width="32" height="32">
+                    <span>Flow Control</span>
+                </div>
+                <p>A smart video speed controller for Chrome, Edge, Brave, and other Chromium browsers.</p>
+            </div>
+
+            <div class="footer-links">
+                <div class="link-group">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://github.com/thisisdkyadav/Flow-Control" rel="noopener noreferrer" target="_blank">GitHub Repository</a></li>
+                        <li><a href="https://github.com/thisisdkyadav/Flow-Control/issues" rel="noopener noreferrer" target="_blank">Report Issues</a></li>
+                        <li><a href="https://github.com/thisisdkyadav/Flow-Control/blob/main/LICENSE" rel="noopener noreferrer" target="_blank">MIT License</a></li>
+                    </ul>
+                </div>
+
+                <div class="link-group">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="mailto:thisisdkyadav@gmail.com">Email Developer</a></li>
+                        <li><a href="https://github.com/thisisdkyadav" rel="noopener noreferrer" target="_blank">GitHub Profile</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 Flow Control. Released under the <a href="https://opensource.org/licenses/MIT" rel="noopener noreferrer" target="_blank">MIT License</a>.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

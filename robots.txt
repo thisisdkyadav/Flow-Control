@@ -1,11 +1,11 @@
 # Robots.txt for Flow Control Website
-# https://flowcontrol.andiindia.in/
+# https://flowcontrol.awacxo.com/
 
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://flowcontrol.andiindia.in/sitemap.xml
+Sitemap: https://flowcontrol.awacxo.com/sitemap.xml
 
 # Crawl-delay for polite crawling
 Crawl-delay: 1

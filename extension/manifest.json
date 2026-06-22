@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Video Speed Controller - Flow Control",
   "short_name": "Flow Control",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "description": "Video Speed Controller - Control video speed on any website (youtube, instagram, X, etc.)",
   "permissions": [
     "storage",
